@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+    	android:layout_height="fill_parent">
+    	
+    	<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content">
+			<Button android:layout_width="105dp"
+				android:layout_height="wrap_content" 
+				android:text="@string/contactName"
+				android:gravity="center"
+				android:background="@android:drawable/btn_default"
+				android:clickable="false"
+				android:focusable="false"/>
+			<EditText android:id="@+id/name" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"/>
+		</LinearLayout>
+	
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content">
+			<Button android:layout_width="105dp"
+				android:layout_height="wrap_content"
+				android:gravity="center"
+				android:text="@string/contactAddress"
+				android:background="@android:drawable/btn_default"
+				android:clickable="false"
+				android:focusable="false"/>
+			<EditText android:id="@+id/address" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"/>
+		</LinearLayout>
+	
+	<LinearLayout
+	  android:orientation="horizontal"
+	  android:layout_width="fill_parent"
+	  android:layout_height="wrap_content">
+	<Button android:id="@+id/save" 
+		android:text="@string/save"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:layout_weight="1"/>
+	<Button android:id="@+id/cancel"
+		android:text="@string/cancel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_weight="1"/>
+    </LinearLayout>	
+</LinearLayout>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="it.unibo.cs.voipdroid" android:versionCode="1">
+	<application android:icon="@drawable/contatto_phone" android:debuggable="true">
+		<activity android:name=".VOIPDroid" android:label="@string/app_name" android:launchMode="singleTask" android:configChanges="keyboardHidden">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:label="Contacts" android:name="Contacts">
+		</activity>
+		<activity android:label="Settings" android:name="Settings">
+		</activity>
+		<activity android:name="ContactEdit" android:label="ContactEdit">
+		</activity>
+		<activity android:name="CreateAccount" android:label="CreateAccount">		    
+		</activity>
+</application>
+	<uses-permission
+        android:name="android.permission.INTERNET" /> 
+    <uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+<uses-sdk android:minSdkVersion="1"></uses-sdk>
+</manifest>

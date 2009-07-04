@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:scrollbars="vertical" >
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+		<TextView android:id="@+id/full_name" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:gravity="left"
+			android:textAppearance="?android:attr/textAppearanceMedium" 
+			android:layout_weight="1"/>
+		<TextView android:id="@+id/gizmo_name" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:gravity="right"
+			android:textAppearance="?android:attr/textAppearanceMedium" 
+			android:layout_weight="1"/>
+
+		</LinearLayout>
+		
+		<TextView android:id="@+id/sip_uri" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:gravity="center"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
+		
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<TextView android:id="@+id/city" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="left"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				android:layout_weight="1"/>
+			<TextView android:id="@+id/state" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="center"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				android:layout_weight="1"/>
+			<TextView android:id="@+id/country" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="right"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				android:layout_weight="1"/>
+		</LinearLayout>
+		
+		<TextView android:id="@+id/homepage" android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:gravity="center"
+			android:textAppearance="?android:attr/textAppearanceSmall" />
+				
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<TextView android:id="@+id/languageT" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="left"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:text="Language" android:layout_weight="1"/>
+			<TextView android:id="@+id/language" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="right"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:layout_weight="1" />
+		</LinearLayout>
+		
+		
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<TextView android:id="@+id/sexT" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="left"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:text="Sex" android:layout_weight="1"/>
+			<TextView android:id="@+id/sex" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="right"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				android:layout_weight="1"/>
+		</LinearLayout>
+		
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+			<TextView android:id="@+id/birthT" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="left"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:text="Birthday" android:layout_weight="1"/>
+			<TextView android:id="@+id/birth" android:layout_height="wrap_content"
+				android:layout_width="wrap_content" android:gravity="right"
+				android:textAppearance="?android:attr/textAppearanceMedium" 
+				android:layout_weight="1"/>
+		</LinearLayout>
+		
+		<TextView android:id="@+id/descriptionT" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:gravity="left"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:text="Description" />
+		<TextView android:id="@+id/description" android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:gravity="left" />
+	</LinearLayout>
+</ScrollView>

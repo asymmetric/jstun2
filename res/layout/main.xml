@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<EditText android:id="@+id/toUrl" android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:label="To:" />
+
+	<LinearLayout 
+		android:orientation="horizontal" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		
+		<ImageButton android:id="@+id/doCall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/sym_action_call">
+		</ImageButton>
+	
+		<TextView android:id="@+id/sipState"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Disconnected"
+			android:gravity="center"
+			android:layout_weight="1"
+			android:layout_gravity="center_vertical"
+			android:textStyle="bold"/>
+			
+		<ImageButton android:id="@+id/stopCall"
+			android:src="@drawable/sym_incoming_call_dont_answer"
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content">
+		</ImageButton>
+	</LinearLayout>
+	
+	<TextView android:id="@+id/callStatus"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="" />
+		
+</LinearLayout>

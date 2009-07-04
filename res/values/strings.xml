@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VOIP on Android</string>
+    <string name="doCall">Call</string>
+    <string name="stopCall">HangUp</string>
+    <string name="chronometer_initial_format">Initial format: %s</string>
+    <string name="contactName">Name:</string>
+    <string name="contactAddress">Jid:</string>
+    <string name="save">Save</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="registrar">Registrar</string>
+    <string name="nickname">Nickname</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="authlog">Authentication Login</string>
+    <string name="rto">Registration Time Out</string>
+    <string name="incomingCall">Incoming call</string>
+    <string name="incomingCallAccept">Accept</string>
+    <string name="incomingCallDecline">Decline</string>
+    <string name="register">Register on startup</string>
+    <string name="profile">Profile of</string>
+    <string name="firstname">First Name\n(Optional)</string>
+    <string name="lastname">Last Name\n(Optional)</string>
+    <string name="address">Address\n(Optional)</string>
+    <string name="email">E-mail\n(Required)</string>
+    <string name="usernameR">Username\n(Required)</string>
+    <string name="passwordR">Password\n(Required)</string>
+    <string name="passwordConfirm">Confirm\npassword</string>
+    <string name="captcha">Please enter the numeric code (Required)</string>
+    <string name="eula">Check if you agree the </string>
+    <string name="noAccount">Error: no account</string>
+    <string name="noAccountMessage">No account setting found, please add it or create a new account in settings</string>
+</resources>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="fill_vertical">
+		<Button android:layout_width="90dip" android:layout_height="wrap_content"
+			android:text="@string/nickname" android:gravity="center"
+			android:background="@android:drawable/btn_default" android:clickable="false"
+			android:focusable="false" />
+		<EditText android:id="@+id/nickname" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="fill_vertical">
+		<Button android:layout_width="90dip" android:layout_height="wrap_content"
+			android:text="@string/username" android:gravity="center"
+			android:background="@android:drawable/btn_default" android:clickable="false"
+			android:focusable="false" />
+		<EditText android:id="@+id/username" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="fill_vertical">
+		<Button android:layout_width="90dip" android:layout_height="wrap_content"
+			android:text="@string/password" android:gravity="center"
+			android:background="@android:drawable/btn_default" android:clickable="false"
+			android:focusable="false" />
+		<EditText android:id="@+id/password" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:password="true" />
+	</LinearLayout>
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="fill_vertical">
+		<Button android:layout_width="90dip" android:layout_height="wrap_content"
+			android:text="@string/registrar" android:gravity="center"
+			android:background="@android:drawable/btn_default" android:clickable="false"
+			android:focusable="false" />
+		<EditText android:id="@+id/registrar" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="proxy01.sipphone.com" />
+	</LinearLayout>
+
+	<CheckBox android:id="@+id/checkRegister"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:text="@string/register" />
+
+	<Button android:id="@+id/saveSettings" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:text="@string/save" />
+
+</LinearLayout>
