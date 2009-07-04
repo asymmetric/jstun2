@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 /*
  * Copyright (C) 2005 Luca Veltri - University of Parma - Italy
  * 
@@ -163,10 +181,10 @@ public class RegisterAgent implements Runnable, TransactionClientListener {
 
 		Message req = MessageFactory.createRegisterRequest(sip_provider,
 				target, target, contact);
-		Log.v("GIANGIULIO", "VAFFA");
 		req.setExpiresHeader(new ExpiresHeader(String.valueOf(expire_time)));
 
 		if (next_nonce != null) {
+			Log.v("SIP", "next_nonce != null");
 			AuthorizationHeader ah = new AuthorizationHeader("Digest");
 			// SipURL target_url = target.getAddress();
 			ah.addUsernameParam(username);
@@ -178,19 +196,18 @@ public class RegisterAgent implements Runnable, TransactionClientListener {
 			ah.addQopParam(qop);
 			String response = (new DigestAuthentication(SipMethods.REGISTER,
 					ah, null, passwd)).getResponse();
+			Log.v("SIP", "RESPONSE: " + response);
 			ah.addResponseParam(response);
 			req.setAuthorizationHeader(ah);
-			Log.v("GIANGIULIO2", ah.toString());
+			Log.v("SIP", "AUTH HEADER: " + ah.toString());
 		}
-		Log.v("GIANGIULIO", req.toString());
+		Log.d("REGAGENT REQ", req.toString());
 		// if (expire_time>0)
 		//printLog("Registering contact "+contact+" (it expires in "+expire_time
 		// +" secs)",LogLevel.HIGH);
 		// else
 		// printLog("Unregistering contact "+contact,LogLevel.HIGH);
-		Log.v("OOOOOO", "TUTTO OK");
 		TransactionClient t = new TransactionClient(sip_provider, req, this);
-		Log.v("OOOOOO", "ANCORA");
 		t.request();
 	}
 

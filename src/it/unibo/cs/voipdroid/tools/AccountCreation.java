@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid.tools;
 
 import java.io.BufferedReader;
@@ -32,7 +50,7 @@ public class AccountCreation {
 			// int status = httpclient.executeMethod(get);
 			HttpResponse response = httpclient.execute(get);
 			HttpEntity entity = response.getEntity();
-			Log.v("httpGet", "Login form get: " + response.getStatusLine());
+			Log.d("httpGet", "Login form get: " + response.getStatusLine());
 			int status = response.getStatusLine().getStatusCode();
 
 			if (status != 404) {
@@ -41,7 +59,7 @@ public class AccountCreation {
 
 					int x;
 					int count = 0;
-					byte by[] = new byte[50];
+					byte by[] = new byte[50]; // TODO perche' 50?
 					while ((x = reader.read()) != -1) {
 						if (count < 50) {
 							by[count] = (byte) x;

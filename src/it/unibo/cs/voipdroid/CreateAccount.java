@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid;
 
 import it.unibo.cs.voipdroid.tools.AccountCreation;
@@ -180,7 +198,7 @@ public class CreateAccount extends Activity {
 					account = AccountCreation.getAccountUrl();
 					sessionId = AccountCreation.getSessionId();
 
-					Log.v("ACCOUNT", account);
+					Log.d("ACCOUNT", account);
 					URL url = null;
 					try {
 						url = new URL(AccountCreation.getJpgUrl()); //Gets the image for captcha

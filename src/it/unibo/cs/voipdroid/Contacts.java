@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid;
 
 import it.unibo.cs.voipdroid.databases.ContactsDbAdapter;
@@ -203,6 +221,7 @@ public class Contacts extends ListActivity {
 					.getColumnIndex(SettingsDbAdapter.KEY_USERNAME));
 			pwd = setting.getString(setting
 					.getColumnIndex(SettingsDbAdapter.KEY_PASSWORD));
+			setting.close(); // TODO lasciare?
 		}
 		mSettings.close();
 		Log.v("LISTACONTATTI", "Loaded Settings");
@@ -581,11 +600,9 @@ public class Contacts extends ListActivity {
 				Bundle bundle = new Bundle();
 				// If present get the string and add it to the intent
 				if (profileCursor.moveToFirst()) {
-					bundle
-							.putString(
+					bundle.putString(
 									ProfileDbAdapter.KEY_SIP_URI,
-									profileCursor
-											.getString(profileCursor
+									profileCursor.getString(profileCursor
 													.getColumnIndex(ProfileDbAdapter.KEY_SIP_URI)));
 					Log.v("SIPURI", profileCursor.getString(profileCursor
 							.getColumnIndex(ProfileDbAdapter.KEY_SIP_URI)));
@@ -601,6 +618,7 @@ public class Contacts extends ListActivity {
 				}
 				ContactmDbHelper.close(); // Close databases
 				ProfilemDbHelper.close();
+				profileCursor.close();
 
 				dialog.dismiss(); // Dismiss dialog
 

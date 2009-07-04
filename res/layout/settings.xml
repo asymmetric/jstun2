@@ -46,6 +46,17 @@
 		<EditText android:id="@+id/registrar" android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:text="proxy01.sipphone.com" />
 	</LinearLayout>
+	
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:gravity="fill_vertical">
+		<Button android:layout_width="90dip" android:layout_height="wrap_content"
+			android:text="@string/stun" android:gravity="center"
+			android:background="@android:drawable/btn_default" android:clickable="false"
+			android:focusable="false" />
+		<EditText android:id="@+id/stun" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:text="stun01.sipphone.com" />
+	</LinearLayout>
 
 	<CheckBox android:id="@+id/checkRegister"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"

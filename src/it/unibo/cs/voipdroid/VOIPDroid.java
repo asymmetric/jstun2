@@ -1,10 +1,32 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid;
+
+import java.io.IOException;
+import java.net.InetAddress;
 
 import it.unibo.cs.voipdroid.authentication.RegisterAgent;
 import it.unibo.cs.voipdroid.authentication.RegisterAgentListener;
 import it.unibo.cs.voipdroid.authentication.VOIPDroidRegAgListener;
 import it.unibo.cs.voipdroid.databases.ProfileDbAdapter;
 import it.unibo.cs.voipdroid.databases.SettingsDbAdapter;
+import it.unibo.cs.voipdroid.stun.VOIPDroidSTUN;
 
 import org.zoolu.sdp.AttributeField;
 import org.zoolu.sdp.MediaField;
@@ -13,6 +35,10 @@ import org.zoolu.sip.address.NameAddress;
 import org.zoolu.sip.call.Call;
 import org.zoolu.sip.provider.SipProvider;
 import org.zoolu.sip.provider.SipStack;
+
+import com.jstun.core.attribute.MessageAttributeParsingException;
+import com.jstun.core.header.MessageHeaderException;
+import com.jstun.core.util.UtilityException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -50,19 +76,22 @@ public class VOIPDroid extends Activity {
 	private static final int ACTIVITY_CONTACTS = 1;
 	private final int SENT = 1;
 	private final int RECEIVED = 2;
-	private String nickname = null;
+	private static String nickname = null;
 	private static String username = null;
 	private String password = null;
 	private String realm = null;
 	private static String account = null;
 	private static String contact_url;
+	
+	// Sip port as per RFC3261
 	private static int port = 5060;
 	Boolean register = false;
 	public static Boolean firstContacts = true;
 	private Boolean firstTime = true;
 
 	Thread myRefreshThread = null;
-	public static Thread myListenThread = null;
+	Thread mStunThread = null;
+//	public static Thread myListenThread = null;
 
 	static String sipState = "Disconnected";
 	static String callState = "";
@@ -97,6 +126,16 @@ public class VOIPDroid extends Activity {
 
 	NotificationManager mNotificationManager;
 	
+	private boolean NATChecked = false;
+	private boolean natted = false;
+	private VOIPDroidSTUN st = null;
+	private InetAddress publicAddr = null;
+	
+	private static String stunServer = "stun01.sipphone.com"; // default
+
+//	private VOIPDroidRTP vrtp;
+	
+	
 	/* "On" Methods */
 
 	/**
@@ -122,6 +161,7 @@ public class VOIPDroid extends Activity {
 		// Initialize the thread for the refresh various states of the application
 		this.myRefreshThread = new Thread(new secondCountDownRunner());
 		this.myRefreshThread.start();
+
 		// Initialize the SIP Stack
 		if (firstTime) setSipStackParameters();
 		// Initialize the layout
@@ -131,9 +171,13 @@ public class VOIPDroid extends Activity {
 		mSettings = new SettingsDbAdapter(this);
 		mSettings.open();
 		setupSettings();
-		// If user chose to register on startup call setupRegister()
+		
+		// If the user chose to register on startup call setupRegister()
 		if (register)
 			setupRegister();
+
+		// TODO thread?
+//		setupRTP();
 
 	}
 	
@@ -179,9 +223,9 @@ public class VOIPDroid extends Activity {
 
 			// New Register Agent listener
 			raListener = new VOIPDroidRegAgListener();
-			Log.v("SIPprovider", "ADDRESS = " + sp.getViaAddress());
-			Log.v("SIPprovider", "ADDRESS = " + sp.getInterfaceAddress());
-			Log.v("SIPprovider", "ADDRESS = " + String.valueOf(sp.getPort()));
+			Log.i("SIPprovider", "ADDRESS VIA = " + sp.getViaAddress());
+			Log.i("SIPprovider", "ADDRESS IF = " + sp.getInterfaceAddress());
+			Log.i("SIPprovider", "ADDRESS PORT = " + String.valueOf(sp.getPort()));
 
 			contact_url = "sip:" + getUsername() + "@" + sp.getViaAddress()
 					+ ":" + String.valueOf(sp.getPort() + ";transport=udp");
@@ -193,7 +237,6 @@ public class VOIPDroid extends Activity {
 			ra.register();
 			registration = true;
 
-			// call = new Call(sp,target_url,contact_url,listener);
 		}
 	}
 
@@ -221,6 +264,7 @@ public class VOIPDroid extends Activity {
 			account = "sip:" + getUsername() + "@" + getRealm();
 			register = Boolean.valueOf(setting.getString((setting
 					.getColumnIndex(SettingsDbAdapter.KEY_CHECKREG))));
+			stunServer = setting.getString(setting.getColumnIndex(SettingsDbAdapter.KEY_STUN));
 			mSettings.close();
 		} else { // else open Settings activity
 			Intent myIntent = new Intent();
@@ -229,7 +273,7 @@ public class VOIPDroid extends Activity {
 		}
 	}
 
-	private void createDirectory() {
+	private void createDirectory() { // TODO funziona?
 		this.getFileStreamPath("").mkdirs();
 		Log.v("CICCIO", "MARUZZELLA " + getFileStreamPath(""));
 	}
@@ -261,8 +305,9 @@ public class VOIPDroid extends Activity {
 
 				/*
 				 * if address is empty or client is not connected don't do calls
+				 * TODO dire qualcosa all'utente nel caso ci siano problemi
 				 */
-				if (!to_url.equals("") && (sipState == "Connected")) {
+				if (!(to_url.length() == 0) && (sipState == "Connected")) {
 					Log.v("CALL", "starting the call to " + to_url);
 
 					TextView tc = (TextView) findViewById(R.id.callStatus);
@@ -270,6 +315,7 @@ public class VOIPDroid extends Activity {
 
 					// Sets the call status
 					setOnCall(SENT);
+
 					call.call(to_url, getNickname() + "<" + account + ">" ,
 							contact_url, local_session.toString());
 
@@ -302,10 +348,13 @@ public class VOIPDroid extends Activity {
 
 	/** Init SipStack, SipProvider and SDP */
 	private void setSipStackParameters() {
-		SipStack.init(this.getResources().openRawResource(R.raw.conf)
-				.toString());
-		sp = new SipProvider(this.getResources().openRawResource(R.raw.conf)
-				.toString());
+		SipStack.init();
+		
+		if (checkNat())
+			sp = new SipProvider(publicAddr.getHostAddress(), port);
+		else
+			sp = new SipProvider(null); // TODO funziona?
+		
 		Log.v("SP",sp.toString());
 		userProfile = new UserAgentProfile();
 		initSessionDescriptor();
@@ -314,6 +363,56 @@ public class VOIPDroid extends Activity {
 				userProfile.audio_sample_rate);
 		firstTime=false;
 	}
+	
+	private boolean checkNat() {
+		try {
+			setNatted(getNatStatus());
+			setNATChecked(true);
+			return true;
+		} catch (Exception e) {
+			setNATChecked(false);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("STUN Error")
+				.setMessage(e.getMessage())
+				.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface d, int id) {
+						d.dismiss();
+					}
+			});
+			builder.create().show();
+			return false;
+		} finally { publicAddr = st.getPublicAddress(); }
+
+	}
+	
+	private boolean getNatStatus() throws MessageAttributeParsingException, UtilityException, 
+	IOException, MessageHeaderException {
+		
+		
+		boolean b = false;
+		int times = 2;
+	
+		// TODO sub-optimal solution
+		while(!b && (times-- > 0) ) {
+			st = new VOIPDroidSTUN();
+			
+			st.sendReq();
+			
+			b = st.getReply();
+		}
+		
+		return b;
+	}
+	
+	// TODO thread?
+//	private void setupRTP() {
+//		try {
+//			// TODO unmagic
+//			vrtp = new VOIPDroidRTP(publicAddr, 16384, 16385);
+//		} catch (SocketException e) {
+//			Log.e("CALL", e.getMessage());
+//		}
+//	}
 
 	/* "On" Methods */
 
@@ -368,6 +467,7 @@ public class VOIPDroid extends Activity {
 			if (mRowIdSetting != null) {
 				myIntent.putExtra(SettingsDbAdapter.KEY_ROWID, mRowIdSetting);
 			}
+			mSettings.close();
 			// mSettings.close();
 			this.startActivityForResult(myIntent, ACTIVITY_SETTINGS);
 			break;
@@ -401,25 +501,25 @@ public class VOIPDroid extends Activity {
 		Bundle extras = intent.getExtras();
 
 		switch (requestCode) {
-		case ACTIVITY_SETTINGS: {
-			if (extras != null) {
-				mSettings.open();
-				mRowIdSetting = extras.getLong(SettingsDbAdapter.KEY_ROWID);
-				setupSettings();
-				if (register)
-					setupRegister();
+			case ACTIVITY_SETTINGS: {
+				if (extras != null) {
+					mSettings.open();
+					mRowIdSetting = extras.getLong(SettingsDbAdapter.KEY_ROWID);
+					setupSettings();
+					if (register)
+						setupRegister();
+				}
 				break;
 			}
-		}
-		case ACTIVITY_CONTACTS: {
-			if (extras != null) {
-				String sipAddress = extras
-						.getString(ProfileDbAdapter.KEY_SIP_URI);
-				EditText Text = (EditText) findViewById(R.id.toUrl);
-				Text.setText(sipAddress);
+			case ACTIVITY_CONTACTS: {
+				if (extras != null) {
+					String sipAddress = extras
+							.getString(ProfileDbAdapter.KEY_SIP_URI);
+					EditText Text = (EditText) findViewById(R.id.toUrl);
+					Text.setText(sipAddress);
+				}
 				break;
 			}
-		}
 		}
 	}
 
@@ -596,6 +696,29 @@ public class VOIPDroid extends Activity {
 
 		local_session = sdp.toString();
 	}
+	
+	// deprecated
+//	class NatStatusChecker implements Runnable {
+//
+//		public void run() {
+//			boolean natStatus = getNatStatus();
+//			setNatted(natStatus);
+//			if (natStatus) {
+//				publicAddr = st.getPublicAddress();
+////				sp.setViaAddress(public_address);
+//				// TODO race condition ?
+////				sp.halt();
+////				sp = new VOIPDroidSipProvider(public_address, port);
+//			}
+//			// da qui in poi conosciamo l'ip pubblico
+//			setNATChecked(true);
+//			if (register)
+//				setupRegister();
+//		}		
+//		
+//	}
+	
+
 
 	/** Sets the sipState to state */
 	public static void setSipState(String state) {
@@ -614,7 +737,7 @@ public class VOIPDroid extends Activity {
 	 * 
 	 * @return the nickname
 	 * */
-	public String getNickname() {
+	public static String getNickname() {
 		return nickname;
 	}
 
@@ -624,6 +747,7 @@ public class VOIPDroid extends Activity {
 	 * @param nickname
 	 *            the nickname to set
 	 **/
+	// TODO make static
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
@@ -875,6 +999,26 @@ public class VOIPDroid extends Activity {
 	 */
 	public static void setOnCall(int onCall) {
 		VOIPDroid.onCall = onCall;
+	}
+
+	public boolean isNATChecked() {
+		return NATChecked;
+	}
+
+	private void setNATChecked(boolean b) {
+		this.NATChecked = b;
+	}
+	
+	public boolean isNatted() {
+		return natted;
+	}
+	
+	private void setNatted(boolean natStatus) {
+		natted = natStatus;
+	}
+	
+	public static String getStunServer() {
+		return stunServer;
 	}
 
 /*	*//**

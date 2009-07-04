@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid.databases;
 
 import android.content.ContentValues;
@@ -16,6 +34,7 @@ public class SettingsDbAdapter {
 		public static final String KEY_USERNAME="username";
 	    public static final String KEY_PASSWORD="password";
 	    public static final String KEY_REGISTRAR="registrar";
+	    public static final String KEY_STUN="stun";
 	    public static final String KEY_CHECKREG="checkreg";
 	    public static final String KEY_ROWID="_id";
 	    
@@ -24,7 +43,8 @@ public class SettingsDbAdapter {
 	     */
 	    private static final String DATABASE_CREATE =
 	        "create table settings (_id integer primary key autoincrement, "
-	            + "nickname text not null,username text not null,password text not null, registrar text not null, checkreg text not null );";
+	        + "nickname text not null,username text not null,password text not null, " + 
+	        "registrar text not null, stun text not null,checkreg text not null );";
 	    
 	    private static final String TAG = "SettingsDbAdapter";
 	    private static final String DATABASE_NAME = "settings.db";
@@ -97,12 +117,13 @@ public class SettingsDbAdapter {
 	     * @param check true if register on startup
 	     * @return rowId or -1 if failed
 	     */
-	    public long createSetting(String nickname, String username, String password, String registrar, String checkreg) {
+	    public long createSetting(String nickname, String username, String password, String registrar, String stun, String checkreg) {
 	        ContentValues initialValues = new ContentValues();
 	        initialValues.put(KEY_NICKNAME, nickname);
 	        initialValues.put(KEY_USERNAME, username);
 	        initialValues.put(KEY_PASSWORD, password);
 	        initialValues.put(KEY_REGISTRAR, registrar);
+	        initialValues.put(KEY_STUN, stun);
 	        initialValues.put(KEY_CHECKREG, checkreg);
 	        return mDb.insert(DATABASE_TABLE, null, initialValues);
 	    }
@@ -115,7 +136,7 @@ public class SettingsDbAdapter {
 	     */
 	    public Cursor fetchSetting(long rowId) throws SQLException {
 	        Cursor result = mDb.query(true, DATABASE_TABLE, new String[] {
-	                KEY_ROWID, KEY_NICKNAME, KEY_USERNAME, KEY_PASSWORD, KEY_REGISTRAR, KEY_CHECKREG},
+	                KEY_ROWID, KEY_NICKNAME, KEY_USERNAME, KEY_PASSWORD, KEY_REGISTRAR, KEY_STUN, KEY_CHECKREG},
 	                KEY_ROWID + "=" + rowId, null, null, null, null, null);
 	        if ((result.getCount() == 0) || !result.moveToFirst()) {
 	            throw new SQLException("No setting matching ID: " + rowId);
@@ -146,13 +167,14 @@ public class SettingsDbAdapter {
 	     * @return true if the note was successfully updated, false otherwise
 	     */
 	    public boolean updateSetting(long rowId,
-	    		String nickname, String username, String password, String registrar, String checkreg) 
+	    		String nickname, String username, String password, String registrar, String stun, String checkreg) 
 	    {
 	        ContentValues args = new ContentValues();
 	        args.put(KEY_NICKNAME, nickname);
 	        args.put(KEY_USERNAME, username);
 	        args.put(KEY_PASSWORD, password);
 	        args.put(KEY_REGISTRAR, registrar);
+	        args.put(KEY_STUN, stun);
 	        args.put(KEY_CHECKREG, checkreg);
 	        return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	    }

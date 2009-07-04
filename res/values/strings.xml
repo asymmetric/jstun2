@@ -10,6 +10,7 @@
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="registrar">Registrar</string>
+    <string name="stun">Stun</string>
     <string name="nickname">Nickname</string>
     <string name="username">Username</string>
     <string name="password">Password</string>

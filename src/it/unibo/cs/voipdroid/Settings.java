@@ -1,3 +1,21 @@
+/* 
+*  Copyright 2007, 2008, 2009 Luca Bonora, Luca Bedogni, Lorenzo Manacorda
+*  
+*  This file is part of VOIPDroid.
+*
+*  VOIPDroid is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*  
+*  VOIPDroid is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*  
+*  You should have received a copy of the GNU General Public License
+*  along with VOIPDroid.  If not, see <http://www.gnu.org/licenses/>.
+*/
 package it.unibo.cs.voipdroid;
 
 import it.unibo.cs.voipdroid.databases.SettingsDbAdapter;
@@ -25,6 +43,7 @@ public class Settings extends Activity {
 	private EditText mUsernameSetting;
 	private EditText mPasswordSetting;
 	private EditText mRegistrarSetting;
+	private EditText mStunSetting;
 	private CheckBox mCheck;
 	private Long mRowId;
 	private SettingsDbAdapter mDbHelper;
@@ -60,17 +79,18 @@ public class Settings extends Activity {
 		String username = mUsernameSetting.getText().toString();
 		String password = mPasswordSetting.getText().toString();
 		String registrar = mRegistrarSetting.getText().toString();
+		String stun = mStunSetting.getText().toString();
 		String checkreg = String.valueOf(mCheck.isChecked());
 
 		//If the database is empty
 		if (mRowId == null) {
 			long id = mDbHelper.createSetting(nickname, username, password,
-					registrar, checkreg);
+					registrar, stun, checkreg);
 			if (id > 0)
 				mRowId = id;
 		} else {
 			mDbHelper.updateSetting(mRowId, nickname, username, password,
-					registrar, checkreg);
+					registrar, stun, checkreg);
 		}
 	}
 
@@ -95,6 +115,9 @@ public class Settings extends Activity {
 
 			mRegistrarSetting.setText(settingCursor.getString(settingCursor
 					.getColumnIndex(SettingsDbAdapter.KEY_REGISTRAR)));
+			
+			mStunSetting.setText(settingCursor.getString(settingCursor
+					.getColumnIndex(SettingsDbAdapter.KEY_STUN)));
 
 			mCheck.setChecked(Boolean.valueOf(settingCursor
 					.getString(settingCursor
@@ -115,6 +138,7 @@ public class Settings extends Activity {
 		mUsernameSetting = (EditText) findViewById(R.id.username);
 		mPasswordSetting = (EditText) findViewById(R.id.password);
 		mRegistrarSetting = (EditText) findViewById(R.id.registrar);
+		mStunSetting = (EditText) findViewById(R.id.stun);
 		mCheck = (CheckBox) findViewById(R.id.checkRegister);
 
 		Button saveButton = (Button) findViewById(R.id.saveSettings);
