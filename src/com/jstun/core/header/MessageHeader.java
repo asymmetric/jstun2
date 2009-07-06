@@ -38,14 +38,16 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	private static Logger logger = Logger.getLogger("com.jstun.core.header.MessageHeader");
 	MessageHeaderType type;
-	byte[] id = new byte[16];
-	byte[] mcookie = new byte[32];
+	private byte[] id = new byte[TRANSACTIONIDSIZE];
+	private byte[] mcookie = new byte[MAGICCOOKIESIZE];
+
 
 	TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
-//	public MessageHeader() {
-//		super();
-//	}
+
+	public MessageHeader() {
+		super();
+	}
 
 	public MessageHeader(MessageHeaderType type) {
 		super();
@@ -83,18 +85,29 @@ public class MessageHeader implements MessageHeaderInterface {
 
 
 	public void generateMagicCookie() throws UtilityException { // TODO should be put in the constructor?
-		System.arraycopy(Utility.integerToFourBytes(MAGICCOOKIE), 0, mcookie, 0, 4);
+		System.arraycopy(Utility.integerToFourBytes(MAGICCOOKIE), 0, mcookie, 0, MAGICCOOKIESIZE);
+	}
+
+	public byte[] getMagicCookie() { // TODO why so complicated?	
+//		return mcookie;
+		byte[] mcCopy = new byte[mcookie.length];
+		System.arraycopy(mcookie, 0, mcCopy, 0, mcookie.length);
+		return mcCopy;
 	}
 
 	public void generateTransactionID() throws UtilityException {
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 0, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 2, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 4, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 6, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 8, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 10, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 12, 2);
-		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0, id, 14, 2);
+		int start = 0;
+		int length = 2;
+
+		for (int i = 0; i < TRANSACTIONIDSIZE; i++, start += 2) {
+			System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, start, length);
+		}
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 0, 2);
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 2, 2);
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 4, 2);
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 6, 2);
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 8, 2);
+//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 10, 2);
 	}
 
 	public byte[] getTransactionID() {
@@ -180,13 +193,13 @@ public class MessageHeader implements MessageHeaderInterface {
 			System.arraycopy(data, 0, typeArray, 0, 2);
 			int type = Utility.twoBytesToInteger(typeArray);
 			switch (type) {
-			case BINDINGREQUEST: mh.setType(MessageHeaderType.BindingRequest); logger.finer("Binding Request received."); break;
-			case BINDINGRESPONSE: mh.setType(MessageHeaderType.BindingResponse); logger.finer("Binding Response received."); break;
-			case BINDINGERRORRESPONSE: mh.setType(MessageHeaderType.BindingErrorResponse); logger.finer("Binding Error Response received."); break;
-			case SHAREDSECRETREQUEST: mh.setType(MessageHeaderType.SharedSecretRequest); logger.finer("Shared Secret Request received."); break;
-			case SHAREDSECRETRESPONSE: mh.setType(MessageHeaderType.SharedSecretResponse); logger.finer("Shared Secret Response received."); break;
-			case SHAREDSECRETERRORRESPONSE: mh.setType(MessageHeaderType.SharedSecretErrorResponse); logger.finer("Shared Secret Error Response received.");break;
-			default: throw new MessageHeaderParsingException("Message type " + type + "is not supported");
+				case BINDINGREQUEST: mh.setType(MessageHeaderType.BindingRequest); logger.finer("Binding Request received."); break;
+				case BINDINGRESPONSE: mh.setType(MessageHeaderType.BindingResponse); logger.finer("Binding Response received."); break;
+				case BINDINGFAILURERESPONSE: mh.setType(MessageHeaderType.BindingFailureResponse); logger.finer("Binding Failure Response received."); break;
+	//			case SHAREDSECRETREQUEST: mh.setType(MessageHeaderType.SharedSecretRequest); logger.finer("Shared Secret Request received."); break;
+	//			case SHAREDSECRETRESPONSE: mh.setType(MessageHeaderType.SharedSecretResponse); logger.finer("Shared Secret Response received."); break;
+	//			case SHAREDSECRETERRORRESPONSE: mh.setType(MessageHeaderType.SharedSecretErrorResponse); logger.finer("Shared Secret Error Response received.");break;
+				default: throw new MessageHeaderParsingException("Message type " + type + "is not supported");
 			}
 			return mh;
 		} catch (UtilityException ue) {

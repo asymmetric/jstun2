@@ -17,6 +17,8 @@ public interface MessageHeaderInterface {
 	public enum MessageHeaderType { BindingRequest, BindingResponse, BindingFailureResponse }
 
 	final static int MAGICCOOKIE = 0x2112A442;
+	final static int MAGICCOOKIESIZE = 4;
+	final static int TRANSACTIONIDSIZE = 12; // in bytes
 
 	// classes
 	final static int REQUEST = 0x00;
