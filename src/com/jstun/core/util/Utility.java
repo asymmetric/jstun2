@@ -30,6 +30,7 @@ public class Utility {
 		return result; 
 	}
 	
+	// converts to Big-Endian
 	public static final byte[] integerToFourBytes(int value) throws UtilityException {
 		byte[] result = new byte[4];
 		if ((value > Math.pow(2,63)) || (value < 0)) {
