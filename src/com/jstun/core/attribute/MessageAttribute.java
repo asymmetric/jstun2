@@ -18,6 +18,18 @@ import com.jstun.core.util.UtilityException;
 
 
 public abstract class MessageAttribute implements MessageAttributeInterface {
+	
+/*	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|0 0 0 0 0 0 0 0|    Family     |           Port                |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                                                               |
+	|                 Address (32 bits or 128 bits)                 |
+	|                                                               |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+	
 	private static Logger logger = Logger.getLogger("com.jstun.core.util.MessageAttribute");
 	MessageAttributeType type;
 	
@@ -38,32 +50,22 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 	
 	public static int typeToInteger(MessageAttributeType type) {
 		if (type == MessageAttributeType.MappedAddress) return MAPPEDADDRESS;
-		if (type == MessageAttributeType.ResponseAddress) return RESPONSEADDRESS;
-		if (type == MessageAttributeType.ChangeRequest) return CHANGEREQUEST;
-		if (type == MessageAttributeType.SourceAddress) return SOURCEADDRESS;
-		if (type == MessageAttributeType.ChangedAddress) return CHANGEDADDRESS;
 		if (type == MessageAttributeType.Username) return USERNAME;
 		if (type == MessageAttributeType.Password) return PASSWORD;
 		if (type == MessageAttributeType.MessageIntegrity) return MESSAGEINTEGRITY;
 		if (type == MessageAttributeType.ErrorCode) return ERRORCODE;
 		if (type == MessageAttributeType.UnknownAttribute) return UNKNOWNATTRIBUTE;
-		if (type == MessageAttributeType.ReflectedFrom) return REFLECTEDFROM;
 		if (type == MessageAttributeType.Dummy) return DUMMY;
 		return -1;
 	}
 	
 	public static MessageAttributeType intToType(long type) {
 		if (type == MAPPEDADDRESS) return MessageAttributeType.MappedAddress;
-		if (type == RESPONSEADDRESS) return MessageAttributeType.ResponseAddress;
-		if (type == CHANGEREQUEST) return MessageAttributeType.ChangeRequest;
-		if (type == SOURCEADDRESS) return MessageAttributeType.SourceAddress;
-		if (type == CHANGEDADDRESS) return MessageAttributeType.ChangedAddress;
 		if (type == USERNAME) return MessageAttributeType.Username;
 		if (type == PASSWORD) return MessageAttributeType.Password;
 		if (type == MESSAGEINTEGRITY) return MessageAttributeType.MessageIntegrity;
 		if (type == ERRORCODE) return MessageAttributeType.ErrorCode;
 		if (type == UNKNOWNATTRIBUTE) return MessageAttributeType.UnknownAttribute;
-		if (type == REFLECTEDFROM) return MessageAttributeType.ReflectedFrom;
 		if (type == DUMMY) return MessageAttributeType.Dummy;
 		return null;
 	}
@@ -88,25 +90,20 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 			System.arraycopy(data, 4, valueArray, 0, lengthValue);
 			MessageAttribute ma;
 			switch (type) {
-			case MAPPEDADDRESS: ma = MappedAddress.parse(valueArray); break;
-			case RESPONSEADDRESS: ma = ResponseAddress.parse(valueArray); break;
-			case CHANGEREQUEST: ma = ChangeRequest.parse(valueArray); break;
-			case SOURCEADDRESS: ma = SourceAddress.parse(valueArray); break;
-			case CHANGEDADDRESS: ma = ChangedAddress.parse(valueArray); break;
-			case USERNAME: ma = Username.parse(valueArray); break;
-			case PASSWORD: ma = Password.parse(valueArray); break;
-			case MESSAGEINTEGRITY: ma = MessageIntegrity.parse(valueArray); break;
-			case ERRORCODE: ma = ErrorCode.parse(valueArray); break;
-			case UNKNOWNATTRIBUTE: ma = UnknownAttribute.parse(valueArray); break;
-			case REFLECTEDFROM: ma = ReflectedFrom.parse(valueArray); break;
-			default:
-				if (type <= 0x7fff) {
-					throw new UnknownMessageAttributeException("Unkown mandatory message attribute", intToType(type));
-				} else {
-					logger.finer("MessageAttribute with type " + type + " unkown.");
-					ma = Dummy.parse(valueArray);
-					break;
-				}
+				case MAPPEDADDRESS: ma = MappedAddress.parse(valueArray); break;
+				case USERNAME: ma = Username.parse(valueArray); break;
+				case PASSWORD: ma = Password.parse(valueArray); break;
+				case MESSAGEINTEGRITY: ma = MessageIntegrity.parse(valueArray); break;
+				case ERRORCODE: ma = ErrorCode.parse(valueArray); break;
+				case UNKNOWNATTRIBUTE: ma = UnknownAttribute.parse(valueArray); break;
+				default:
+					if (type <= 0x7fff) {
+						throw new UnknownMessageAttributeException("Unkown mandatory message attribute", intToType(type));
+					} else {
+						logger.finer("MessageAttribute with type " + type + " unkown.");
+						ma = Dummy.parse(valueArray);
+						break;
+					}
 			}
 			return ma;
 		} catch (UtilityException ue) {

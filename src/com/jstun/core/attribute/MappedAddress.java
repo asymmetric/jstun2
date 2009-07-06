@@ -14,7 +14,7 @@ package com.jstun.core.attribute;
 import java.util.logging.Logger;
 
 
-public class MappedAddress extends MappedResponseChangedSourceAddressReflectedFrom {
+public class MappedAddress extends MappedXORMapped {
 	private static Logger logger = Logger.getLogger("com.jstun.core.attribute.MappedAddress");
 	public MappedAddress() {
 		super(MessageAttribute.MessageAttributeType.MappedAddress);
@@ -22,7 +22,7 @@ public class MappedAddress extends MappedResponseChangedSourceAddressReflectedFr
 	
 	public static MessageAttribute parse(byte[] data) throws MessageAttributeParsingException {
 		MappedAddress ma = new MappedAddress();
-		MappedResponseChangedSourceAddressReflectedFrom.parse(ma, data);
+		MappedXORMapped.parse(ma, data);
 		logger.finer("Message Attribute: Mapped Address parsed: " + ma.toString() + ".");
 		return ma;
 	}

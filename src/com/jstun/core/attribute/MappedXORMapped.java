@@ -15,7 +15,7 @@ import com.jstun.core.util.Address;
 import com.jstun.core.util.Utility;
 import com.jstun.core.util.UtilityException;
 
-public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttribute {
+public class MappedXORMapped extends MessageAttribute {
 	int port;
 	Address address;
 	
@@ -28,7 +28,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 	 * |                             Address                           |
 	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
-	public MappedResponseChangedSourceAddressReflectedFrom() {
+	public MappedXORMapped() {
 		super();
 		try {
 			port = 0;
@@ -39,7 +39,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		}
 	}
 	
-	public MappedResponseChangedSourceAddressReflectedFrom(MessageAttribute.MessageAttributeType type) {
+	public MappedXORMapped(MessageAttribute.MessageAttributeType type) {
 		super(type);
 	}
 	
@@ -80,7 +80,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		return result;
 	}
 	
-	protected static MappedResponseChangedSourceAddressReflectedFrom parse(MappedResponseChangedSourceAddressReflectedFrom ma, byte[] data) throws MessageAttributeParsingException {
+	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) {
 				throw new MessageAttributeParsingException("Data array too short");
