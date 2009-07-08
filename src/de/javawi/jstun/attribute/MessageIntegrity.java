@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package com.jstun.core.attribute;
+package de.javawi.jstun.attribute;
 
 public class MessageIntegrity extends MessageAttribute {
 	// incomplete message integrity implementation

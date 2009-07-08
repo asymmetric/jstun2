@@ -9,13 +9,13 @@
  * included in this distribution.
  */
 
-package com.jstun.core.attribute;
+package de.javawi.jstun.attribute;
 
 import java.util.Iterator;
 import java.util.Vector;
 
-import com.jstun.core.util.Utility;
-import com.jstun.core.util.UtilityException;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
 public class UnknownAttribute extends MessageAttribute {
 	/* 

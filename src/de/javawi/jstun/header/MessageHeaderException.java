@@ -9,13 +9,12 @@
  * included in this distribution.
  */
 
-package com.jstun.core.util;
+package de.javawi.jstun.header;
 
-public class UtilityException extends Exception {
-	private static final long serialVersionUID = 3545800974716581680L;
+public class MessageHeaderException extends Exception {
+	private static final long serialVersionUID = 3689066248944103737L;
 
-	UtilityException(String mesg) {
+	public MessageHeaderException(String mesg) {
 		super(mesg);
 	}
-
 }

@@ -27,18 +27,18 @@ import java.net.InetAddress;
 
 import android.util.Log;
 
-import com.jstun.core.attribute.MessageAttributeParsingException;
-import com.jstun.core.header.MessageHeader;
-import com.jstun.core.header.MessageHeaderException;
-import com.jstun.core.header.MessageHeaderParsingException;
-import com.jstun.core.header.MessageHeaderInterface.MessageHeaderType;
-import com.jstun.core.util.UtilityException;
 
-import com.jstun.core.attribute.ErrorCode;
-import com.jstun.core.attribute.MessageAttribute;
 
 //import com.jstun.core.attribute.ChangedAddress;
-import com.jstun.core.attribute.MappedAddress;
+import de.javawi.jstun.attribute.ErrorCode;
+import de.javawi.jstun.attribute.MappedAddress;
+import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.MessageAttributeParsingException;
+import de.javawi.jstun.header.MessageHeader;
+import de.javawi.jstun.header.MessageHeaderException;
+import de.javawi.jstun.header.MessageHeaderParsingException;
+import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
+import de.javawi.jstun.util.UtilityException;
 
 public class VOIPDroidSTUN {
 	

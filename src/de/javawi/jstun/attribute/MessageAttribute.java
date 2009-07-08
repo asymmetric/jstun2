@@ -9,25 +9,23 @@
  * included in this distribution.
  */
 
-package com.jstun.core.attribute;
+package de.javawi.jstun.attribute;
 
 import java.util.logging.Logger;
 
-import com.jstun.core.util.Utility;
-import com.jstun.core.util.UtilityException;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
 
 public abstract class MessageAttribute implements MessageAttributeInterface {
-	
-/*	0                   1                   2                   3
-	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|0 0 0 0 0 0 0 0|    Family     |           Port                |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	|                                                               |
-	|                 Address (32 bits or 128 bits)                 |
-	|                                                               |
-	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+/*	
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |         Type                  |            Length             |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                         Value (variable)                ....
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 */
 	
 	private static Logger logger = Logger.getLogger("com.jstun.core.util.MessageAttribute");

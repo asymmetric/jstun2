@@ -9,34 +9,53 @@
  * included in this distribution.
  */
 
-package com.jstun.core.attribute;
+package de.javawi.jstun.attribute;
 
-import com.jstun.core.util.Address;
-import com.jstun.core.util.Utility;
-import com.jstun.core.util.UtilityException;
+import de.javawi.jstun.util.Address;
+import de.javawi.jstun.util.IPv4Address;
+import de.javawi.jstun.util.IPv6Address;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
 public class MappedXORMapped extends MessageAttribute {
+	
+	/*	 0                   1                   2                   3
+		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|0 0 0 0 0 0 0 0|    Family     |           Port                |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|                                                               |
+		|                 Address (32 bits or 128 bits)                 |
+		|                                                               |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	 */
+	
+	/* Only used for backwards compatibility */
+	
 	int port;
 	Address address;
 	
-	/*  
-	 *  0                   1                   2                   3
-	 *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 * |x x x x x x x x|    Family     |           Port                |
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 * |                             Address                           |
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 */
-	public MappedXORMapped() {
+	public MappedXORMapped(int family) {
 		super();
-		try {
-			port = 0;
-			address = new Address("0.0.0.0");
-		} catch (UtilityException ue) {
-			ue.getMessage();
-			ue.printStackTrace();
+		switch (family) {
+		case 4:
+			try {
+				port = 0;
+				address = new IPv4Address("0.0.0.0");
+			} catch (UtilityException ue) {
+				ue.getMessage();
+				ue.printStackTrace();
+			}
+		case 6:
+			try {
+				port = 0;
+				address = new IPv6Address("de:ad:be:af");
+			} catch (UtilityException ue) {
+				ue.getMessage();
+				ue.printStackTrace();
+			}
 		}
+
 	}
 	
 	public MappedXORMapped(MessageAttribute.MessageAttributeType type) {
@@ -94,7 +113,7 @@ public class MappedXORMapped extends MessageAttribute {
 			int secondOctet = Utility.oneByteToInteger(data[5]);
 			int thirdOctet = Utility.oneByteToInteger(data[6]);
 			int fourthOctet = Utility.oneByteToInteger(data[7]);
-			ma.setAddress(new Address(firstOctet, secondOctet, thirdOctet, fourthOctet));
+			ma.setAddress(new IPv4Address(firstOctet, secondOctet, thirdOctet, fourthOctet));
 			return ma;
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");

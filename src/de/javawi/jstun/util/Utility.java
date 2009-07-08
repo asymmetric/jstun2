@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package com.jstun.core.util;
+package de.javawi.jstun.util;
 
 public class Utility {
 

@@ -9,18 +9,19 @@
  * included in this distribution.
  */
 
-package com.jstun.core.util;
+package de.javawi.jstun.util;
 
 import java.util.*;
 import java.net.*;
 
-public class Address {
+public class IPv4Address implements Address {
+
 	int firstOctet;
 	int secondOctet;
 	int thirdOctet;
 	int fourthOctet;
 	
-	public Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet) throws UtilityException {
+	public IPv4Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet) throws UtilityException {
 		if ((firstOctet < 0) || (firstOctet > 255) || (secondOctet < 0) || (secondOctet > 255) || (thirdOctet < 0) || (thirdOctet > 255) || (fourthOctet < 0) || (fourthOctet > 255)) {
 			throw new UtilityException("Address is malformed.");
 		}
@@ -30,7 +31,7 @@ public class Address {
 		this.fourthOctet = fourthOctet;
 	}
 	
-	public Address(String address) throws UtilityException {
+	public IPv4Address(String address) throws UtilityException {
 		StringTokenizer st = new StringTokenizer(address, ".");
 		if (st.countTokens() != 4) {
 			throw new UtilityException("4 octets in address string are required.");
@@ -50,7 +51,7 @@ public class Address {
 		}
 	}
 	
-	public Address(byte[] address) throws UtilityException {
+	public IPv4Address(byte[] address) throws UtilityException {
 		if (address.length < 4) {
 			throw new UtilityException("4 bytes are required.");
 		}
@@ -60,10 +61,16 @@ public class Address {
 		fourthOctet = Utility.oneByteToInteger(address[3]);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.jstun.core.util.Address#toString()
+	 */
 	public String toString() {
 		return firstOctet + "." + secondOctet + "." + thirdOctet + "." + fourthOctet;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.jstun.core.util.Address#getBytes()
+	 */
 	public byte[] getBytes() throws UtilityException {
 		byte[] result = new byte[4];
 		result[0] = Utility.integerToOneByte(firstOctet);
@@ -73,6 +80,9 @@ public class Address {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.jstun.core.util.Address#getInetAddress()
+	 */
 	public InetAddress getInetAddress() throws UtilityException, UnknownHostException {
 		byte[] address = new byte[4];
 		address[0] = Utility.integerToOneByte(firstOctet);
@@ -82,6 +92,9 @@ public class Address {
 		return InetAddress.getByAddress(address);
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.jstun.core.util.Address#equals(java.lang.Object)
+	 */
 	public boolean equals(Object obj) {
 		if (obj == null) return false;
 		try {
@@ -95,6 +108,9 @@ public class Address {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.jstun.core.util.Address#hashCode()
+	 */
 	public int hashCode() {
 		return (firstOctet << 24) + (secondOctet << 16) + (thirdOctet << 8) + fourthOctet; 
 	}

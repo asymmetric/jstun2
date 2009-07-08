@@ -36,9 +36,9 @@ import org.zoolu.sip.call.Call;
 import org.zoolu.sip.provider.SipProvider;
 import org.zoolu.sip.provider.SipStack;
 
-import com.jstun.core.attribute.MessageAttributeParsingException;
-import com.jstun.core.header.MessageHeaderException;
-import com.jstun.core.util.UtilityException;
+import de.javawi.jstun.attribute.MessageAttributeParsingException;
+import de.javawi.jstun.header.MessageHeaderException;
+import de.javawi.jstun.util.UtilityException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
