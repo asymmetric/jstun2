@@ -11,12 +11,13 @@
 
 package de.jstun.core.attribute;
 
-impimport de.jstun.core.util.Address;
+import de.jstun.core.util.Address;
 import de.jstun.core.util.IPv4Address;
 import de.jstun.core.util.IPv6Address;
 import de.jstun.core.util.Utility;
 import de.jstun.core.util.UtilityException;
-blic class MappedXORMapped extends MessageAttribute {
+
+public class MappedXORMapped extends MessageAttribute {
 
 	/*	 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -37,7 +38,7 @@ blic class MappedXORMapped extends MessageAttribute {
 	public MappedXORMapped(int family) {
 		super();
 		switch (family) {
-		case 4:
+		case Address.IPv4:
 			try {
 				port = 0;
 				address = new IPv4Address("0.0.0.0");
@@ -45,7 +46,7 @@ blic class MappedXORMapped extends MessageAttribute {
 				ue.getMessage();
 				ue.printStackTrace();
 			}
-		case 6:
+		case Address.IPv6:
 			try {
 				port = 0;
 				address = new IPv6Address("de:ad:be:af");
@@ -57,7 +58,7 @@ blic class MappedXORMapped extends MessageAttribute {
 
 	}
 
-	public MappedXORMapped(MessageAttribute.MessageAttributeType type) {
+	public MappedXORMapped(MessageAttribute.MessageAttributeType type, int family) {
 		super(type);
 	}
 

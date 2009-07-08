@@ -12,8 +12,9 @@
 package de.jstun.core.attribute;
 
 public interface MessageAttributeInterface {
-	public enum MessageAttributeType { MappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
-	final static int MAPPEDADDRESS = 0x0001; // TODO revise all
+	public enum MessageAttributeType { MappedAddress, XORMappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
+	final static int MAPPEDADDRESS = 0x0001; // TODO revise all constants
+	final static int XORMAPPEDADDRESS = 0x0002;
 	final static int USERNAME = 0x0006;
 	final static int PASSWORD = 0x0007;
 	final static int MESSAGEINTEGRITY = 0x0008;

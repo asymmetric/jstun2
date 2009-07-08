@@ -48,6 +48,7 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 	
 	public static int typeToInteger(MessageAttributeType type) {
 		if (type == MessageAttributeType.MappedAddress) return MAPPEDADDRESS;
+		if (type == MessageAttributeType.XORMappedAddress) return XORMAPPEDADDRESS;
 		if (type == MessageAttributeType.Username) return USERNAME;
 		if (type == MessageAttributeType.Password) return PASSWORD;
 		if (type == MessageAttributeType.MessageIntegrity) return MESSAGEINTEGRITY;

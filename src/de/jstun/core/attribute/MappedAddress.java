@@ -1,9 +1,9 @@
 /*
- * This file is part of JSTUN. 
- * 
+ * This file is part of JSTUN.
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -16,12 +16,13 @@ import java.util.logging.Logger;
 
 public class MappedAddress extends MappedXORMapped {
 	private static Logger logger = Logger.getLogger("com.jstun.core.attribute.MappedAddress");
-	public MappedAddress() {
-		super(MessageAttribute.MessageAttributeType.MappedAddress);
+
+	public MappedAddress(int family) {
+		super(MessageAttribute.MessageAttributeType.MappedAddress, family);
 	}
-	
-	public static MessageAttribute parse(byte[] data) throws MessageAttributeParsingException {
-		MappedAddress ma = new MappedAddress();
+
+	public static MessageAttribute parse(byte[] data, int family) throws MessageAttributeParsingException {
+		MappedAddress ma = new MappedAddress(family);
 		MappedXORMapped.parse(ma, data);
 		logger.finer("Message Attribute: Mapped Address parsed: " + ma.toString() + ".");
 		return ma;
