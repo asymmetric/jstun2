@@ -1,5 +1,5 @@
 *.*~
 .classpath
 .project
-gen/**/*
-bin/**/*
+gen/
+bin/
