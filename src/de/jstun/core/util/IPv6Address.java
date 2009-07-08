@@ -1,4 +1,4 @@
-package de.javawi.jstun.util;
+package de.jstun.core.util;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

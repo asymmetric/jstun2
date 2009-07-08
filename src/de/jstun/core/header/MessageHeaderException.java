@@ -9,12 +9,12 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.header;
+package de.jstun.core.header;
 
-public class MessageHeaderParsingException extends MessageHeaderException {
-	private static final long serialVersionUID = 3544393617029607478L;
+public class MessageHeaderException extends Exception {
+	private static final long serialVersionUID = 3689066248944103737L;
 
-	public MessageHeaderParsingException(String mesg) {
+	public MessageHeaderException(String mesg) {
 		super(mesg);
 	}
 }

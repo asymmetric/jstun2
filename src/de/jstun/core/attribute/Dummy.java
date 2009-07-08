@@ -9,10 +9,10 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.jstun.core.attribute;
 
-import de.javawi.jstun.util.Utility;
-import de.javawi.jstun.util.UtilityException;
+import de.jstun.core.util.Utility;
+import de.jstun.core.util.UtilityException;
 
 public class Dummy extends MessageAttribute {
 	int lengthValue;

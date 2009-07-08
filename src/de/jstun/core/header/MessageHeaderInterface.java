@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.header;
+package de.jstun.core.header;
 
 public interface MessageHeaderInterface {
 	public enum MessageHeaderClass { Request, SuccessResponse, FailureResponse, Indication }

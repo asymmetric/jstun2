@@ -9,16 +9,16 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.header;
+package de.jstun.core.header;
 
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import de.javawi.jstun.attribute.MessageAttribute;
-import de.javawi.jstun.attribute.MessageAttributeParsingException;
-import de.javawi.jstun.util.Utility;
-import de.javawi.jstun.util.UtilityException;
+import de.jstun.core.attribute.MessageAttribute;
+import de.jstun.core.attribute.MessageAttributeParsingException;
+import de.jstun.core.util.Utility;
+import de.jstun.core.util.UtilityException;
 
 public class MessageHeader implements MessageHeaderInterface {
 	/*

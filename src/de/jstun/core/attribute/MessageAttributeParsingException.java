@@ -9,13 +9,12 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.util;
+package de.jstun.core.attribute;
 
-public class UtilityException extends Exception {
-	private static final long serialVersionUID = 3545800974716581680L;
+public class MessageAttributeParsingException extends MessageAttributeException { 
+	private static final long serialVersionUID = 3258409534426263605L;
 
-	UtilityException(String mesg) {
+	public MessageAttributeParsingException(String mesg) {
 		super(mesg);
 	}
-
 }

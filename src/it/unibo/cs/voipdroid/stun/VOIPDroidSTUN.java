@@ -30,15 +30,15 @@ import android.util.Log;
 
 
 //import com.jstun.core.attribute.ChangedAddress;
-import de.javawi.jstun.attribute.ErrorCode;
-import de.javawi.jstun.attribute.MappedAddress;
-import de.javawi.jstun.attribute.MessageAttribute;
-import de.javawi.jstun.attribute.MessageAttributeParsingException;
-import de.javawi.jstun.header.MessageHeader;
-import de.javawi.jstun.header.MessageHeaderException;
-import de.javawi.jstun.header.MessageHeaderParsingException;
-import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
-import de.javawi.jstun.util.UtilityException;
+import de.jstun.core.attribute.ErrorCode;
+import de.jstun.core.attribute.MappedAddress;
+import de.jstun.core.attribute.MessageAttribute;
+import de.jstun.core.attribute.MessageAttributeParsingException;
+import de.jstun.core.header.MessageHeader;
+import de.jstun.core.header.MessageHeaderException;
+import de.jstun.core.header.MessageHeaderParsingException;
+import de.jstun.core.header.MessageHeaderInterface.MessageHeaderType;
+import de.jstun.core.util.UtilityException;
 
 public class VOIPDroidSTUN {
 	

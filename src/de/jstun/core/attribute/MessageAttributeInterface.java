@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.jstun.core.attribute;
 
 public interface MessageAttributeInterface {
 	public enum MessageAttributeType { MappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };

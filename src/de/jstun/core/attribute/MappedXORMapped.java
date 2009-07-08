@@ -9,15 +9,14 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.jstun.core.attribute;
 
-import de.javawi.jstun.util.Address;
-import de.javawi.jstun.util.IPv4Address;
-import de.javawi.jstun.util.IPv6Address;
-import de.javawi.jstun.util.Utility;
-import de.javawi.jstun.util.UtilityException;
-
-public class MappedXORMapped extends MessageAttribute {
+impimport de.jstun.core.util.Address;
+import de.jstun.core.util.IPv4Address;
+import de.jstun.core.util.IPv6Address;
+import de.jstun.core.util.Utility;
+import de.jstun.core.util.UtilityException;
+blic class MappedXORMapped extends MessageAttribute {
 
 	/*	 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

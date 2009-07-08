@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.jstun.core.attribute;
 
 import java.util.logging.Logger;
 
