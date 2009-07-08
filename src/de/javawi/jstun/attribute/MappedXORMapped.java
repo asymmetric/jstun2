@@ -1,9 +1,9 @@
 /*
- * This file is part of JSTUN. 
- * 
+ * This file is part of JSTUN.
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -18,7 +18,7 @@ import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
 public class MappedXORMapped extends MessageAttribute {
-	
+
 	/*	 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -29,12 +29,12 @@ public class MappedXORMapped extends MessageAttribute {
 		|                                                               |
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
-	
+
 	/* Only used for backwards compatibility */
-	
+
 	int port;
 	Address address;
-	
+
 	public MappedXORMapped(int family) {
 		super();
 		switch (family) {
@@ -57,30 +57,30 @@ public class MappedXORMapped extends MessageAttribute {
 		}
 
 	}
-	
+
 	public MappedXORMapped(MessageAttribute.MessageAttributeType type) {
 		super(type);
 	}
-	
+
 	public int getPort() {
 		return port;
 	}
-	
+
 	public Address getAddress() {
 		return address;
 	}
-	
+
 	public void setPort(int port) throws MessageAttributeException {
 		if ((port > 65536) || (port < 0)) {
 			throw new MessageAttributeException("Port value " + port + " out of range.");
 		}
 		this.port = port;
 	}
-	
+
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	
+
 	public byte[] getBytes() throws UtilityException {
 		byte[] result = new byte[12];
 		// message attribute header
@@ -88,17 +88,17 @@ public class MappedXORMapped extends MessageAttribute {
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
 		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
-		
+
 		// mappedaddress header
 		// family
-		result[5] = Utility.integerToOneByte(0x01); 
+		result[5] = Utility.integerToOneByte(0x01);
 		// port
 		System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
 		// address
 		System.arraycopy(address.getBytes(), 0, result, 8, 4);
 		return result;
 	}
-	
+
 	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) {
@@ -121,7 +121,7 @@ public class MappedXORMapped extends MessageAttribute {
 			throw new MessageAttributeParsingException("Port parsing error");
 		}
 	}
-	
+
 	public String toString() {
 		return "Address " +address.toString() + ", Port " + port;
 	}
