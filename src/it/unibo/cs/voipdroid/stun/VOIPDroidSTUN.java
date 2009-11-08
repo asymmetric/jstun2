@@ -27,8 +27,6 @@ import java.net.InetAddress;
 
 import android.util.Log;
 
-
-
 //import com.jstun.core.attribute.ChangedAddress;
 import de.jstun.core.attribute.ErrorCode;
 import de.jstun.core.attribute.MappedAddress;
@@ -37,7 +35,8 @@ import de.jstun.core.attribute.MessageAttributeParsingException;
 import de.jstun.core.header.MessageHeader;
 import de.jstun.core.header.MessageHeaderException;
 import de.jstun.core.header.MessageHeaderParsingException;
-import de.jstun.core.header.MessageHeaderInterface.MessageHeaderType;
+import de.jstun.core.header.MessageHeaderInterface.MessageHeaderClass;
+import de.jstun.core.header.messagetype.*;
 import de.jstun.core.util.UtilityException;
 
 public class VOIPDroidSTUN {
@@ -58,12 +57,13 @@ public class VOIPDroidSTUN {
 	public VOIPDroidSTUN() throws UtilityException, IOException, 
 			MessageHeaderParsingException, MessageAttributeParsingException {
 		
-		server = VOIPDroid.getStunServer();
+		server = VOIPDroid.getStunServer(); // TODO non posso passarglielo come param? decoupling
 		udp_s = new DatagramSocket();
 		udp_s.connect(InetAddress.getByName(server), port);
 		udp_s.setSoTimeout(2000);
 		
-		sendMh = new MessageHeader(MessageHeaderType.BindingRequest);
+		Binding bReq = new Binding(MessageHeaderClass.REQUEST);
+		sendMh = new MessageHeader(bReq);
 		sendMh.generateTransactionID();
 		data = sendMh.getBytes();
 		Log.v("STUN", "CREATE OK");

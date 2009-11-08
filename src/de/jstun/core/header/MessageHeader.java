@@ -19,6 +19,7 @@ import de.jstun.core.attribute.MessageAttribute;
 import de.jstun.core.attribute.MessageAttributeParsingException;
 import de.jstun.core.util.Utility;
 import de.jstun.core.util.UtilityException;
+import de.jstun.core.header.messagetype.*;
 
 public class MessageHeader implements MessageHeaderInterface {
 	/*
@@ -37,47 +38,59 @@ public class MessageHeader implements MessageHeaderInterface {
 
 
 	private static Logger logger = Logger.getLogger("com.jstun.core.header.MessageHeader");
-	MessageHeaderType type;
+//	
+	MessageType type;
 	private byte[] id = new byte[TRANSACTIONIDSIZE];
 	private byte[] mcookie = new byte[MAGICCOOKIESIZE];
+	private int firstWordMask = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
 
 
-	TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
+	TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> 
+		ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
 
 	public MessageHeader() {
-		super();
+		super(); // TODO remove?
 	}
 
-	public MessageHeader(MessageHeaderType type) {
+	public MessageHeader(MessageType type) {
 		super();
-		setType(type);
+		this.type = type;
+	}
+	
+	@SuppressWarnings("unused") // TODO remove
+	private void forgeFirstWord(MessageType type) throws UtilityException { // TODO complete & rename
+		int shiftedType = type.getEncoding() << 14; // leave the first two bits as 0b00
+		// TODO calculate length
+		int half1 = firstWordMask;
+		int half2 = 0x0000;
+		int half3 = half1 & getLength();
 	}
 
-    public void setType(MessageHeaderType type) {
+    public void setType(MessageType type) {
 		this.type = type;
     }
 
-    public MessageHeaderType getType() {
+    public MessageType getType() {
     	return type;
     }
 
-	public static int typeToInteger(MessageHeaderType type) {
-		switch (type) {
-		case BindingRequest:
-			return BINDINGREQUEST;
-		case BindingResponse:
-			return BINDINGRESPONSE;
-		case BindingFailureResponse:
-			return BINDINGFAILURERESPONSE;
-		default:
-			return -1;
-		}
-		// TODO refactor these too
-//		if (type == MessageHeaderType.SharedSecretRequest) return SHAREDSECRETREQUEST;
-//		if (type == MessageHeaderType.SharedSecretResponse) return SHAREDSECRETRESPONSE;
-//		if (type == MessageHeaderType.SharedSecretErrorResponse) return SHAREDSECRETERRORRESPONSE;
-	}
+//	public static int typeToInteger(MessageType type) {
+//		switch (type) {
+//		case BindingRequest:
+//			return BINDINGREQUEST;
+//		case BindingResponse:
+//			return BINDINGRESPONSE;
+//		case BindingErrorResponse:
+//			return BINDINGFAILURERESPONSE;
+//		default:
+//			return -1;
+//		}
+//		// TODO refactor these too
+////		if (type == MessageType.SharedSecretRequest) return SHAREDSECRETREQUEST;
+////		if (type == MessageType.SharedSecretResponse) return SHAREDSECRETRESPONSE;
+////		if (type == MessageType.SharedSecretErrorResponse) return SHAREDSECRETERRORRESPONSE;
+//	}
 
 	public void setTransactionID(byte[] id) {
 		System.arraycopy(id, 0, this.id, 0, 16);
@@ -137,7 +150,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		return ma.get(type);
 	}
 
-	public byte[] getBytes() throws UtilityException {
+	public byte[] getBytes() throws UtilityException { // TODO da rifare?
 		int length = 20;
 		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
@@ -146,7 +159,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 		// add attribute size + attributes.getSize();
 		byte[] result = new byte[length];
-		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
+		System.arraycopy(Utility.integerToTwoBytes(type.getEncoding()), 0, result, 0, 2);
 		System.arraycopy(Utility.integerToTwoBytes(length-20), 0, result, 2, 2);
 		System.arraycopy(id, 0, result, 4, 16);
 
@@ -193,12 +206,12 @@ public class MessageHeader implements MessageHeaderInterface {
 			System.arraycopy(data, 0, typeArray, 0, 2);
 			int type = Utility.twoBytesToInteger(typeArray);
 			switch (type) {
-				case BINDINGREQUEST: mh.setType(MessageHeaderType.BindingRequest); logger.finer("Binding Request received."); break;
-				case BINDINGRESPONSE: mh.setType(MessageHeaderType.BindingResponse); logger.finer("Binding Response received."); break;
-				case BINDINGFAILURERESPONSE: mh.setType(MessageHeaderType.BindingFailureResponse); logger.finer("Binding Failure Response received."); break;
-	//			case SHAREDSECRETREQUEST: mh.setType(MessageHeaderType.SharedSecretRequest); logger.finer("Shared Secret Request received."); break;
-	//			case SHAREDSECRETRESPONSE: mh.setType(MessageHeaderType.SharedSecretResponse); logger.finer("Shared Secret Response received."); break;
-	//			case SHAREDSECRETERRORRESPONSE: mh.setType(MessageHeaderType.SharedSecretErrorResponse); logger.finer("Shared Secret Error Response received.");break;
+				case BINDINGREQUEST: mh.setType(MessageType.BindingRequest); logger.finer("Binding Request received."); break;
+				case BINDINGRESPONSE: mh.setType(MessageType.BindingResponse); logger.finer("Binding Response received."); break;
+				case BINDINGFAILURERESPONSE: mh.setType(MessageType.BindingErrorResponse); logger.finer("Binding Failure Response received."); break;
+	//			case SHAREDSECRETREQUEST: mh.setType(MessageType.SharedSecretRequest); logger.finer("Shared Secret Request received."); break;
+	//			case SHAREDSECRETRESPONSE: mh.setType(MessageType.SharedSecretResponse); logger.finer("Shared Secret Response received."); break;
+	//			case SHAREDSECRETERRORRESPONSE: mh.setType(MessageType.SharedSecretErrorResponse); logger.finer("Shared Secret Error Response received.");break;
 				default: throw new MessageHeaderParsingException("Message type " + type + "is not supported");
 			}
 			return mh;
