@@ -43,6 +43,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	private byte[] id = new byte[TRANSACTIONIDSIZE];
 	private byte[] mcookie = new byte[MAGICCOOKIESIZE];
 	private int firstWordMask = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
+	
 
 
 	TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> 
@@ -50,17 +51,25 @@ public class MessageHeader implements MessageHeaderInterface {
 
 
 	public MessageHeader() {
-		super(); // TODO remove?
+		super();
 	}
 
 	public MessageHeader(MessageType type) {
-		super();
 		this.type = type;
 	}
 	
-	@SuppressWarnings("unused") // TODO remove
+	// can be chained TODO ok?
+	public MessageHeader initializeHeader() throws UtilityException { // TODO change name?
+		generateMagicCookie();
+		generateTransactionID();
+		
+		return this;
+	}
+	
+	@SuppressWarnings("unused") // TODO remove whole method
 	private void forgeFirstWord(MessageType type) throws UtilityException { // TODO complete & rename
-		int shiftedType = type.getEncoding() << 14; // leave the first two bits as 0b00
+//		int shiftedType = type.getEncoding() << 14; // leave the first two bits as 0b00
+		int atype = type.getShiftedEncoding();
 		// TODO calculate length
 		int half1 = firstWordMask;
 		int half2 = 0x0000;
@@ -103,8 +112,8 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	public byte[] getMagicCookie() { // TODO why so complicated?	
 //		return mcookie;
-		byte[] mcCopy = new byte[mcookie.length];
-		System.arraycopy(mcookie, 0, mcCopy, 0, mcookie.length);
+		byte[] mcCopy = new byte[MAGICCOOKIESIZE];
+		System.arraycopy(mcookie, 0, mcCopy, 0, MAGICCOOKIESIZE);
 		return mcCopy;
 	}
 
@@ -115,17 +124,11 @@ public class MessageHeader implements MessageHeaderInterface {
 		for (int i = 0; i < TRANSACTIONIDSIZE; i++, start += 2) {
 			System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, start, length);
 		}
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 0, 2);
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 2, 2);
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 4, 2);
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 6, 2);
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 8, 2);
-//		System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() )), 0, id, 10, 2);
 	}
 
 	public byte[] getTransactionID() {
-		byte[] idCopy = new byte[id.length];
-		System.arraycopy(id, 0, idCopy, 0, id.length);
+		byte[] idCopy = new byte[TRANSACTIONIDSIZE];
+		System.arraycopy(id, 0, idCopy, 0, TRANSACTIONIDSIZE);
 		return idCopy;
 	}
 
@@ -150,8 +153,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		return ma.get(type);
 	}
 
-	public byte[] getBytes() throws UtilityException { // TODO da rifare?
-		int length = 20;
+	public byte[] getBytes() throws UtilityException { // TODO should be ok
+		int length = MessageHeaderInterface.HEADERSIZE;
 		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
 			MessageAttribute attri = ma.get(it.next());
@@ -159,17 +162,21 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 		// add attribute size + attributes.getSize();
 		byte[] result = new byte[length];
-		System.arraycopy(Utility.integerToTwoBytes(type.getEncoding()), 0, result, 0, 2);
+		// copy first 32 bits of header in result, 2 bytes at a time
+		System.arraycopy(Utility.integerToTwoBytes(type.getShiftedEncoding()), 0, result, 0, 2);
 		System.arraycopy(Utility.integerToTwoBytes(length-20), 0, result, 2, 2);
-		System.arraycopy(id, 0, result, 4, 16);
+		// TODO network order?
+		System.arraycopy(mcookie, 0, result, 4, 4);
+		System.arraycopy(id, 0, result, 8, MessageHeaderInterface.TRANSACTIONIDSIZE);
 
 		// arraycopy of attributes
-		int offset = 20;
+		int offset = MessageHeaderInterface.HEADERSIZE;
 		it = ma.keySet().iterator();
-		while (it.hasNext()) {
+		while (it.hasNext()) { // TODO do it before?
 			MessageAttribute attri = ma.get(it.next());
-			System.arraycopy(attri.getBytes(), 0, result, offset, attri.getLength());
-			offset += attri.getLength();
+			int attributeLength = attri.getLength();
+			System.arraycopy(attri.getBytes(), 0, result, offset, attributeLength);
+			offset += attributeLength;
 		}
 		return result;
 	}
@@ -205,7 +212,7 @@ public class MessageHeader implements MessageHeaderInterface {
 			byte[] typeArray = new byte[2];
 			System.arraycopy(data, 0, typeArray, 0, 2);
 			int type = Utility.twoBytesToInteger(typeArray);
-			switch (type) {
+			switch (type) { // TODO how do i detect the type?
 				case BINDINGREQUEST: mh.setType(MessageType.BindingRequest); logger.finer("Binding Request received."); break;
 				case BINDINGRESPONSE: mh.setType(MessageType.BindingResponse); logger.finer("Binding Response received."); break;
 				case BINDINGFAILURERESPONSE: mh.setType(MessageType.BindingErrorResponse); logger.finer("Binding Failure Response received."); break;
@@ -219,4 +226,6 @@ public class MessageHeader implements MessageHeaderInterface {
 			throw new MessageHeaderParsingException("Parsing error");
 		}
 	}
+	
+	private 
 }

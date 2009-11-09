@@ -63,8 +63,7 @@ public class VOIPDroidSTUN {
 		udp_s.setSoTimeout(2000);
 		
 		Binding bReq = new Binding(MessageHeaderClass.REQUEST);
-		sendMh = new MessageHeader(bReq);
-		sendMh.generateTransactionID();
+		sendMh = new MessageHeader(bReq).initializeHeader();
 		data = sendMh.getBytes();
 		Log.v("STUN", "CREATE OK");
 	}

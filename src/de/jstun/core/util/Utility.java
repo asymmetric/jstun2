@@ -14,19 +14,20 @@ package de.jstun.core.util;
 public class Utility {
 
 	public static final byte integerToOneByte(int value) throws UtilityException {
-		if ((value > Math.pow(2,15)) || (value < 0)) {
+		if ((value > Math.pow(2,15)) || (value < 0)) { // TODO shouldn't it be 31 ?
 			throw new UtilityException("Integer value " + value + " is larger than 2^15");
 		}
 		return (byte)(value & 0xFF);
 	}
 	
+	// converts to Big-Endian
 	public static final byte[] integerToTwoBytes(int value) throws UtilityException {
 		byte[] result = new byte[2];
 		if ((value > Math.pow(2,31)) || (value < 0)) {
 			throw new UtilityException("Integer value " + value + " is larger than 2^31");
 		}
         result[0] = (byte)((value >>> 8) & 0xFF);
-        result[1] = (byte)(value & 0xFF);
+        result[1] = (byte) value;
 		return result; 
 	}
 	
@@ -56,7 +57,7 @@ public class Utility {
         return ((temp0 << 8) + temp1);
 	}
 	
-	public static final long fourBytesToLong(byte[] value) throws UtilityException {
+	public static final long fourBytesToLong(byte[] value) throws UtilityException { // TODO should be int?
 		if (value.length < 4) {
 			throw new UtilityException("Byte array too short!");
 		}
