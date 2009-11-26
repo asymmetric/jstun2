@@ -15,8 +15,11 @@ public abstract class MessageType {
 		return encoding;
 	}
 	
+	/* 
+	 * Gets the encoding, leaving the first two bits as 0b00
+	 */
 	public int getShiftedEncoding() { 
-		return encoding << MessageHeaderInterface.MESSAGETYPESHIFT; // leave first 2 bits as 0 
+		return encoding << MessageHeaderInterface.MESSAGETYPESHIFT;  
 	}
 	
 	public static MessageHeaderClass getClass(int encoding) {

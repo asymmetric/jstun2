@@ -25,6 +25,7 @@ public interface MessageHeaderInterface {
 		public int getEncoding() { return e; }
 	}
 	
+	final static int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
 	final static int HEADERSIZE = 20; // size in bytes
 
 	final static int MAGICCOOKIE = 0x2112A442; // TODO network order?

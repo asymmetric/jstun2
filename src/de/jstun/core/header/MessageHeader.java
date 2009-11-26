@@ -40,9 +40,8 @@ public class MessageHeader implements MessageHeaderInterface {
 	private static Logger logger = Logger.getLogger("com.jstun.core.header.MessageHeader");
 //	
 	MessageType type;
-	private byte[] id = new byte[TRANSACTIONIDSIZE];
-	private byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private int firstWordMask = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
+	private final byte[] id = new byte[TRANSACTIONIDSIZE];
+	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
 	
 
 
@@ -71,7 +70,7 @@ public class MessageHeader implements MessageHeaderInterface {
 //		int shiftedType = type.getEncoding() << 14; // leave the first two bits as 0b00
 		int atype = type.getShiftedEncoding();
 		// TODO calculate length
-		int half1 = firstWordMask;
+		int half1 = FIRSTWORDMASK;
 		int half2 = 0x0000;
 		int half3 = half1 & getLength();
 	}
@@ -212,7 +211,8 @@ public class MessageHeader implements MessageHeaderInterface {
 			byte[] typeArray = new byte[2];
 			System.arraycopy(data, 0, typeArray, 0, 2);
 			int type = Utility.twoBytesToInteger(typeArray);
-			switch (type) { // TODO how do i detect the type?
+
+			switch (type) {
 				case BINDINGREQUEST: mh.setType(MessageType.BindingRequest); logger.finer("Binding Request received."); break;
 				case BINDINGRESPONSE: mh.setType(MessageType.BindingResponse); logger.finer("Binding Response received."); break;
 				case BINDINGFAILURERESPONSE: mh.setType(MessageType.BindingErrorResponse); logger.finer("Binding Failure Response received."); break;
