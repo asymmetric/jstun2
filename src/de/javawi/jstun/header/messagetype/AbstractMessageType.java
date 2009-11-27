@@ -3,11 +3,14 @@ package de.javawi.jstun.header.messagetype;
 import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderClass;
 
-public abstract class MessageType {
+public abstract class AbstractMessageType {
+	
+	// TODO find a design pattern for this situation
 
 	protected int encoding;
 
-	public MessageType(MessageHeaderInterface.MessageHeaderClass klass, int methodEncoding) {
+	public AbstractMessageType(MessageHeaderInterface.MessageHeaderClass klass,
+			int methodEncoding) {
 		encoding = klass.getEncoding() | methodEncoding;
 	}
 
@@ -23,7 +26,10 @@ public abstract class MessageType {
 	}
 
 	public static MessageHeaderClass getClass(int encoding) {
-//		REQUEST (0x00), INDICATION (0x10), SUCCESSRESPONSE (0x100), ERRORRESPONSE (0x110);
+		// REQUEST (0x00), INDICATION (0x10), SUCCESSRESPONSE (0x100),
+		// ERRORRESPONSE (0x110);
 
 	}
+	
+	public static int getMessageType
 }

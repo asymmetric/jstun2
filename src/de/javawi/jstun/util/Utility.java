@@ -78,23 +78,28 @@ public class Utility {
 		return (((long) temp0 << 24) + (temp1 << 16) + (temp2 << 8) + temp3);
 	}
 
+	// TODO find another use or remove
 	/**
+	 * <p>
 	 * Returns 2 if the first 2 bits of typeArray are 0's, as it's a RFC5389
 	 * (stun2) header. <br>
 	 * Otherwise, it's a RFC3489 (stun1) header, and it returns 1.
-	 *
+	 * 
 	 * @param typeArray
 	 *            the byte array containing the first 2 bytes of the header
 	 * @return 1 or 2
 	 * @throws UtilityException
 	 *             When typeArray size is != 2
+	 * @deprecated It's not necessarily true that stun1 headers don't have 0b00
+	 *             as the first 2 bytes.
 	 */
+	@Deprecated
 	public static int stunVersion(byte[] typeArray) throws UtilityException {
 		if (typeArray.length != 2)
 			throw new UtilityException("Wrong type header length");
 		else {
 			// TODO unmagic
-			if ((typeArray[0] & 0xC0) == 1) // it's a stun1 hdr
+			if ((typeArray[0] & 0xC0) == 1) // it's not a stun2 header
 				return 1;
 			else
 				return 2;
