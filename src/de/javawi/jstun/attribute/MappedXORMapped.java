@@ -11,33 +11,54 @@
 
 package de.javawi.jstun.attribute;
 
-import de.javawi.jstun.util.*;
+import de.javawi.jstun.util.Address;
+import de.javawi.jstun.util.IPv4Address;
+import de.javawi.jstun.util.IPv6Address;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
-public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttribute {
+public class MappedXORMapped extends MessageAttribute {
+
+	/*	 0                   1                   2                   3
+		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|0 0 0 0 0 0 0 0|    Family     |           Port                |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		|                                                               |
+		|                 Address (32 bits or 128 bits)                 |
+		|                                                               |
+		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	 */
+
+	/* Only used for backwards compatibility */
+
 	int port;
 	Address address;
 
-	/*
-	 *  0                   1                   2                   3
-	 *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 * |x x x x x x x x|    Family     |           Port                |
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 * |                             Address                           |
-	 * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	 */
-	public MappedResponseChangedSourceAddressReflectedFrom() {
+	public MappedXORMapped(int family) {
 		super();
-		try {
-			port = 0;
-			address = new Address("0.0.0.0");
-		} catch (UtilityException ue) {
-			ue.getMessage();
-			ue.printStackTrace();
+		switch (family) {
+		case Address.IPv4:
+			try {
+				port = 0;
+				address = new IPv4Address("0.0.0.0");
+			} catch (UtilityException ue) {
+				ue.getMessage();
+				ue.printStackTrace();
+			}
+		case Address.IPv6:
+			try {
+				port = 0;
+				address = new IPv6Address("de:ad:be:af");
+			} catch (UtilityException ue) {
+				ue.getMessage();
+				ue.printStackTrace();
+			}
 		}
+
 	}
 
-	public MappedResponseChangedSourceAddressReflectedFrom(MessageAttribute.MessageAttributeType type) {
+	public MappedXORMapped(MessageAttribute.MessageAttributeType type, int family) {
 		super(type);
 	}
 
@@ -78,7 +99,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		return result;
 	}
 
-	protected static MappedResponseChangedSourceAddressReflectedFrom parse(MappedResponseChangedSourceAddressReflectedFrom ma, byte[] data) throws MessageAttributeParsingException {
+	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) {
 				throw new MessageAttributeParsingException("Data array too short");
@@ -92,7 +113,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 			int secondOctet = Utility.oneByteToInteger(data[5]);
 			int thirdOctet = Utility.oneByteToInteger(data[6]);
 			int fourthOctet = Utility.oneByteToInteger(data[7]);
-			ma.setAddress(new Address(firstOctet, secondOctet, thirdOctet, fourthOctet));
+			ma.setAddress(new IPv4Address(firstOctet, secondOctet, thirdOctet, fourthOctet));
 			return ma;
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");
