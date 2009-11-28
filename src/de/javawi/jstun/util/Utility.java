@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- *
+ * 
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- *
+ * 
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -76,6 +76,19 @@ public class Utility {
 		int temp2 = value[2] & 0xFF;
 		int temp3 = value[3] & 0xFF;
 		return (((long) temp0 << 24) + (temp1 << 16) + (temp2 << 8) + temp3);
+	}
+
+	public static final int fourBytesToInt(byte[] value)
+			throws UtilityException { // TODO should be int?
+		if (value.length < 4) {
+			throw new UtilityException("Byte array too short!");
+		}
+		int temp0 = value[0] & 0xFF;
+		int temp1 = value[1] & 0xFF;
+		int temp2 = value[2] & 0xFF;
+		int temp3 = value[3] & 0xFF;
+
+		return temp0 << 24 + temp1 << 16 + temp2 << 8 + temp3;
 	}
 
 	// TODO find another use or remove
