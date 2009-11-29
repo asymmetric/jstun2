@@ -143,8 +143,9 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
+	private final TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
-	TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
+	private MessageHeaderVersion stunVersion;
 
 	public MessageHeader() {
 		super();
@@ -340,19 +341,20 @@ public class MessageHeader implements MessageHeaderInterface {
 	public static MessageHeader parseHeader(byte[] data)
 			throws MessageHeaderParsingException, UtilityException {
 
-		byte[] mC = new byte[4];
-		System.arraycopy(data, 0, mC, 0, 4);
-		int magicCookie = Utility.fourBytesToInt(mC);
-		int stunV = stunVersion(mC); // TODO i was here
-		return parseType(data);
-		// TODO add a method which gets the magic cookie
+		MessageHeader mh = new MessageHeader();
+
+		mh.setType(parseType(data));
+		mh.setStunVersion(parseStunVersion(data));
+
+		return mh;
+		// TODO add a method which parses the magic cookie
 		// TODO maybe we should catch the utility exception, dal quinto byte in
 		// poi
 
 	}
-	private static MessageHeader parseType(byte[] data)
+
+	private static AbstractMessageType parseType(byte[] data)
 			throws UtilityException, MessageHeaderParsingException {
-		MessageHeader mh = new MessageHeader();
 
 		byte[] typeArray = new byte[2];
 		System.arraycopy(data, 0, typeArray, 0, 2);
@@ -360,57 +362,50 @@ public class MessageHeader implements MessageHeaderInterface {
 
 		switch (type) {
 			case BINDINGREQUEST :
-				mh.setType(new Binding(MessageHeaderClass.REQUEST));
 				logger.finer("Binding Request received.");
-				break;
+				return new Binding(MessageHeaderClass.REQUEST);
 			case BINDINGRESPONSE :
-				mh.setType(new Binding(MessageHeaderClass.SUCCESSRESPONSE));
 				logger.finer("Binding Response received.");
-				break;
+				return new Binding(MessageHeaderClass.SUCCESSRESPONSE);
 			case BINDINGERRORRESPONSE :
-				mh.setType(new Binding(MessageHeaderClass.ERRORRESPONSE));
 				logger.finer("Binding Error Response received.");
-				break;
+				return new Binding(MessageHeaderClass.ERRORRESPONSE);
 			case BINDINGINDICATION :
-				mh.setType(new Binding(MessageHeaderClass.INDICATION));
 				logger.finer("Binding Indication received.");
+				return new Binding(MessageHeaderClass.INDICATION);
 				// STUN1 ONLY
 			case SHAREDSECRETREQUEST :
-				mh.setType(new SharedSecret(MessageHeaderClass.REQUEST));
 				logger.finer("Shared Secret Request received.");
-				break;
+				return new SharedSecret(MessageHeaderClass.REQUEST);
 			case SHAREDSECRETRESPONSE :
-				mh
-						.setType(new SharedSecret(
-								MessageHeaderClass.SUCCESSRESPONSE));
 				logger.finer("Shared Secret Response received.");
-				break;
+				return new SharedSecret(MessageHeaderClass.SUCCESSRESPONSE);
 			case SHAREDSECRETERRORRESPONSE :
-				mh.setType(new SharedSecret(MessageHeaderClass.ERRORRESPONSE));
 				logger.finer("Shared Secret Error Response received.");
-				break;
-			/*
-			 * TODO this should change in future versions, supporting the
-			 * definition of new methods
-			 */
+				return new SharedSecret(MessageHeaderClass.ERRORRESPONSE);
+				/*
+				 * TODO this should change in future versions, supporting the
+				 * definition of new methods
+				 */
 			default :
 				throw new MessageHeaderParsingException("Message type " + type
 						+ "is not supported");
 		}
-
-		return mh;
 	}
 
-	private static int stunVersion(byte[] magicCookie) {
-		try {
-			int mCookie = Utility.fourBytesToInt(magicCookie);
-			if (mCookie == MAGICCOOKIE)
-				return 2;
-			else
-				return 1;
-		} catch (UtilityException e) {
-			e.printStackTrace(); // TODO handle exception
-			return 0;
-		}
+	private static MessageHeaderVersion parseStunVersion(byte[] data)
+			throws UtilityException {
+
+		byte[] mC = new byte[4];
+		System.arraycopy(data, 4, mC, 0, 4);
+		int mCookie = Utility.fourBytesToInt(mC);
+		if (mCookie == MAGICCOOKIE)
+			return MessageHeaderVersion.STUN2;
+		else
+			return MessageHeaderVersion.STUN1;
+	}
+
+	private void setStunVersion(MessageHeaderVersion v) {
+		stunVersion = v;
 	}
 }
