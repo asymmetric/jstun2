@@ -3,3 +3,4 @@
 .project
 gen/
 bin/
+src/logging.txt*
