@@ -12,11 +12,10 @@
 package de.javawi.jstun.attribute.legacy;
 
 import de.javawi.jstun.attribute.MessageAttribute;
-import de.javawi.jstun.attribute.MessageAttributeInterface;
-import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Address;
+import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
@@ -37,7 +36,7 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		super();
 		try {
 			port = 0;
-			address = new Address("0.0.0.0");
+			address = new IPv4Address("0.0.0.0");
 		} catch (UtilityException ue) {
 			ue.getMessage();
 			ue.printStackTrace();

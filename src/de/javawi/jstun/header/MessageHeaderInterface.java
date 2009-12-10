@@ -28,8 +28,7 @@ public interface MessageHeaderInterface {
 
 	public enum MessageHeaderClass {
 		// classes (to be OR'ed with methods)
-		REQUEST(0x00), INDICATION(0x10), SUCCESSRESPONSE(0x100), ERRORRESPONSE(
-				0x110);
+		REQUEST(0x00), INDICATION(0x10), SUCCESSRESPONSE(0x100), ERRORRESPONSE(0x110);
 
 		private final int e;
 

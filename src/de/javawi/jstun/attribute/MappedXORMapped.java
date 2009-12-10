@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- *
+ * 
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- *
+ * 
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -40,22 +40,22 @@ public class MappedXORMapped extends MessageAttribute {
 	public MappedXORMapped(int family) {
 		super();
 		switch (family) {
-		case Address.IPv4:
-			try {
-				port = 0;
-				address = new IPv4Address("0.0.0.0");
-			} catch (UtilityException ue) {
-				ue.getMessage();
-				ue.printStackTrace();
-			}
-		case Address.IPv6:
-			try {
-				port = 0;
-				address = new IPv6Address("de:ad:be:af");
-			} catch (UtilityException ue) {
-				ue.getMessage();
-				ue.printStackTrace();
-			}
+			case Address.IPv4 :
+				try {
+					port = 0;
+					address = new IPv4Address("0.0.0.0");
+				} catch (UtilityException ue) {
+					ue.getMessage();
+					ue.printStackTrace();
+				}
+			case Address.IPv6 :
+				try {
+					port = 0;
+					address = new IPv6Address("de:ad:be:af");
+				} catch (UtilityException ue) {
+					ue.getMessage();
+					ue.printStackTrace();
+				}
 		}
 
 	}
@@ -101,13 +101,16 @@ public class MappedXORMapped extends MessageAttribute {
 		return result;
 	}
 
-	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data) throws MessageAttributeParsingException {
+	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data)
+			throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) {
 				throw new MessageAttributeParsingException("Data array too short");
 			}
 			int family = Utility.oneByteToInteger(data[1]);
-			if (family != 0x01) throw new MessageAttributeParsingException("Family " + family + " is not supported");
+			if (family != 0x01)
+				throw new MessageAttributeParsingException("Family " + family
+						+ " is not supported");
 			byte[] portArray = new byte[2];
 			System.arraycopy(data, 2, portArray, 0, 2);
 			ma.setPort(Utility.twoBytesToInteger(portArray));
@@ -125,6 +128,6 @@ public class MappedXORMapped extends MessageAttribute {
 	}
 
 	public String toString() {
-		return "Address " +address.toString() + ", Port " + port;
+		return "Address " + address.toString() + ", Port " + port;
 	}
 }
