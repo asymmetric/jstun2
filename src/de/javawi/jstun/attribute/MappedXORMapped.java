@@ -11,6 +11,8 @@
 
 package de.javawi.jstun.attribute;
 
+import de.javawi.jstun.attribute.exception.MessageAttributeException;
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.IPv6Address;

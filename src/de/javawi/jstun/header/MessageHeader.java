@@ -16,7 +16,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.MessageAttribute;
-import de.javawi.jstun.attribute.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.header.messagetype.method.SharedSecret;

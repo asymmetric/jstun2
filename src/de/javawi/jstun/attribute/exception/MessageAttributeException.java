@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.javawi.jstun.attribute.exception;
 
 public class MessageAttributeException extends Exception {
 	private static final long serialVersionUID = 3258131345099404850L;

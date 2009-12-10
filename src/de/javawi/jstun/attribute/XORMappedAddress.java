@@ -2,6 +2,8 @@ package de.javawi.jstun.attribute;
 
 import java.util.logging.Logger;
 
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+
 public class XORMappedAddress extends MappedXORMapped {
 
 	private static Logger logger = Logger.getLogger("de.javawi.jstun.attribute.XORMappedAddress");

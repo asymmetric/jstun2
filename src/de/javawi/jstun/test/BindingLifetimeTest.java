@@ -17,6 +17,10 @@ import java.io.*;
 import java.net.*;
 
 import de.javawi.jstun.attribute.*;
+import de.javawi.jstun.attribute.exception.MessageAttributeException;
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.legacy.ChangeRequest;
+import de.javawi.jstun.attribute.legacy.ResponseAddress;
 import de.javawi.jstun.header.*;
 import de.javawi.jstun.util.UtilityException;
 

@@ -1,5 +1,6 @@
-package de.javawi.jstun.attribute;
+package de.javawi.jstun.attribute.exception;
 
+import de.javawi.jstun.attribute.MessageAttributeInterface;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 
 public class UnknownMessageAttributeException extends MessageAttributeParsingException {

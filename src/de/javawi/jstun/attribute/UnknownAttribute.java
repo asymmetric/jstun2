@@ -12,6 +12,7 @@
 package de.javawi.jstun.attribute;
 
 
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 import java.util.Iterator;

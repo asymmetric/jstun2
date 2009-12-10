@@ -13,6 +13,9 @@ package de.javawi.jstun.attribute;
 
 import java.util.logging.Logger;
 
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
+import de.javawi.jstun.attribute.legacy.Password;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 

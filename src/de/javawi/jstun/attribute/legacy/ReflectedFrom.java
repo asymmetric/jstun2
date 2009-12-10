@@ -9,9 +9,13 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.javawi.jstun.attribute.legacy;
 
 import java.util.logging.Logger;
+
+import de.javawi.jstun.attribute.MessageAttributeInterface;
+import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 
 public class ReflectedFrom extends MappedResponseChangedSourceAddressReflectedFrom {
 	private static Logger logger = Logger.getLogger("de.javawi.stun.attribute.ReflectedFrom");

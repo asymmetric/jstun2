@@ -1,17 +1,24 @@
 /*
  * This file is part of JSTUN.
- *
+ * 
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- *
+ * 
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
  */
 
-package de.javawi.jstun.attribute;
+package de.javawi.jstun.attribute.legacy;
 
-import de.javawi.jstun.util.*;
+import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.MessageAttributeInterface;
+import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.MessageAttributeException;
+import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.util.Address;
+import de.javawi.jstun.util.Utility;
+import de.javawi.jstun.util.UtilityException;
 
 public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttribute {
 	int port;
@@ -37,7 +44,8 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		}
 	}
 
-	public MappedResponseChangedSourceAddressReflectedFrom(MessageAttribute.MessageAttributeType type) {
+	public MappedResponseChangedSourceAddressReflectedFrom(
+			MessageAttribute.MessageAttributeType type) {
 		super(type);
 	}
 
@@ -78,13 +86,17 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 		return result;
 	}
 
-	protected static MappedResponseChangedSourceAddressReflectedFrom parse(MappedResponseChangedSourceAddressReflectedFrom ma, byte[] data) throws MessageAttributeParsingException {
+	protected static MappedResponseChangedSourceAddressReflectedFrom parse(
+			MappedResponseChangedSourceAddressReflectedFrom ma, byte[] data)
+			throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) {
 				throw new MessageAttributeParsingException("Data array too short");
 			}
 			int family = Utility.oneByteToInteger(data[1]);
-			if (family != 0x01) throw new MessageAttributeParsingException("Family " + family + " is not supported");
+			if (family != 0x01)
+				throw new MessageAttributeParsingException("Family " + family
+						+ " is not supported");
 			byte[] portArray = new byte[2];
 			System.arraycopy(data, 2, portArray, 0, 2);
 			ma.setPort(Utility.twoBytesToInteger(portArray));
@@ -102,6 +114,6 @@ public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttr
 	}
 
 	public String toString() {
-		return "Address " +address.toString() + ", Port " + port;
+		return "Address " + address.toString() + ", Port " + port;
 	}
 }
