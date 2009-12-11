@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Address;
-import de.javawi.jstun.util.Address.family;
+import de.javawi.jstun.util.Address.Family;
 
 public class MappedAddress extends MappedXORMapped {
 
@@ -38,14 +38,14 @@ public class MappedAddress extends MappedXORMapped {
 	 * @param data
 	 *            The raw bytes
 	 * @param f
-	 *            Address family, specified as an {@link Address.family}
+	 *            Address family, specified as an {@link Address.Family}
 	 * @return
 	 * @throws MessageAttributeParsingException
 	 */
 
-	public static AbstractMessageAttribute parse(byte[] data, family f)
+	public static AbstractMessageAttribute parse(byte[] data, Family f)
 			throws MessageAttributeParsingException {
-		MappedAddress ma = new MappedAddress(family);
+		MappedAddress ma = new MappedAddress(Family);
 		MappedXORMapped.parse(ma, data); // TODO: ??
 		logger.finer("Message Attribute: Mapped Address parsed: " + ma.toString() + ".");
 		return ma;

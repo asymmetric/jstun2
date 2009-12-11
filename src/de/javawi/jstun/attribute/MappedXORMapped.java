@@ -18,6 +18,7 @@ import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.IPv6Address;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
+import de.javawi.jstun.util.Address.Family;
 
 public class MappedXORMapped extends AbstractMessageAttribute {
 
@@ -32,11 +33,11 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
 
-	/* Only used for backwards compatibility */
-
 	int port;
 	Address address;
+	Address.Family family;
 
+	// TODO useless?
 	public MappedXORMapped(int family) {
 		super();
 		switch (family) {
@@ -60,7 +61,38 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	}
 
-	// TODO do some real work here?
+	// TODO add flag to indicate if Mapped or XORMapped -- no need for 2 new classes
+	public MappedXORMapped(byte[] data, Address address, int port)
+			throws MessageAttributeParsingException {
+		this.address = address;
+		this.port = port;
+		try {
+			if (data.length < 8) { // TODO why 8?
+				throw new MessageAttributeParsingException("Data array too short");
+			}
+			int familyInt = Utility.oneByteToInteger(data[1]);
+
+			if (familyInt == Family.IPv4.getEncoding()) {
+				byte[] addressArray = new byte[4];
+				System.arraycopy(data, 4, addressArray, 0, 4);
+				address = new IPv4Address(addressArray);
+				family = Family.IPv4;
+			} else if (familyInt == Family.IPv6.getEncoding()) {
+				; // TODO implement
+			} else
+				throw new MessageAttributeParsingException("Family " + familyInt
+						+ " is not supported");
+			byte[] portArray = new byte[2];
+			System.arraycopy(data, 2, portArray, 0, 2);
+			this.port = Utility.twoBytesToInteger(portArray);
+		} catch (UtilityException ue) {
+			throw new MessageAttributeParsingException("Parsing error");
+		} catch (MessageAttributeException mae) {
+			throw new MessageAttributeParsingException("Port parsing error");
+		}
+	}
+
+	// TODO do some real work here? or remove?
 	public MappedXORMapped(MessageAttributeType type, int family) {
 		super(type);
 	}
@@ -105,10 +137,11 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data)
 			throws MessageAttributeParsingException {
 		try {
-			if (data.length < 8) {
+			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
 			}
 			int family = Utility.oneByteToInteger(data[1]);
+
 			if (family != 0x01)
 				throw new MessageAttributeParsingException("Family " + family
 						+ " is not supported");

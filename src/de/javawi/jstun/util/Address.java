@@ -22,12 +22,19 @@ public interface Address {
 	 * @author Lorenzo Manacorda (asymmetric)
 	 * 
 	 */
-	public static enum family {
-		IPv4, IPv6;
-	}
+	public static enum Family {
+		IPv4(0x01), IPv6(0x02);
 
-	static final int IPv4 = 4;
-	static final int IPv6 = 6;
+		int encoding;
+
+		Family(int e) {
+			encoding = e;
+		}
+
+		public int getEncoding() {
+			return encoding;
+		}
+	}
 
 	public byte[] getBytes() throws UtilityException;
 
