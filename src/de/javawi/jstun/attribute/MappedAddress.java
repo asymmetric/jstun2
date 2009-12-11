@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- * 
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -24,7 +24,7 @@ public class MappedAddress extends MappedXORMapped {
 	public MappedAddress() {
 		super();
 	}
-	
+
 	public MappedAddress(int family) {
 		super(MessageAttributeType.MappedAddress, family);
 	}
@@ -37,7 +37,7 @@ public class MappedAddress extends MappedXORMapped {
 
 	/**
 	 * Create a new MessageAttribute
-	 * 
+	 *
 	 * @param data
 	 *            The raw bytes
 	 * @param f
@@ -46,7 +46,7 @@ public class MappedAddress extends MappedXORMapped {
 	 * @throws MessageAttributeParsingException
 	 */
 
-	public static AbstractMessageAttribute parse(byte[] data, Family f)
+	public static AbstractMessageAttribute parse(byte[] data, family f)
 			throws MessageAttributeParsingException {
 		MappedAddress ma = new MappedAddress(Family);
 		MappedXORMapped.parse(ma, data); // TODO: ??
