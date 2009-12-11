@@ -20,19 +20,29 @@ import de.javawi.jstun.util.Address.family;
 public class MappedAddress extends MappedXORMapped {
 
 	private static Logger logger = Logger.getLogger("de.javawi.stun.attribute.MappedAddress");
+
 	public MappedAddress(int family) {
-		super(MessageAttribute.MessageAttributeType.MappedAddress, family);
+		super(MessageAttributeType.MappedAddress, family);
+
+	}
+
+	public MappedAddress(byte[] data, int family) throws MessageAttributeParsingException {
+		super(MessageAttributeType.MappedAddress, family);
+		super.parse(this, data);
+		logger.finer("Message Attribute: Mapped Address parsed: " + toString() + ".");
 	}
 
 	/**
 	 * Create a new MessageAttribute
 	 * 
 	 * @param data
+	 *            The raw bytes
 	 * @param f
 	 *            Address family, specified as an {@link Address.family}
 	 * @return
 	 * @throws MessageAttributeParsingException
 	 */
+
 	public static AbstractMessageAttribute parse(byte[] data, family f)
 			throws MessageAttributeParsingException {
 		MappedAddress ma = new MappedAddress(family);

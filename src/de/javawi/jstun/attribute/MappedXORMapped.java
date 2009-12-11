@@ -60,7 +60,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	}
 
-	public MappedXORMapped(MessageAttribute.MessageAttributeType type, int family) {
+	// TODO do some real work here?
+	public MappedXORMapped(MessageAttributeType type, int family) {
 		super(type);
 	}
 
