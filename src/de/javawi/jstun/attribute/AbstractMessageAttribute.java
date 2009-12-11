@@ -19,7 +19,7 @@ import de.javawi.jstun.attribute.legacy.Password;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public abstract class MessageAttribute implements MessageAttributeInterface {
+public abstract class AbstractMessageAttribute implements MessageAttributeInterface {
 	private static Logger logger = Logger.getLogger("de.javawi.stun.util.MessageAttribute");
 
 	/*
@@ -34,14 +34,19 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 
 	MessageAttributeType type;
 
-	public MessageAttribute() {
+	public AbstractMessageAttribute() {
 	}
 
-	public MessageAttribute(MessageAttributeType type) {
+	public AbstractMessageAttribute(MessageAttributeType type) {
 		setType(type);
 	}
 
-	public void setType(MessageAttributeType type) {
+	/**
+	 * Sets the {@link MessageAttributeType}
+	 * 
+	 * @param type
+	 */
+	private void setType(MessageAttributeType type) {
 		this.type = type;
 	}
 
@@ -53,31 +58,27 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 		return type.getEncoding();
 	}
 
-	public static MessageAttributeType intToType(long type) {
-		if (type == MAPPEDADDRESS)
-			return MessageAttributeType.MappedAddress;
-		/* stun1
-		if (type == RESPONSEADDRESS) return MessageAttributeType.ResponseAddress;
-		if (type == CHANGEREQUEST) return MessageAttributeType.ChangeRequest;
-		if (type == SOURCEADDRESS) return MessageAttributeType.SourceAddress;
-		if (type == CHANGEDADDRESS) return MessageAttributeType.ChangedAddress;
-		end stun 1 */
-		if (type == USERNAME)
-			return MessageAttributeType.Username;
-		if (type == PASSWORD)
-			return MessageAttributeType.Password;
-		if (type == MESSAGEINTEGRITY)
-			return MessageAttributeType.MessageIntegrity;
-		if (type == ERRORCODE)
-			return MessageAttributeType.ErrorCode;
-		if (type == UNKNOWNATTRIBUTE)
-			return MessageAttributeType.UnknownAttribute;
-		/* stun 1
-		if (type == REFLECTEDFROM) return MessageAttributeType.ReflectedFrom;
-		* end stun 1 */
-		if (type == DUMMY)
-			return MessageAttributeType.Dummy;
-		return null;
+	public static MessageAttributeType longToType(long type) { // TODO why long?
+		MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
+				.values();
+
+		for (MessageAttributeInterface.MessageAttributeType ma : values) {
+			if (type == ma.getEncoding())
+				return ma;
+		}
+		return null; // TODO should throw exception??
+	}
+
+	// TODO decide which one to keep
+	public static MessageAttributeType intToType(int type) {
+		MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
+				.values();
+
+		for (MessageAttributeInterface.MessageAttributeType mat : values) {
+			if (type == mat.getEncoding())
+				return mat;
+		}
+		return null; // TODO should throw exception??
 	}
 
 	abstract public byte[] getBytes() throws UtilityException;
@@ -89,40 +90,37 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 		return length;
 	}
 
-	public static MessageAttribute parseCommonHeader(byte[] data)
+	public static AbstractMessageAttribute parseCommonHeader(byte[] data)
 			throws MessageAttributeParsingException {
 		try {
+
 			byte[] typeArray = new byte[2];
 			System.arraycopy(data, 0, typeArray, 0, 2);
 			int type = Utility.twoBytesToInteger(typeArray);
+
 			byte[] lengthArray = new byte[2];
 			System.arraycopy(data, 2, lengthArray, 0, 2);
 			int lengthValue = Utility.twoBytesToInteger(lengthArray);
+
 			byte[] valueArray = new byte[lengthValue];
 			System.arraycopy(data, 4, valueArray, 0, lengthValue);
-			MessageAttribute ma;
+
+			AbstractMessageAttribute ma;
+			// MessageAttributeType mat = intToType(type);
+
+			MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
+					.values();
+
+			for (MessageAttributeInterface.MessageAttributeType mat : values) {
+				if (type == mat.getEncoding()) {
+					String klassName = mat.toString();
+					Class klass = Class.forName(klassName);
+
+				}
+				// ma =
+			}
+
 			switch (type) {
-				/* stun 1
-				case MAPPEDADDRESS: ma = MappedAddress.parse(valueArray); break;
-				case RESPONSEADDRESS: ma = ResponseAddress.parse(valueArray); break;
-				case CHANGEREQUEST: ma = ChangeRequest.parse(valueArray); break;
-				case SOURCEADDRESS: ma = SourceAddress.parse(valueArray); break;
-				case CHANGEDADDRESS: ma = ChangedAddress.parse(valueArray); break;
-				case USERNAME: ma = Username.parse(valueArray); break;
-				case PASSWORD: ma = Password.parse(valueArray); break;
-				case MESSAGEINTEGRITY: ma = MessageIntegrity.parse(valueArray); break;
-				case ERRORCODE: ma = ErrorCode.parse(valueArray); break;
-				case UNKNOWNATTRIBUTE: ma = UnknownAttribute.parse(valueArray); break;
-				case REFLECTEDFROM: ma = ReflectedFrom.parse(valueArray); break;
-				default:
-					if (type <= 0x7fff) {
-						throw new UnknownMessageAttributeException("Unkown mandatory message attribute", intToType(type));
-					} else {
-						logger.finer("MessageAttribute with type " + type + " unkown.");
-						ma = Dummy.parse(valueArray);
-						break;
-					}
-				end stun 1 */
 				case MAPPEDADDRESS :
 					ma = MappedAddress.parse(valueArray);
 					break;
@@ -143,7 +141,7 @@ public abstract class MessageAttribute implements MessageAttributeInterface {
 					break;
 				default :
 					if (type <= 0x7fff) {
-						throw new UnknownMessageAttributeException("Unkown mandatory message attribute", intToType(type));
+						throw new UnknownMessageAttributeException("Unkown mandatory message attribute", longToType(type));
 					} else {
 						logger.finer("MessageAttribute with type " + type + " unkown.");
 						ma = Dummy.parse(valueArray);

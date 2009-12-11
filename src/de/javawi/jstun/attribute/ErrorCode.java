@@ -16,7 +16,7 @@ import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class ErrorCode extends MessageAttribute {
+public class ErrorCode extends AbstractMessageAttribute {
    /*
     *  0                   1                   2                   3
     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

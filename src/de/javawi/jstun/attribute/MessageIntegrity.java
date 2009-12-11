@@ -11,7 +11,7 @@
 
 package de.javawi.jstun.attribute;
 
-public class MessageIntegrity extends MessageAttribute {
+public class MessageIntegrity extends AbstractMessageAttribute {
 	// incomplete message integrity implementation
 	public MessageIntegrity() {
 		super(MessageAttribute.MessageAttributeType.MessageIntegrity);

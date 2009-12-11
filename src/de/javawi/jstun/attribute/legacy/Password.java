@@ -11,13 +11,13 @@
 
 package de.javawi.jstun.attribute.legacy;
 
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeInterface;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class Password extends MessageAttribute {
+public class Password extends AbstractMessageAttribute {
 	String password;
 
 	public Password() {

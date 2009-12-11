@@ -12,7 +12,7 @@ public class XORMappedAddress extends MappedXORMapped {
 		super(MessageAttribute.MessageAttributeType.MappedAddress, family);
 	}
 
-	public static MessageAttribute parse(byte[] data, int family) throws MessageAttributeParsingException {
+	public static AbstractMessageAttribute parse(byte[] data, int family) throws MessageAttributeParsingException {
 		MappedAddress ma = new MappedAddress(family);
 		MappedXORMapped.parse(ma, data);
 		logger.finer("Message Attribute: Mapped Address parsed: " + ma.toString() + ".");

@@ -19,7 +19,7 @@ import de.javawi.jstun.util.IPv6Address;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class MappedXORMapped extends MessageAttribute {
+public class MappedXORMapped extends AbstractMessageAttribute {
 
 	/*	 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

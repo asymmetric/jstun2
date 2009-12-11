@@ -24,7 +24,7 @@ public interface MessageAttributeInterface {
 	*/
 
 	public enum MessageAttributeType {
-		MappedAddress(0x001), XORMappedAddress(0x0020), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009), UnknownAttribute(0x000A), Dummy(0x0000);
+		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009), UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000);
 
 		private final int e;
 
@@ -35,6 +35,7 @@ public interface MessageAttributeInterface {
 		public int getEncoding() {
 			return e;
 		}
+
 		/* TODO
 		 * final static int REALM = 0x0014;
 		 * final static int NONCE = 0x0015;

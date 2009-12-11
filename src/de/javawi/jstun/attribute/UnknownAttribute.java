@@ -18,7 +18,7 @@ import de.javawi.jstun.util.UtilityException;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class UnknownAttribute extends MessageAttribute {
+public class UnknownAttribute extends AbstractMessageAttribute {
 	/*
 	 *  0                   1                   2                   3
 	 *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -74,7 +74,7 @@ public class UnknownAttribute extends MessageAttribute {
 				byte[] temp = new byte[4];
 				System.arraycopy(data, i, temp, 0, 4);
 				long attri = Utility.fourBytesToLong(temp);
-				result.addAttribute(MessageAttribute.intToType(attri));
+				result.addAttribute(AbstractMessageAttribute.longToType(attri));
 			}
 			return result;
 		} catch (UtilityException ue) {

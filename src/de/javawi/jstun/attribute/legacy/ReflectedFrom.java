@@ -21,7 +21,7 @@ public class ReflectedFrom extends MappedResponseChangedSourceAddressReflectedFr
 	private static Logger logger = Logger.getLogger("de.javawi.stun.attribute.ReflectedFrom");
 	
 	public ReflectedFrom() {
-		super(MessageAttribute.MessageAttributeType.ReflectedFrom);
+		super(AbstractMessageAttribute.MessageAttributeType.ReflectedFrom);
 	}
 	
 	public static ReflectedFrom parse(byte[] data) throws MessageAttributeParsingException {

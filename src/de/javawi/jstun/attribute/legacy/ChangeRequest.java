@@ -11,13 +11,13 @@
 
 package de.javawi.jstun.attribute.legacy;
 
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeInterface;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.*;
 
-public class ChangeRequest extends MessageAttribute {
+public class ChangeRequest extends AbstractMessageAttribute {
    /* 
     *  0                   1                   2                   3
     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1

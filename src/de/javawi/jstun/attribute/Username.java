@@ -14,7 +14,7 @@ package de.javawi.jstun.attribute;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class Username extends MessageAttribute {
+public class Username extends AbstractMessageAttribute {
 	String username;
 
 	public Username() {

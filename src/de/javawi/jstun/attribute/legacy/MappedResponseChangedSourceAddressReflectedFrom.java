@@ -11,7 +11,7 @@
 
 package de.javawi.jstun.attribute.legacy;
 
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Address;
@@ -19,7 +19,7 @@ import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class MappedResponseChangedSourceAddressReflectedFrom extends MessageAttribute {
+public class MappedResponseChangedSourceAddressReflectedFrom extends AbstractMessageAttribute {
 	int port;
 	Address address;
 

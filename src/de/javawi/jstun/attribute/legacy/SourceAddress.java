@@ -13,7 +13,7 @@ package de.javawi.jstun.attribute.legacy;
 
 import java.util.logging.Logger;
 
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeInterface;
 import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
@@ -25,7 +25,7 @@ public class SourceAddress extends MappedResponseChangedSourceAddressReflectedFr
 		super(MessageAttribute.MessageAttributeType.SourceAddress);
 	}
 	
-	public static MessageAttribute parse(byte[] data) throws MessageAttributeParsingException {
+	public static AbstractMessageAttribute parse(byte[] data) throws MessageAttributeParsingException {
 		SourceAddress sa = new SourceAddress();
 		MappedResponseChangedSourceAddressReflectedFrom.parse(sa, data);
 		logger.finer("Message Attribute: Source Address parsed: " + sa.toString() + ".");

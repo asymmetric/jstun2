@@ -33,7 +33,7 @@ public class MappedAddress extends MappedXORMapped {
 	 * @return
 	 * @throws MessageAttributeParsingException
 	 */
-	public static MessageAttribute parse(byte[] data, family f)
+	public static AbstractMessageAttribute parse(byte[] data, family f)
 			throws MessageAttributeParsingException {
 		MappedAddress ma = new MappedAddress(family);
 		MappedXORMapped.parse(ma, data); // TODO: ??

@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- * 
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -15,7 +15,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
@@ -43,7 +43,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private final TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
+	private final TreeMap<MessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, AbstractMessageAttribute>();
 
 	private MessageHeaderVersion stunVersion;
 
@@ -111,7 +111,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	/**
 	 * Checks whether the stored Magic Cookie is equal to
 	 * {@link MessageHeaderInterface.MAGICCOOKIE}
-	 * 
+	 *
 	 * @return
 	 * @throws UtilityException
 	 */
@@ -156,22 +156,22 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 	/*
 	 * stun
-	 * 
+	 *
 	 * public void addMessageAttribute(MessageAttribute attri) {
 	 * ma.put(attri.getType(), attri); }
-	 * 
+	 *
 	 * public MessageAttribute
 	 * getMessageAttribute(MessageAttribute.MessageAttributeType type) { return
 	 * ma.get(type); }
-	 * 
+	 *
 	 * public byte[] getBytes() throws UtilityException { int length = 20;
 	 */
 
-	public void addMessageAttribute(MessageAttribute attri) {
+	public void addMessageAttribute(AbstractMessageAttribute attri) {
 		ma.put(attri.getType(), attri);
 	}
 
-	public MessageAttribute getMessageAttribute(
+	public AbstractMessageAttribute getMessageAttribute(
 			MessageAttribute.MessageAttributeType type) {
 		return ma.get(type);
 	}
@@ -181,7 +181,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet()
 		.iterator();
 		while (it.hasNext()) {
-			MessageAttribute attri = ma.get(it.next());
+			AbstractMessageAttribute attri = ma.get(it.next());
 			length += attri.getLength();
 		}
 		// add attribute size + attributes.getSize();
@@ -191,13 +191,13 @@ public class MessageHeader implements MessageHeaderInterface {
 		 * 0, result, 0, 2);
 		 * System.arraycopy(Utility.integerToTwoBytes(length-20), 0, result, 2,
 		 * 2); System.arraycopy(id, 0, result, 4, 16);
-		 * 
+		 *
 		 * // arraycopy of attributes int offset = 20; it =
 		 * ma.keySet().iterator(); while (it.hasNext()) { MessageAttribute attri
 		 * = ma.get(it.next()); System.arraycopy(attri.getBytes(), 0, result,
 		 * offset, attri.getLength()); offset += attri.getLength(); } return
 		 * result; }
-		 * 
+		 *
 		 * public int getLength() throws UtilityException { return
 		 * getBytes().length; }
 		 */
@@ -215,7 +215,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		int offset = MessageHeaderInterface.HEADERSIZE;
 		it = ma.keySet().iterator();
 		while (it.hasNext()) { // TODO do it before?
-			MessageAttribute attri = ma.get(it.next());
+			AbstractMessageAttribute attri = ma.get(it.next());
 			int attributeLength = attri.getLength();
 			System.arraycopy(attri.getBytes(), 0, result, offset,
 					attributeLength);
@@ -239,8 +239,8 @@ public class MessageHeader implements MessageHeaderInterface {
 			while (length > 0) {
 				cuttedData = new byte[length];
 				System.arraycopy(data, offset, cuttedData, 0, length);
-				MessageAttribute ma = MessageAttribute
-				.parseCommonHeader(cuttedData);
+				AbstractMessageAttribute ma = AbstractMessageAttribute
+						.parseCommonHeader(cuttedData);
 				addMessageAttribute(ma);
 				length -= ma.getLength();
 				offset += ma.getLength();
