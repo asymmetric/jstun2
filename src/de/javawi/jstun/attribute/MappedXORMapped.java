@@ -119,7 +119,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 		// mappedaddress header
 		// family
-		result[5] = Utility.integerToOneByte(0x01);
+		result[5] = Utility.integerToOneByte(family.getEncoding()); 
 		// port
 		System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
 		// address
