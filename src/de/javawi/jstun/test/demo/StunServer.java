@@ -42,6 +42,7 @@ import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.UtilityException;
+import de.javawi.jstun.util.Address.Family;
 
 /*
  * This class implements a STUN server as described in RFC 3489.
@@ -137,9 +138,12 @@ public class StunServer {
 							MessageHeader sendMH = new MessageHeader(new Binding(MessageHeaderClass.SUCCESSRESPONSE));
 							sendMH.setTransactionID(receiveMH.getTransactionID());
 
-							// Mapped address attribute
-							if (v ==)
-								MappedXORMapped ma = new MappedXORMapped();
+							MappedXORMapped ma;
+							// (XOR)Mapped address attribute
+							if (v == MessageHeaderVersion.STUN2)
+								ma = new MappedXORMapped();
+							else
+								ma = new MappedXORMapped(MessageAttributeType.MappedAddress, Family.IPv4);
 
 							// TODO make it work independently of the IP version
 							ma.setAddress(new IPv4Address((Inet4Address) receive.getAddress()));
