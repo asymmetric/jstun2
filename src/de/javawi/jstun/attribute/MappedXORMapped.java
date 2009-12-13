@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- * 
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -15,7 +15,6 @@ import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
-import de.javawi.jstun.util.IPv6Address;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 import de.javawi.jstun.util.Address.Family;
@@ -37,47 +36,25 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address address;
 	Address.Family family;
 
+
 	/**
 	 * Default constructor.<br>
 	 * Implicit parameters: <br> {@link MessageAttributeType} = {@link XORMappedAddress}<br>
-	 * {@link Address.Family} = {@link Address.Family.IPv4}
 	 */
 	public MappedXORMapped() {
-		this(MessageAttributeInterface.MessageAttributeType.XORMappedAddress,
-				Address.Family.IPv4);
+		super(MessageAttributeInterface.MessageAttributeType.XORMappedAddress);
 	}
 
 	/**
 	 * @param family
 	 *            The IP address {@link Address.Family}
 	 */
-	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type,
-			Address.Family family) {
+	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type) {
 		super(type);
-		switch (family) {
-			case IPv4 :
-				try {
-					port = 0;
-					address = new IPv4Address("0.0.0.0");
-				} catch (UtilityException ue) {
-					ue.getMessage();
-					ue.printStackTrace();
-				}
-			case IPv6 :
-				try {
-					port = 0;
-					address = new IPv6Address("de:ad:be:af");
-				} catch (UtilityException ue) {
-					ue.getMessage();
-					ue.printStackTrace();
-				}
-		}
-
 	}
 
 	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
-			Address address, int port)
-	throws MessageAttributeParsingException {
+			Address address, int port) throws MessageAttributeParsingException {
 		super(type);
 		this.address = address;
 		this.port = port;
