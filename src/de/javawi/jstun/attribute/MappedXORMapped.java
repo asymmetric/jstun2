@@ -37,9 +37,19 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address address;
 	Address.Family family;
 
+
+	// TODO remove??
+	public MappedXORMapped() {
+		this(Address.Family.IPv4);
+	}
+
 	// TODO useless?
+
+	/**
+	 * @param family
+	 *            The IP address {@link Address.Family}
+	 */
 	public MappedXORMapped(Address.Family family) {
-		super();
 		switch (family) {
 			case IPv4 :
 				try {
@@ -63,14 +73,14 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	// TODO add flag to indicate if Mapped or XORMapped -- no need for 2 new classes
 	public MappedXORMapped(byte[] data, Address address, int port)
-			throws MessageAttributeParsingException {
+	throws MessageAttributeParsingException {
 		this.address = address;
 		this.port = port;
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
 			}
-			
+
 			// Get the IP family directly from the packet
 			int familyInt = Utility.oneByteToInteger(data[1]);
 

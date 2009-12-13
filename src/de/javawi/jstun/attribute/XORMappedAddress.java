@@ -9,7 +9,7 @@ public class XORMappedAddress extends MappedXORMapped {
 	private static Logger logger = Logger.getLogger("de.javawi.jstun.attribute.XORMappedAddress");
 
 	public XORMappedAddress(int family) {
-		super(MessageAttribute.MessageAttributeType.MappedAddress, family);
+		super(MessageAttributeInterface.MessageAttributeType.MappedAddress, family);
 	}
 
 	public static AbstractMessageAttribute parse(byte[] data, int family) throws MessageAttributeParsingException {

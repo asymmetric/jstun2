@@ -21,9 +21,12 @@ public class MappedAddress extends MappedXORMapped {
 
 	private static Logger logger = Logger.getLogger("de.javawi.stun.attribute.MappedAddress");
 
+	public MappedAddress() {
+		super();
+	}
+	
 	public MappedAddress(int family) {
 		super(MessageAttributeType.MappedAddress, family);
-
 	}
 
 	public MappedAddress(byte[] data, int family) throws MessageAttributeParsingException {
