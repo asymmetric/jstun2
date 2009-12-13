@@ -38,10 +38,10 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address.Family family;
 
 	// TODO useless?
-	public MappedXORMapped(int family) {
+	public MappedXORMapped(Address.Family family) {
 		super();
 		switch (family) {
-			case Address.IPv4 :
+			case IPv4 :
 				try {
 					port = 0;
 					address = new IPv4Address("0.0.0.0");
@@ -49,7 +49,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 					ue.getMessage();
 					ue.printStackTrace();
 				}
-			case Address.IPv6 :
+			case IPv6 :
 				try {
 					port = 0;
 					address = new IPv6Address("de:ad:be:af");
@@ -70,6 +70,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
 			}
+			
+			// Get the IP family directly from the packet
 			int familyInt = Utility.oneByteToInteger(data[1]);
 
 			if (familyInt == Family.IPv4.getEncoding()) {
