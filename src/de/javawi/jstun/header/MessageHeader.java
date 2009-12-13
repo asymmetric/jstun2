@@ -17,6 +17,7 @@ import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.MessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeInterface;
+import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
@@ -44,9 +45,11 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private final TreeMap<MessageAttributeInterface.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
-
+	
 	private MessageHeaderVersion stunVersion; // TODO remove?
+	
+	private final TreeMap<MessageAttributeInterface.MessageAttributeType, MessageAttribute> ma = 
+		new TreeMap<MessageAttributeType, MessageAttribute>();
 
 	public MessageHeader() {
 		super();
@@ -172,15 +175,13 @@ public class MessageHeader implements MessageHeaderInterface {
 		ma.put(attri.getType(), attri);
 	}
 
-	public MessageAttribute getMessageAttribute(
-			MessageAttribute.MessageAttributeType type) {
+	public MessageAttribute getMessageAttribute(MessageAttributeType type) {
 		return ma.get(type);
 	}
 
 	public byte[] getBytes() throws UtilityException { // TODO should be ok
 		int length = MessageHeaderInterface.HEADERSIZE;
-		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet()
-		.iterator();
+		Iterator<MessageAttributeInterface.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
 			MessageAttribute attri = ma.get(it.next());
 			length += attri.getLength();

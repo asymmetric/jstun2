@@ -21,14 +21,14 @@ public interface MessageAttributeInterface {
 	final static int CHANGEDADDRESS = 0x0005;
 	*/
 
-	public enum MessageAttributeType { MappedAddress, XORMappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
-	final static int MAPPEDADDRESS = 0x0001; // TODO revise all constants
-	final static int XORMAPPEDADDRESS = 0x0002;
-	final static int USERNAME = 0x0006;
-	final static int PASSWORD = 0x0007;
-	final static int MESSAGEINTEGRITY = 0x0008;
-	final static int ERRORCODE = 0x0009;
-	final static int UNKNOWNATTRIBUTE = 0x000a;
+	enum MessageAttributeType { MappedAddress, XORMappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
+	int MAPPEDADDRESS = 0x0001; // TODO revise all constants
+	int XORMAPPEDADDRESS = 0x0002;
+	int USERNAME = 0x0006;
+	int PASSWORD = 0x0007;
+	int MESSAGEINTEGRITY = 0x0008;
+	int ERRORCODE = 0x0009;
+	int UNKNOWNATTRIBUTE = 0x000a;
 	/* stun
 	final static int REFLECTEDFROM = 0x000b;
 	*/
