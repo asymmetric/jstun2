@@ -8,7 +8,6 @@ public class Binding extends AbstractMessageType {
 	private final static int methodEncoding = 0x01;
 
 	public Binding(MessageHeaderInterface.MessageHeaderClass c) {
-
 		super(c, methodEncoding);
 	}
 
