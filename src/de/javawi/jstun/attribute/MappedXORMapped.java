@@ -35,6 +35,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	int port;
 	Address address;
 	Address.Family family;
+	MessageAttributeType type;
 
 
 	/**
@@ -42,15 +43,16 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	 * Implicit parameters: <br> {@link MessageAttributeType} = {@link XORMappedAddress}<br>
 	 */
 	public MappedXORMapped() {
-		super(MessageAttributeInterface.MessageAttributeType.XORMappedAddress);
+		super(MessageAttributeType.XORMappedAddress);
+		type = MessageAttributeType.XORMappedAddress;
 	}
 
-	/**
-	 * @param family
-	 *            The IP address {@link Address.Family}
-	 */
-	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type) {
+	// TODO we should check it's an appropriate type
+	public MappedXORMapped(MessageAttributeType type) {
+//		if (type != MessageAttributeType.MappedAddress && type != MessageAttributeType.XORMappedAddress)
+//			throw new MessageAttributeException("Wrong MessageAttributeType");
 		super(type);
+		this.type = type;
 	}
 	
 	public MappedXORMapped(byte[] data) throws MessageAttributeParsingException {
@@ -58,7 +60,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		parseData(data);
 	}
 
-	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
+	public MappedXORMapped(MessageAttributeType type, byte[] data,
 			Address address, int port) throws MessageAttributeParsingException {
 		super(type);
 		this.address = address;
@@ -115,6 +117,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		this.address = address;
 	}
 
+	// TODO it should differ, based on the IP protocol family
 	public byte[] getBytes() throws UtilityException {
 		byte[] result = new byte[12];
 		// message attribute header
@@ -122,14 +125,19 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
 		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
-
+		
 		// mappedaddress header
+		// padding
+		result[4] = 0x0;
 		// family
 		result[5] = Utility.integerToOneByte(family.getEncoding()); 
 		// port
 		System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
 		// address
-		System.arraycopy(address.getBytes(), 0, result, 8, 4);
+		if (type == MessageAttributeType.MappedAddress)
+			System.arraycopy(address.getBytes(), 0, result, 8, 4);
+		else
+			// TODO calculate XOR
 		return result;
 	}
 
