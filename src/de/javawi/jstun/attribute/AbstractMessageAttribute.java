@@ -50,7 +50,7 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 		this.type = type;
 	}
 
-	public MessageAttribute.MessageAttributeType getType() {
+	public MessageAttributeInterface.MessageAttributeType getType() {
 		return type;
 	}
 

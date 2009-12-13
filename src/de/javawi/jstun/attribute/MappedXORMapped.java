@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- * 
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -37,9 +37,18 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address address;
 	Address.Family family;
 
-	// TODO useless?
+
+	// TODO remove??
+	public MappedXORMapped() {
+		super(MessageAttributeInterface.MessageAttributeType.XORMappedAddress);
+	}
+
+
+	/**
+	 * @param family
+	 *            The IP address {@link Address.Family}
+	 */
 	public MappedXORMapped(Address.Family family) {
-		super();
 		switch (family) {
 			case IPv4 :
 				try {
@@ -63,14 +72,14 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	// TODO add flag to indicate if Mapped or XORMapped -- no need for 2 new classes
 	public MappedXORMapped(byte[] data, Address address, int port)
-			throws MessageAttributeParsingException {
+	throws MessageAttributeParsingException {
 		this.address = address;
 		this.port = port;
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
 			}
-			
+
 			// Get the IP family directly from the packet
 			int familyInt = Utility.oneByteToInteger(data[1]);
 
