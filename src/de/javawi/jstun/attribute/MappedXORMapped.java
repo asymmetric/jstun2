@@ -37,19 +37,23 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address address;
 	Address.Family family;
 
-
-	// TODO remove??
+	/**
+	 * Default constructor.<br>
+	 * Implicit parameters: <br> {@link MessageAttributeType} = {@link XORMappedAddress}<br>
+	 * {@link Address.Family} = {@link Address.Family.IPv4}
+	 */
 	public MappedXORMapped() {
-		this(Address.Family.IPv4);
+		this(MessageAttributeInterface.MessageAttributeType.XORMappedAddress,
+				Address.Family.IPv4);
 	}
-
-	// TODO useless?
 
 	/**
 	 * @param family
 	 *            The IP address {@link Address.Family}
 	 */
-	public MappedXORMapped(Address.Family family) {
+	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type,
+			Address.Family family) {
+		super(type);
 		switch (family) {
 			case IPv4 :
 				try {
@@ -71,9 +75,10 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	}
 
-	// TODO add flag to indicate if Mapped or XORMapped -- no need for 2 new classes
-	public MappedXORMapped(byte[] data, Address address, int port)
+	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
+			Address address, int port)
 	throws MessageAttributeParsingException {
+		super(type);
 		this.address = address;
 		this.port = port;
 		try {
@@ -102,11 +107,6 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		} catch (MessageAttributeException mae) {
 			throw new MessageAttributeParsingException("Port parsing error");
 		}
-	}
-
-	// TODO do some real work here? or remove?
-	public MappedXORMapped(MessageAttributeType type, int family) {
-		super(type);
 	}
 
 	public int getPort() {
@@ -147,7 +147,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	}
 
 	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data)
-			throws MessageAttributeParsingException {
+	throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
