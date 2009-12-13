@@ -42,7 +42,6 @@ import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.UtilityException;
-import de.javawi.jstun.util.Address.Family;
 
 /*
  * This class implements a STUN server as described in RFC 3489.
@@ -143,21 +142,21 @@ public class StunServer {
 							if (v == MessageHeaderVersion.STUN2)
 								ma = new MappedXORMapped();
 							else
-								ma = new MappedXORMapped(MessageAttributeType.MappedAddress, Family.IPv4);
+								ma = new MappedXORMapped(MessageAttributeType.MappedAddress);
 
 							// TODO make it work independently of the IP version
-							ma.setAddress(new IPv4Address((Inet4Address) receive.getAddress()));
+							ma.setAddress(new Address((Inet4Address) receive.getAddress()));
 							ma.setPort(receive.getPort());
 							sendMH.addMessageAttribute(ma);
 							// Changed address attribute
 							ChangedAddress ca = new ChangedAddress();
-							ca.setAddress(new Address(changedPortIP.getLocalAddress()
+							ca.setAddress(new IPv4Address(changedPortIP.getLocalAddress()
 									.getAddress()));
 							ca.setPort(changedPortIP.getLocalPort());
 							sendMH.addMessageAttribute(ca);
 						}
 						else {
-							/* TODO there are no other cases for know,
+							/* TODO there are no other cases for now,
 							 * as there is one single method defined in the RFC.
 							 * what should we do here?
 							 */
@@ -186,9 +185,7 @@ public class StunServer {
 									+ " send Binding Response to "
 									+ send.getAddress().getHostAddress() + ":"
 									+ send.getPort());
-						}
-
-						else if ((!cr.isChangePort()) && cr.isChangeIP()) {
+						} else if ((!cr.isChangePort()) && cr.isChangeIP()) {
 							logger.finer("Change ip received in Change Request attribute");
 							// Source address attribute
 							SourceAddress sa = new SourceAddress();
