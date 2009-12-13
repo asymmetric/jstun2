@@ -23,105 +23,6 @@ import de.javawi.jstun.header.messagetype.method.SharedSecret;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-/*
- * stun
- * public class MessageHeader implements MessageHeaderInterface {
- */
-
-/*
- * 0 1 2 3
- * 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * | STUN Message Type | Message Length |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * Transaction ID
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * |
- * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- */
-
-/*
- * private static Logger logger =
- * Logger.getLogger("de.javawi.stun.header.MessageHeader");
- * MessageHeaderType type;
- * byte[] id = new byte[16];
- * 
- * TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute> ma = new
- * TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
- * 
- * public MessageHeader() {
- * super();
- * }
- * 
- * public MessageHeader(MessageHeaderType type) {
- * super();
- * setType(type);
- * }
- * 
- * public void setType(MessageHeaderType type) {
- * this.type = type;
- * }
- * 
- * public MessageHeaderType getType() {
- * return type;
- * }
- * 
- * public static int typeToInteger(MessageHeaderType type) {
- * if (type == MessageHeaderType.BindingRequest) return BINDINGREQUEST;
- * if (type == MessageHeaderType.BindingResponse) return BINDINGRESPONSE;
- * if (type == MessageHeaderType.BindingErrorResponse) return
- * BINDINGERRORRESPONSE;
- * if (type == MessageHeaderType.SharedSecretRequest) return
- * SHAREDSECRETREQUEST;
- * if (type == MessageHeaderType.SharedSecretResponse) return
- * SHAREDSECRETRESPONSE;
- * if (type == MessageHeaderType.SharedSecretErrorResponse) return
- * SHAREDSECRETERRORRESPONSE;
- * return -1;
- * }
- * 
- * public void setTransactionID(byte[] id) {
- * System.arraycopy(id, 0, this.id, 0, 16);
- * }
- * 
- * public void generateTransactionID() throws UtilityException {
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 0, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 2, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 4, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 6, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 8, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 10, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 12, 2);
- * System.arraycopy(Utility.integerToTwoBytes((int)(Math.random() * 65536)), 0,
- * id, 14, 2);
- * }
- * 
- * public byte[] getTransactionID() {
- * byte[] idCopy = new byte[id.length];
- * System.arraycopy(id, 0, idCopy, 0, id.length);
- * return idCopy;
- * }
- * 
- * public boolean equalTransactionID(MessageHeader header) {
- * byte[] idHeader = header.getTransactionID();
- * if (idHeader.length != 16) return false;
- * if ((idHeader[0] == id[0]) && (idHeader[1] == id[1]) && (idHeader[2] ==
- * id[2]) && (idHeader[3] == id[3]) &&
- * (idHeader[4] == id[4]) && (idHeader[5] == id[5]) && (idHeader[6] == id[6]) &&
- * (idHeader[7] == id[7]) &&
- */
-
 public class MessageHeader implements MessageHeaderInterface {
 
 	/*    0                   1                   2                   3
@@ -135,10 +36,9 @@ public class MessageHeader implements MessageHeaderInterface {
 	   |                     Transaction ID (96 bits)                  |
 	   |                                                               |
 	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-	*/
+	 */
 
-	private static Logger logger = Logger
-			.getLogger("de.javawi.jstun.header.MessageHeader");
+	private static Logger logger = Logger.getLogger("de.javawi.jstun.header.MessageHeader");
 	//
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
@@ -207,10 +107,17 @@ public class MessageHeader implements MessageHeaderInterface {
 		System.arraycopy(mcookie, 0, mcCopy, 0, MAGICCOOKIESIZE);
 		return mcCopy;
 	}
-	
+
+	/**
+	 * Checks whether the stored Magic Cookie is equal to
+	 * {@link MessageHeaderInterface.MAGICCOOKIE}
+	 * 
+	 * @return
+	 * @throws UtilityException
+	 */
 	public boolean checkMagicCookie() throws UtilityException {
-		int mc = Utility.fourBytesToInt(getMagicCookie());
-		return mc == MAGICCOOKIE; // TODO check network order
+		return MAGICCOOKIE == Utility.fourBytesToInt(getMagicCookie());
+		// TODO check network order
 	}
 
 
@@ -272,7 +179,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	public byte[] getBytes() throws UtilityException { // TODO should be ok
 		int length = MessageHeaderInterface.HEADERSIZE;
 		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet()
-				.iterator();
+		.iterator();
 		while (it.hasNext()) {
 			MessageAttribute attri = ma.get(it.next());
 			length += attri.getLength();
@@ -321,8 +228,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		return getBytes().length;
 	}
 
-	public void parseAttributes(byte[] data)
-			throws MessageAttributeParsingException {
+	public void parseAttributes(byte[] data) throws MessageAttributeParsingException {
 		try {
 			byte[] lengthArray = new byte[2];
 			System.arraycopy(data, 2, lengthArray, 0, 2);
@@ -334,7 +240,7 @@ public class MessageHeader implements MessageHeaderInterface {
 				cuttedData = new byte[length];
 				System.arraycopy(data, offset, cuttedData, 0, length);
 				MessageAttribute ma = MessageAttribute
-						.parseCommonHeader(cuttedData);
+				.parseCommonHeader(cuttedData);
 				addMessageAttribute(ma);
 				length -= ma.getLength();
 				offset += ma.getLength();
@@ -344,8 +250,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 	}
 
-	public static MessageHeader parseHeader(byte[] data)
-			throws MessageHeaderParsingException, UtilityException {
+	public static MessageHeader parseHeader(byte[] data) throws MessageHeaderParsingException,
+			UtilityException {
 
 		MessageHeader mh = new MessageHeader();
 
@@ -359,8 +265,8 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	}
 
-	private static AbstractMessageType parseType(byte[] data)
-			throws UtilityException, MessageHeaderParsingException {
+	private static AbstractMessageType parseType(byte[] data) throws UtilityException,
+			MessageHeaderParsingException {
 
 		byte[] typeArray = new byte[2];
 		System.arraycopy(data, 0, typeArray, 0, 2);
@@ -399,8 +305,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 	}
 
-	private static MessageHeaderVersion parseStunVersion(byte[] data)
-			throws UtilityException {
+	private static MessageHeaderVersion parseStunVersion(byte[] data) throws UtilityException {
 
 		byte[] mC = new byte[4];
 		System.arraycopy(data, 4, mC, 0, 4);

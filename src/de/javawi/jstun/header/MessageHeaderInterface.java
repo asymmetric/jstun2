@@ -47,25 +47,27 @@ public interface MessageHeaderInterface {
 		STUN1, STUN2;
 	}
 
-	final static int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class
-	// OR method)
-	final static int HEADERSIZE = 20; // size in bytes
+	int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
+	int HEADERSIZE = 20; // size in bytes
 
-	final static int MAGICCOOKIE = 0x2112A442; // TODO network order?
-	final static int MAGICCOOKIESIZE = 4;
-	final static int TRANSACTIONIDSIZE = 12; // in bytes
+	/**
+	 * The Magic Cookie as per <a href="http://tools.ietf.org/html/rfc5389">RFC5389</a>
+	 */
+	int MAGICCOOKIE = 0x2112A442; // TODO network order?
+	int MAGICCOOKIESIZE = 4;
+	int TRANSACTIONIDSIZE = 12; // in bytes
 
-	final static int MESSAGETYPESHIFT = 14; // 14 bits of shift for a 32 bits
+	int MESSAGETYPESHIFT = 14; // 14 bits of shift for a 32 bits
 	// int
 
 	// pre-defined class-method associations
-	final static int BINDINGREQUEST = 0x0001;
-	final static int BINDINGINDICATION = 0x0011; // STUN2 only
-	final static int BINDINGRESPONSE = 0x0101;
-	final static int BINDINGERRORRESPONSE = 0x0111;
+	int BINDINGREQUEST = 0x0001;
+	int BINDINGINDICATION = 0x0011; // STUN2 only
+	int BINDINGRESPONSE = 0x0101;
+	int BINDINGERRORRESPONSE = 0x0111;
 
 	// STUN1 only
-	final static int SHAREDSECRETREQUEST = 0x0002;
-	final static int SHAREDSECRETRESPONSE = 0x0102;
-	final static int SHAREDSECRETERRORRESPONSE = 0x0112;
+	int SHAREDSECRETREQUEST = 0x0002;
+	int SHAREDSECRETRESPONSE = 0x0102;
+	int SHAREDSECRETERRORRESPONSE = 0x0112;
 }
