@@ -53,8 +53,9 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		super(type);
 	}
 	
-	public MappedXORMapped(byte[] data) {
-		
+	public MappedXORMapped(byte[] data) throws MessageAttributeParsingException {
+		this();
+		parseData(data);
 	}
 
 	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
@@ -62,6 +63,11 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		super(type);
 		this.address = address;
 		this.port = port;
+		
+		parseData(data);
+	}
+	
+	private void parseData(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
