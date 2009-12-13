@@ -12,19 +12,16 @@
 package de.javawi.jstun.attribute;
 
 public interface MessageAttributeInterface {
-	/* stun1
-	public enum MessageAttributeType { MappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
-	final static int MAPPEDADDRESS = 0x0001;
-	final static int RESPONSEADDRESS = 0x0002;
-	final static int CHANGEREQUEST = 0x0003;
-	final static int SOURCEADDRESS = 0x0004;
-	final static int CHANGEDADDRESS = 0x0005;
-	final static int REFLECTEDFROM = 0x000b;
-	final static int PASSWORD = 0x0007;
-	*/
+	
+	/* TODO since this class defines no method sigs,
+	 * i guess it could as well be removed, and the enum be placed
+	 * in the implementing abstract class
+	 */
 
-	public enum MessageAttributeType {
-		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009), UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000);
+	// TODO add comprehension-optional attributes
+	enum MessageAttributeType {
+		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009), 
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014), Nonce(0x0015);
 
 		private final int e;
 
@@ -35,12 +32,5 @@ public interface MessageAttributeInterface {
 		public int getEncoding() {
 			return e;
 		}
-
-		/* TODO
-		 * final static int REALM = 0x0014;
-		 * final static int NONCE = 0x0015;
-		 */
-
-		// TODO add comprehension-optional attributes
 	};
 }

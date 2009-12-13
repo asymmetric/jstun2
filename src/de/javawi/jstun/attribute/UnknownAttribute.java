@@ -12,11 +12,12 @@
 package de.javawi.jstun.attribute;
 
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
-import java.util.Iterator;
-import java.util.Vector;
 
 public class UnknownAttribute extends AbstractMessageAttribute {
 	/*
@@ -32,7 +33,19 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 	Vector<MessageAttributeType> unkown = new Vector<MessageAttributeType>();
 
 	public UnknownAttribute() {
-		super(MessageAttribute.MessageAttributeType.UnknownAttribute);
+		super(MessageAttributeType.UnknownAttribute);
+	}
+	
+	public UnknownAttribute(byte[] data) throws MessageAttributeParsingException, UtilityException {
+		super();
+		UnknownAttribute result = new UnknownAttribute();
+		if (data.length % 4 != 0) throw new MessageAttributeParsingException("Data array too short");
+		for (int i = 0; i < data.length; i += 4) {
+			byte[] temp = new byte[4];
+			System.arraycopy(data, i, temp, 0, 4);
+			long attri = Utility.fourBytesToLong(temp);
+			result.addAttribute(AbstractMessageAttribute.longToType(attri));
+		}
 	}
 
 	public void addAttribute(MessageAttributeType attribute) {
@@ -66,6 +79,12 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 		return result;
 	}
 
+	/**
+	 * @deprecated Use the constructor instead
+	 * @param data
+	 * @return
+	 * @throws MessageAttributeParsingException
+	 */
 	public static UnknownAttribute parse(byte[] data) throws MessageAttributeParsingException {
 		try {
 			UnknownAttribute result = new UnknownAttribute();

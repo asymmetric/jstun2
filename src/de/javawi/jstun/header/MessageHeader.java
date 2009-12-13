@@ -16,6 +16,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.AbstractMessageAttribute;
+import de.javawi.jstun.attribute.MessageAttributeInterface;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
@@ -43,7 +44,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private final TreeMap<MessageAttributeInterface.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
+	private final TreeMap<MessageAttributeInterface.MessageAttributeType, AbstractMessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
 	private MessageHeaderVersion stunVersion; // TODO remove?
 
@@ -239,8 +240,7 @@ public class MessageHeader implements MessageHeaderInterface {
 			while (length > 0) {
 				cuttedData = new byte[length];
 				System.arraycopy(data, offset, cuttedData, 0, length);
-				AbstractMessageAttribute ma = AbstractMessageAttribute
-						.parseCommonHeader(cuttedData);
+				AbstractMessageAttribute ma = AbstractMessageAttribute.parseCommonHeader(cuttedData);
 				addMessageAttribute(ma);
 				length -= ma.getLength();
 				offset += ma.getLength();

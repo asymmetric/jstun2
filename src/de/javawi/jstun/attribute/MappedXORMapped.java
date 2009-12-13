@@ -52,6 +52,10 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type) {
 		super(type);
 	}
+	
+	public MappedXORMapped(byte[] data) {
+		
+	}
 
 	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
 			Address address, int port) throws MessageAttributeParsingException {
@@ -69,8 +73,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			if (familyInt == Family.IPv4.getEncoding()) {
 				byte[] addressArray = new byte[4];
 				System.arraycopy(data, 4, addressArray, 0, 4);
-				address = new IPv4Address(addressArray);
-				family = Family.IPv4;
+				this.address = new IPv4Address(addressArray);
+				this.family = Family.IPv4;
 			} else if (familyInt == Family.IPv6.getEncoding()) {
 				; // TODO implement
 			} else

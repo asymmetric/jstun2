@@ -13,9 +13,9 @@ package de.javawi.jstun.attribute;
 
 import java.util.logging.Logger;
 
+import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
-import de.javawi.jstun.attribute.legacy.Password;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
@@ -33,6 +33,8 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 	*/
 
 	MessageAttributeType type;
+
+	// TODO add padding
 
 	public AbstractMessageAttribute() {
 	}
@@ -91,7 +93,7 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 	}
 
 	public static AbstractMessageAttribute parseCommonHeader(byte[] data)
-			throws MessageAttributeParsingException {
+			throws MessageAttributeException {
 		try {
 
 			byte[] typeArray = new byte[2];
@@ -108,46 +110,27 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 			AbstractMessageAttribute ma;
 			// MessageAttributeType mat = intToType(type);
 
-			MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
-					.values();
-
-			for (MessageAttributeInterface.MessageAttributeType mat : values) {
-				if (type == mat.getEncoding()) {
-					String klassName = mat.toString();
-					Class klass = Class.forName(klassName);
-
+			if (type == MessageAttributeType.MappedAddress.getEncoding())
+				ma = new MappedXORMapped(valueArray);
+			else if (type == MessageAttributeType.Username.getEncoding())
+				ma = new Username(valueArray);
+			else if (type == MessageAttributeType.MessageIntegrity.getEncoding())
+				ma = new MessageIntegrity(valueArray);
+			else if (type == MessageAttributeType.ErrorCode.getEncoding())
+				ma = new ErrorCode(valueArray);
+			else if (type == MessageAttributeType.UnknownAttribute.getEncoding())
+				ma = new UnknownAttribute(valueArray);
+			else {
+				if (type <= 0x7fff) {
+					throw new UnknownMessageAttributeException("Unknown mandatory message attribute", longToType(type));
+				} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
+					throw new UnknownMessageAttributeException("Unknown optional message attribute", longToType(type));
+				} else {
+					logger.finer("MessageAttribute with type " + type + " unkown.");
+					ma = Dummy.parse(valueArray);
 				}
-				// ma =
 			}
-
-			switch (type) {
-				case MAPPEDADDRESS :
-					ma = MappedAddress.parse(valueArray);
-					break;
-				case USERNAME :
-					ma = Username.parse(valueArray);
-					break;
-				case PASSWORD :
-					ma = Password.parse(valueArray);
-					break;
-				case MESSAGEINTEGRITY :
-					ma = MessageIntegrity.parse(valueArray);
-					break;
-				case ERRORCODE :
-					ma = ErrorCode.parse(valueArray);
-					break;
-				case UNKNOWNATTRIBUTE :
-					ma = UnknownAttribute.parse(valueArray);
-					break;
-				default :
-					if (type <= 0x7fff) {
-						throw new UnknownMessageAttributeException("Unkown mandatory message attribute", longToType(type));
-					} else {
-						logger.finer("MessageAttribute with type " + type + " unkown.");
-						ma = Dummy.parse(valueArray);
-						break;
-					}
-			}
+			
 			return ma;
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");

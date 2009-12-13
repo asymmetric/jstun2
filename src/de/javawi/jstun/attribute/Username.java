@@ -18,12 +18,17 @@ public class Username extends AbstractMessageAttribute {
 	String username;
 
 	public Username() {
-		super(MessageAttribute.MessageAttributeType.Username);
+		super(MessageAttributeType.Username);
 	}
 
 	public Username(String username) {
-		super(MessageAttribute.MessageAttributeType.Username);
-		setUsername(username);
+		this();
+		this.username = username;
+	}
+	
+	public Username(byte[] data) {
+		this();
+		this.username = new String(data);
 	}
 
 	public String getUsername() {
@@ -55,6 +60,11 @@ public class Username extends AbstractMessageAttribute {
 		return result;
 	}
 
+	/**
+	 * @deprecated Use the constructor instead
+	 * @param data
+	 * @return
+	 */
 	public static Username parse(byte[] data) {
 		Username result = new Username();
 		String username = new String(data);
