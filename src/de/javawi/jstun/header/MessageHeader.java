@@ -43,9 +43,9 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private final TreeMap<MessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, AbstractMessageAttribute>();
+	private final TreeMap<MessageAttributeInterface.MessageAttributeType, MessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
 
-	private MessageHeaderVersion stunVersion;
+	private MessageHeaderVersion stunVersion; // TODO remove?
 
 	public MessageHeader() {
 		super();
