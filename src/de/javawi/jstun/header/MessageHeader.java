@@ -207,6 +207,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		System.arraycopy(mcookie, 0, mcCopy, 0, MAGICCOOKIESIZE);
 		return mcCopy;
 	}
+	
+	public boolean checkMagicCookie() throws UtilityException {
+		int mc = Utility.fourBytesToInt(getMagicCookie());
+		return mc == MAGICCOOKIE; // TODO check network order
+	}
+
 
 	private void generateTransactionID() throws UtilityException {
 		int start = 0;
