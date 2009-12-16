@@ -13,6 +13,7 @@ package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.Utility;
@@ -54,7 +55,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		super(type);
 		this.type = type;
 	}
-	
+
 	public MappedXORMapped(byte[] data) throws MessageAttributeParsingException {
 		this();
 		parseData(data);
@@ -65,10 +66,10 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		super(type);
 		this.address = address;
 		this.port = port;
-		
+
 		parseData(data);
 	}
-	
+
 	private void parseData(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
@@ -125,19 +126,24 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
 		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
-		
+
 		// mappedaddress header
 		// padding
 		result[4] = 0x0;
 		// family
-		result[5] = Utility.integerToOneByte(family.getEncoding()); 
-		// port
-		System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
-		// address
-		if (type == MessageAttributeType.MappedAddress)
+		result[5] = Utility.integerToOneByte(family.getEncoding());
+
+		if (type == MessageAttributeType.MappedAddress) {
+			// port
+			System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
+			// address
 			System.arraycopy(address.getBytes(), 0, result, 8, 4);
-		else
-			// TODO calculate XOR
+		}
+		else {
+			// calculate X-Port
+			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
+			int xPort = port ^ shiftedMC;
+		}
 		return result;
 	}
 
