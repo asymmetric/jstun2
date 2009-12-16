@@ -120,7 +120,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 
 	// TODO it should differ, based on the IP protocol family
 	public byte[] getBytes() throws UtilityException {
-		byte[] result = new byte[12];
+		// 4 common bytes header + 4B own header + 4B address
+		byte[] result = new byte[12]; // TODO this should be variable
 		// message attribute header
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
@@ -143,6 +144,16 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			// calculate X-Port
 			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
 			int xPort = port ^ shiftedMC;
+			
+			byte[] xPortByte = Utility.integerToFourBytes(xPort);
+			System.arraycopy(xPortByte, 0, result, 6, 2);
+			
+			// calculate X-Address
+			int addressInt = Utility.fourBytesToInt(this.address.getBytes());
+			int xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
+			
+			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
+			System.arraycopy(xAddressByte, 0, result, 8, 4);
 		}
 		return result;
 	}

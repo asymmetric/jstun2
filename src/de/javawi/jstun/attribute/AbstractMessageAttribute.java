@@ -83,9 +83,8 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 		return null; // TODO should throw exception??
 	}
 
+	// The Attribute header is 4 bytes long
 	abstract public byte[] getBytes() throws UtilityException;
-	// abstract public MessageAttribute parse(byte[] data) throws
-	// MessageAttributeParsingException;
 
 	public int getLength() throws UtilityException {
 		int length = getBytes().length;
