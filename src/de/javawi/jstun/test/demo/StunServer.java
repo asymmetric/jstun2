@@ -74,23 +74,23 @@ public class StunServer {
 	 */
 	class StunServerReceiverThread extends Thread {
 		private final DatagramSocket receiverSocket;
-		private DatagramSocket changedPort;
-		private DatagramSocket changedIP;
+//		private DatagramSocket changedPort;
+//		private DatagramSocket changedIP;
 		private DatagramSocket changedPortIP;
 
 		StunServerReceiverThread(DatagramSocket datagramSocket) {
 			receiverSocket = datagramSocket;
-			for (DatagramSocket socket : sockets) {
-				if ((socket.getLocalPort() != receiverSocket.getLocalPort())
-						&& (socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
-					changedPort = socket;
-				if ((socket.getLocalPort() == receiverSocket.getLocalPort())
-						&& (!socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
-					changedIP = socket;
-				if ((socket.getLocalPort() != receiverSocket.getLocalPort())
-						&& (!socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
-					changedPortIP = socket;
-			}
+//			for (DatagramSocket socket : sockets) {
+//				if ((socket.getLocalPort() != receiverSocket.getLocalPort())
+//						&& (socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
+//					changedPort = socket;
+//				if ((socket.getLocalPort() == receiverSocket.getLocalPort())
+//						&& (!socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
+//					changedIP = socket;
+//				if ((socket.getLocalPort() != receiverSocket.getLocalPort())
+//						&& (!socket.getLocalAddress().equals(receiverSocket.getLocalAddress())))
+//					changedPortIP = socket;
+//			}
 		}
 
 		public void run() {
@@ -101,7 +101,8 @@ public class StunServer {
 					logger.finest(receiverSocket.getLocalAddress().getHostAddress() + ":"
 							+ receiverSocket.getLocalPort() + " datagram received from "
 							+ receive.getAddress().getHostAddress() + ":" + receive.getPort());
-					MessageHeader receiveMH = MessageHeader.parseHeader(receive.getData());
+					
+					MessageHeader receiveMH = new MessageHeader(receive.getData());
 
 					MessageHeaderVersion v;
 					try {
@@ -110,6 +111,7 @@ public class StunServer {
 						 * check magic cookie
 						 * check for unknown attributes
 						 */
+						v = receiveMH.getStunVersion();
 						if (receiveMH.checkMagicCookie()) {
 							// stun2
 							v = MessageHeaderVersion.STUN2;
