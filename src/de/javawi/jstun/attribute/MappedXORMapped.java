@@ -13,6 +13,7 @@ package de.javawi.jstun.attribute;
 
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.Utility;
@@ -35,6 +36,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	int port;
 	Address address;
 	Address.Family family;
+	MessageAttributeType type;
 
 
 	/**
@@ -42,26 +44,33 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	 * Implicit parameters: <br> {@link MessageAttributeType} = {@link XORMappedAddress}<br>
 	 */
 	public MappedXORMapped() {
-		super(MessageAttributeInterface.MessageAttributeType.XORMappedAddress);
+		super(MessageAttributeType.XORMappedAddress);
+		type = MessageAttributeType.XORMappedAddress;
 	}
 
-	/**
-	 * @param family
-	 *            The IP address {@link Address.Family}
-	 */
-	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type) {
+	// TODO we should check it's an appropriate type
+	public MappedXORMapped(MessageAttributeType type) {
+//		if (type != MessageAttributeType.MappedAddress && type != MessageAttributeType.XORMappedAddress)
+//			throw new MessageAttributeException("Wrong MessageAttributeType");
 		super(type);
-	}
-	
-	public MappedXORMapped(byte[] data) {
-		
+		this.type = type;
 	}
 
-	public MappedXORMapped(MessageAttributeInterface.MessageAttributeType type, byte[] data,
+	public MappedXORMapped(byte[] data) throws MessageAttributeParsingException {
+		this();
+		parseData(data);
+	}
+
+	public MappedXORMapped(MessageAttributeType type, byte[] data,
 			Address address, int port) throws MessageAttributeParsingException {
 		super(type);
 		this.address = address;
 		this.port = port;
+
+		parseData(data);
+	}
+
+	private void parseData(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
@@ -109,8 +118,10 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		this.address = address;
 	}
 
+	// TODO it should differ, based on the IP protocol family
 	public byte[] getBytes() throws UtilityException {
-		byte[] result = new byte[12];
+		// 4 common bytes header + 4B own header + 4B address
+		byte[] result = new byte[12]; // TODO this should be variable
 		// message attribute header
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
@@ -118,12 +129,32 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
 
 		// mappedaddress header
+		// padding
+		result[4] = 0x0;
 		// family
-		result[5] = Utility.integerToOneByte(0x01);
-		// port
-		System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
-		// address
-		System.arraycopy(address.getBytes(), 0, result, 8, 4);
+		result[5] = Utility.integerToOneByte(family.getEncoding());
+
+		if (type == MessageAttributeType.MappedAddress) {
+			// port
+			System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
+			// address
+			System.arraycopy(address.getBytes(), 0, result, 8, 4);
+		}
+		else {
+			// calculate X-Port
+			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
+			int xPort = port ^ shiftedMC;
+			
+			byte[] xPortByte = Utility.integerToFourBytes(xPort);
+			System.arraycopy(xPortByte, 0, result, 6, 2);
+			
+			// calculate X-Address
+			int addressInt = Utility.fourBytesToInt(this.address.getBytes());
+			int xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
+			
+			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
+			System.arraycopy(xAddressByte, 0, result, 8, 4);
+		}
 		return result;
 	}
 

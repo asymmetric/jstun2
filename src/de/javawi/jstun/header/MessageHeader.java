@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.MessageAttributeInterface;
+import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
@@ -44,9 +46,10 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private final TreeMap<MessageAttributeInterface.MessageAttributeType, AbstractMessageAttribute> ma = new TreeMap<MessageAttribute.MessageAttributeType, MessageAttribute>();
-
 	private MessageHeaderVersion stunVersion; // TODO remove?
+
+	private final TreeMap<MessageAttributeInterface.MessageAttributeType, AbstractMessageAttribute> ma =
+		new TreeMap<MessageAttributeType, AbstractMessageAttribute>();
 
 	public MessageHeader() {
 		super();
@@ -173,14 +176,13 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 
 	public AbstractMessageAttribute getMessageAttribute(
-			MessageAttribute.MessageAttributeType type) {
+			AbstractMessageAttribute.MessageAttributeType type) {
 		return ma.get(type);
 	}
 
 	public byte[] getBytes() throws UtilityException { // TODO should be ok
 		int length = MessageHeaderInterface.HEADERSIZE;
-		Iterator<MessageAttribute.MessageAttributeType> it = ma.keySet()
-		.iterator();
+		Iterator<MessageAttributeInterface.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
 			AbstractMessageAttribute attri = ma.get(it.next());
 			length += attri.getLength();
@@ -229,7 +231,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		return getBytes().length;
 	}
 
-	public void parseAttributes(byte[] data) throws MessageAttributeParsingException {
+	public void parseAttributes(byte[] data) throws MessageAttributeException {
 		try {
 			byte[] lengthArray = new byte[2];
 			System.arraycopy(data, 2, lengthArray, 0, 2);

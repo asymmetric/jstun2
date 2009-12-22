@@ -1,7 +1,6 @@
 package de.javawi.jstun.header.messagetype;
 
 import de.javawi.jstun.header.MessageHeaderInterface;
-import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderClass;
 
 public abstract class AbstractMessageType {
 	
@@ -25,11 +24,11 @@ public abstract class AbstractMessageType {
 		return encoding << MessageHeaderInterface.MESSAGETYPESHIFT;
 	}
 
-	public static MessageHeaderClass getClass(int encoding) {
+	// TODO implement
+//	public static MessageHeaderClass getClass(int encoding) {
 		// REQUEST (0x00), INDICATION (0x10), SUCCESSRESPONSE (0x100),
 		// ERRORRESPONSE (0x110);
 
-	}
-	
-	public static int getMessageType
+
+//	}
 }

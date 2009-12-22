@@ -52,7 +52,7 @@ public interface MessageHeaderInterface {
 	/**
 	 * The Magic Cookie as per <a href="http://tools.ietf.org/html/rfc5389">RFC5389</a>
 	 */
-	int MAGICCOOKIE = 0x2112A442; // TODO network order?
+	int MAGICCOOKIE = 0x2112A442;
 	int MAGICCOOKIESIZE = 4;
 	int TRANSACTIONIDSIZE = 12; // in bytes
 

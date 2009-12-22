@@ -14,6 +14,7 @@ package de.javawi.jstun.attribute;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
+// TODO salsprep?
 public class Username extends AbstractMessageAttribute {
 	String username;
 
@@ -46,7 +47,7 @@ public class Username extends AbstractMessageAttribute {
 			length += 4 - (length % 4);
 		}
 		// message attribute header
-		length += 4;
+		length += COMMONHEADERSIZE;
 		byte[] result = new byte[length];
 		// message attribute header
 		// type

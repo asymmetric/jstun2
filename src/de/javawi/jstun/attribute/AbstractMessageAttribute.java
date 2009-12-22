@@ -34,11 +34,15 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 
 	MessageAttributeType type;
 
-	// TODO add padding
+	// TODO add padding?
 
 	public AbstractMessageAttribute() {
 	}
 
+	/**
+	 * Sets the <b>type</b> instance field with the specified {@link MessageAttributeType}
+	 * @param type
+	 */
 	public AbstractMessageAttribute(MessageAttributeType type) {
 		setType(type);
 	}
@@ -83,9 +87,8 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 		return null; // TODO should throw exception??
 	}
 
+	// The Attribute header is 4 bytes long
 	abstract public byte[] getBytes() throws UtilityException;
-	// abstract public MessageAttribute parse(byte[] data) throws
-	// MessageAttributeParsingException;
 
 	public int getLength() throws UtilityException {
 		int length = getBytes().length;

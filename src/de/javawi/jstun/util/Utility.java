@@ -79,16 +79,14 @@ public class Utility {
 	}
 
 	public static final int fourBytesToInt(byte[] value)
-			throws UtilityException { // TODO should be int?
+			throws UtilityException {
 		if (value.length < 4) {
 			throw new UtilityException("Byte array too short!");
 		}
-		int temp0 = value[0] & 0xFF;
-		int temp1 = value[1] & 0xFF;
-		int temp2 = value[2] & 0xFF;
-		int temp3 = value[3] & 0xFF;
-
-		return temp0 << 24 + temp1 << 16 + temp2 << 8 + temp3;
+		
+		// value[i] & 0xFF in order to convert to unsigned integer
+		return ((value[0] & 0xFF) << 24)  & ((value[1] & 0xFF) << 16)
+			  & ((value[2] & 0xFF) << 8) & (value[3] & 0xFF);
 	}
 
 	// TODO find another use or remove
