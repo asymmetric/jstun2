@@ -58,6 +58,14 @@ public class MessageHeader implements MessageHeaderInterface {
 	public MessageHeader(AbstractMessageType type) {
 		this.type = type;
 	}
+	
+	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException {
+		this();
+		setType(parseType(data));
+		setStunVersion(parseStunVersion(data));
+		// TODO add a method which parses the magic cookie
+		// TODO maybe we should catch the utility exception, dal quinto byte in poi
+	}
 
 	// can be chained
 	public MessageHeader initHeader() throws UtilityException {
@@ -262,9 +270,7 @@ public class MessageHeader implements MessageHeaderInterface {
 
 		return mh;
 		// TODO add a method which parses the magic cookie
-		// TODO maybe we should catch the utility exception, dal quinto byte in
-		// poi
-
+		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
 	private static AbstractMessageType parseType(byte[] data) throws UtilityException,
