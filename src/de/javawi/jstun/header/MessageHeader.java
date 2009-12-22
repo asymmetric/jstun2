@@ -324,6 +324,10 @@ public class MessageHeader implements MessageHeaderInterface {
 			return MessageHeaderVersion.STUN1;
 	}
 
+	public MessageHeaderVersion getStunVersion() {
+		return stunVersion;
+	}
+	
 	private void setStunVersion(MessageHeaderVersion v) {
 		stunVersion = v;
 	}
