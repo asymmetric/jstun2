@@ -12,7 +12,7 @@
 package de.javawi.jstun.attribute;
 
 public interface MessageAttributeInterface {
-	
+
 	/* TODO since this class defines no method sigs,
 	 * i guess it could as well be removed, and the enum be placed
 	 * in the implementing abstract class
@@ -33,4 +33,6 @@ public interface MessageAttributeInterface {
 			return e;
 		}
 	};
+
+	int COMMONHEADERSIZE = 4;
 }
