@@ -12,25 +12,26 @@
 package de.javawi.jstun.attribute;
 
 public interface MessageAttributeInterface {
-	/* stun
-	public enum MessageAttributeType { MappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
-	final static int MAPPEDADDRESS = 0x0001;
-	final static int RESPONSEADDRESS = 0x0002;
-	final static int CHANGEREQUEST = 0x0003;
-	final static int SOURCEADDRESS = 0x0004;
-	final static int CHANGEDADDRESS = 0x0005;
-	*/
+	/* TODO since this class defines no method sigs,
+	 * i guess it could as well be removed, and the enum be placed
+	 * in the implementing abstract class
+	 */
 
-	enum MessageAttributeType { MappedAddress, XORMappedAddress, ResponseAddress, ChangeRequest, SourceAddress, ChangedAddress, Username, Password, MessageIntegrity, ErrorCode, UnknownAttribute, ReflectedFrom, Dummy };
-	int MAPPEDADDRESS = 0x0001; // TODO revise all constants
-	int XORMAPPEDADDRESS = 0x0002;
-	int USERNAME = 0x0006;
-	int PASSWORD = 0x0007;
-	int MESSAGEINTEGRITY = 0x0008;
-	int ERRORCODE = 0x0009;
-	int UNKNOWNATTRIBUTE = 0x000a;
-	/* stun
-	final static int REFLECTEDFROM = 0x000b;
-	*/
-	final static int DUMMY = 0x0000;
+	// TODO add comprehension-optional attributes
+	enum MessageAttributeType {
+		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009),
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014), Nonce(0x0015);
+
+		private final int e;
+
+		MessageAttributeType(int encoding) {
+			e = encoding;
+		}
+
+		public int getEncoding() {
+			return e;
+		}
+	};
+
+	int COMMONHEADERSIZE = 4;
 }

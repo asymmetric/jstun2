@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- *
+ * 
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- *
+ * 
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -11,8 +11,10 @@
 
 package de.javawi.jstun.util;
 
-import java.util.*;
-import java.net.*;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.StringTokenizer;
 
 public class IPv4Address implements Address {
 
@@ -21,8 +23,11 @@ public class IPv4Address implements Address {
 	int thirdOctet;
 	int fourthOctet;
 
-	public IPv4Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet) throws UtilityException {
-		if ((firstOctet < 0) || (firstOctet > 255) || (secondOctet < 0) || (secondOctet > 255) || (thirdOctet < 0) || (thirdOctet > 255) || (fourthOctet < 0) || (fourthOctet > 255)) {
+	public IPv4Address(int firstOctet, int secondOctet, int thirdOctet, int fourthOctet)
+			throws UtilityException {
+		if ((firstOctet < 0) || (firstOctet > 255) || (secondOctet < 0) || (secondOctet > 255)
+				|| (thirdOctet < 0) || (thirdOctet > 255) || (fourthOctet < 0)
+				|| (fourthOctet > 255)) {
 			throw new UtilityException("Address is malformed.");
 		}
 		this.firstOctet = firstOctet;
@@ -43,10 +48,22 @@ public class IPv4Address implements Address {
 				throw new UtilityException("Address is in incorrect format.");
 			}
 			switch (i) {
-			case 0: firstOctet = temp; ++i; break;
-			case 1: secondOctet = temp; ++i; break;
-			case 2: thirdOctet = temp; ++i; break;
-			case 3: fourthOctet = temp; ++i; break;
+				case 0 :
+					firstOctet = temp;
+					++i;
+					break;
+				case 1 :
+					secondOctet = temp;
+					++i;
+					break;
+				case 2 :
+					thirdOctet = temp;
+					++i;
+					break;
+				case 3 :
+					fourthOctet = temp;
+					++i;
+					break;
 			}
 		}
 	}
@@ -59,6 +76,14 @@ public class IPv4Address implements Address {
 		secondOctet = Utility.oneByteToInteger(address[1]);
 		thirdOctet = Utility.oneByteToInteger(address[2]);
 		fourthOctet = Utility.oneByteToInteger(address[3]);
+	}
+
+	public IPv4Address(Inet4Address address) throws UtilityException {
+		byte[] addressByte = address.getAddress();
+		firstOctet = Utility.oneByteToInteger(addressByte[0]);
+		secondOctet = Utility.oneByteToInteger(addressByte[1]);
+		thirdOctet = Utility.oneByteToInteger(addressByte[2]);
+		fourthOctet = Utility.oneByteToInteger(addressByte[3]);
 	}
 
 	/* (non-Javadoc)
@@ -96,12 +121,14 @@ public class IPv4Address implements Address {
 	 * @see com.javawi.jstun.util.Address#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {
-		if (obj == null) return false;
+		if (obj == null)
+			return false;
 		try {
-			byte[] data1 = this.getBytes();
+			byte[] data1 = getBytes();
 			byte[] data2 = ((Address) obj).getBytes();
-			if ((data1[0] == data2[0]) && (data1[1] == data2[1]) &&
-			    (data1[2] == data2[2]) && (data1[3] == data2[3])) return true;
+			if ((data1[0] == data2[0]) && (data1[1] == data2[1]) && (data1[2] == data2[2])
+					&& (data1[3] == data2[3]))
+				return true;
 			return false;
 		} catch (UtilityException ue) {
 			return false;

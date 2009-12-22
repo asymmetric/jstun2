@@ -16,7 +16,7 @@ import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class ErrorCode extends MessageAttribute {
+public class ErrorCode extends AbstractMessageAttribute {
    /*
     *  0                   1                   2                   3
     *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -31,7 +31,23 @@ public class ErrorCode extends MessageAttribute {
 	String reason;
 
 	public ErrorCode() {
-		super(MessageAttribute.MessageAttributeType.ErrorCode);
+		super(MessageAttributeType.ErrorCode);
+	}
+	
+	// TODO review
+	public ErrorCode(byte[] data) throws UtilityException, MessageAttributeException {
+		this();
+		if (data.length < 4) { // TODO unmagic all
+			throw new MessageAttributeParsingException("Data array too short");
+		}
+		byte classHeaderByte = data[3];
+		int classHeader = Utility.oneByteToInteger(classHeaderByte);
+		if ((classHeader < 1) || (classHeader > 6)) throw new MessageAttributeParsingException("Class parsing error");
+		byte numberByte = data[4];
+		int number = Utility.oneByteToInteger(numberByte);
+		if ((number < 0) || (number > 99)) throw new MessageAttributeParsingException("Number parsing error");
+		int responseCode = (classHeader * 100) + number;
+		setResponseCode(responseCode);
 	}
 
 	public void setResponseCode(int responseCode) throws MessageAttributeException {
@@ -81,7 +97,14 @@ public class ErrorCode extends MessageAttribute {
 		System.arraycopy(reasonArray, 0, result, 8, reasonArray.length);
 		return result;
 	}
-
+	
+	
+	/**
+	 * @deprecated Use the constructor instead
+	 * @param data
+	 * @return
+	 * @throws MessageAttributeParsingException
+	 */
 	public static ErrorCode parse(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 4) {

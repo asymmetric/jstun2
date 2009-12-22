@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.ErrorCode;
 import de.javawi.jstun.attribute.MappedAddress;
-import de.javawi.jstun.attribute.MessageAttribute;
+import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.legacy.ChangeRequest;

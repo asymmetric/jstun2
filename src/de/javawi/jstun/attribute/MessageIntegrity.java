@@ -11,16 +11,25 @@
 
 package de.javawi.jstun.attribute;
 
-public class MessageIntegrity extends MessageAttribute {
+public class MessageIntegrity extends AbstractMessageAttribute {
 	// incomplete message integrity implementation
 	public MessageIntegrity() {
-		super(MessageAttribute.MessageAttributeType.MessageIntegrity);
+		super(MessageAttributeType.MessageIntegrity);
+	}
+	
+	public MessageIntegrity(byte[] data) {
+		this();
 	}
 
 	public byte[] getBytes() {
 		return new byte[0];
 	}
 
+	/**
+	 * @deprecated Use the constructor instead
+	 * @param data
+	 * @return
+	 */
 	public static MessageIntegrity parse(byte[] data) {
 		return new MessageIntegrity();
 	}

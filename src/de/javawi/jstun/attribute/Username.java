@@ -14,16 +14,22 @@ package de.javawi.jstun.attribute;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public class Username extends MessageAttribute {
+// TODO salsprep?
+public class Username extends AbstractMessageAttribute {
 	String username;
 
 	public Username() {
-		super(MessageAttribute.MessageAttributeType.Username);
+		super(MessageAttributeType.Username);
 	}
 
 	public Username(String username) {
-		super(MessageAttribute.MessageAttributeType.Username);
-		setUsername(username);
+		this();
+		this.username = username;
+	}
+	
+	public Username(byte[] data) {
+		this();
+		this.username = new String(data);
 	}
 
 	public String getUsername() {
@@ -41,7 +47,7 @@ public class Username extends MessageAttribute {
 			length += 4 - (length % 4);
 		}
 		// message attribute header
-		length += 4;
+		length += COMMONHEADERSIZE;
 		byte[] result = new byte[length];
 		// message attribute header
 		// type
@@ -55,6 +61,11 @@ public class Username extends MessageAttribute {
 		return result;
 	}
 
+	/**
+	 * @deprecated Use the constructor instead
+	 * @param data
+	 * @return
+	 */
 	public static Username parse(byte[] data) {
 		Username result = new Username();
 		String username = new String(data);

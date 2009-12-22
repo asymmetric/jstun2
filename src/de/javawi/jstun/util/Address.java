@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- *
+ * 
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- *
+ * 
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -16,13 +16,29 @@ import java.net.UnknownHostException;
 
 public interface Address {
 
-	static final int IPv4 = 4;
-	static final int IPv6 = 6;
+	/**
+	 * Enum representing the IP family
+	 * 
+	 * @author Lorenzo Manacorda (asymmetric)
+	 * 
+	 */
+	public static enum Family {
+		IPv4(0x01), IPv6(0x02);
+
+		int encoding;
+
+		Family(int e) {
+			encoding = e;
+		}
+
+		public int getEncoding() {
+			return encoding;
+		}
+	}
 
 	public byte[] getBytes() throws UtilityException;
 
-	public InetAddress getInetAddress() throws UtilityException,
-			UnknownHostException;
+	public InetAddress getInetAddress() throws UtilityException, UnknownHostException;
 
 	public int hashCode();
 
