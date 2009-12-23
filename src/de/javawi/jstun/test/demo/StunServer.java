@@ -35,8 +35,8 @@ import de.javawi.jstun.attribute.legacy.ChangedAddress;
 import de.javawi.jstun.attribute.legacy.ResponseAddress;
 import de.javawi.jstun.attribute.legacy.SourceAddress;
 import de.javawi.jstun.header.MessageHeader;
-import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderType;
+import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.util.Address;
 import de.javawi.jstun.util.UtilityException;
 
