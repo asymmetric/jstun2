@@ -16,8 +16,7 @@ import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.AbstractMessageAttribute;
-import de.javawi.jstun.attribute.MessageAttributeInterface;
-import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
@@ -49,7 +48,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
 	private MessageHeaderVersion stunVersion; // TODO remove?
 
-	private final TreeMap<MessageAttributeInterface.MessageAttributeType, AbstractMessageAttribute> ma =
+	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
 		new TreeMap<MessageAttributeType, AbstractMessageAttribute>();
 
 	public MessageHeader() {
@@ -183,7 +182,7 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	public byte[] getBytes() throws UtilityException { // TODO should be ok
 		int length = MessageHeaderInterface.HEADERSIZE;
-		Iterator<MessageAttributeInterface.MessageAttributeType> it = ma.keySet().iterator();
+		Iterator<AbstractMessageAttribute.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
 			AbstractMessageAttribute attri = ma.get(it.next());
 			length += attri.getLength();

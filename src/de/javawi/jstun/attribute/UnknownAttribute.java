@@ -65,7 +65,7 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 		int unknownSize = unknown.size();
 		int valueLength = ATTRIBUTE_SIZE * unknownSize;
 
-		int totalLength = MessageAttributeInterface.COMMONHEADERSIZE + valueLength;
+		int totalLength = COMMONHEADERSIZE + valueLength;
 
 		byte[] result = new byte[totalLength];
 
