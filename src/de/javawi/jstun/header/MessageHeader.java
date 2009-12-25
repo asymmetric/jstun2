@@ -52,8 +52,9 @@ public class MessageHeader implements MessageHeaderInterface {
 	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
 		new TreeMap<MessageAttributeType, AbstractMessageAttribute>();
 
-	public MessageHeader() {
+	public MessageHeader() throws UtilityException {
 		super();
+		generateMagicCookie();
 	}
 
 	// TODO magic cookie?
@@ -271,7 +272,6 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 
 	/**
-	 * @deprecated Use constructor instead
 	 * @param data
 	 * @return
 	 * @throws MessageHeaderParsingException
@@ -283,10 +283,9 @@ public class MessageHeader implements MessageHeaderInterface {
 		MessageHeader mh = new MessageHeader();
 
 		mh.setType(parseType(data));
-//		mh.setStunVersion(parseMagicCookie(data)); // TODO re-add
+		mh.parseMagicCookie(data); // TODO re-add
 
 		return mh;
-		// TODO add a method which parses the magic cookie
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
