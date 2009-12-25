@@ -1,7 +1,6 @@
 package de.javawi.jstun.attribute.exception;
 
-import de.javawi.jstun.attribute.MessageAttributeInterface;
-import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 
 public class UnknownMessageAttributeException extends MessageAttributeParsingException {
 	private static final long serialVersionUID = 5375193544145543299L;

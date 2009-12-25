@@ -19,7 +19,7 @@ import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
-public abstract class AbstractMessageAttribute implements MessageAttributeInterface {
+public abstract class AbstractMessageAttribute {
 	private static Logger logger = Logger.getLogger("de.javawi.stun.util.MessageAttribute");
 
 	/*
@@ -31,6 +31,23 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 	   |                         Value (variable)                ....
 	   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
+
+	public enum MessageAttributeType {
+		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009),
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014), Nonce(0x0015);
+
+		private final int e;
+
+		MessageAttributeType(int encoding) {
+			e = encoding;
+		}
+
+		public int getEncoding() {
+			return e;
+		}
+	}
+
+	int COMMONHEADERSIZE = 4;
 
 	MessageAttributeType type;
 
@@ -56,7 +73,7 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 		this.type = type;
 	}
 
-	public MessageAttributeInterface.MessageAttributeType getType() {
+	public MessageAttributeType getType() {
 		return type;
 	}
 
@@ -65,10 +82,10 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 	}
 
 	public static MessageAttributeType longToType(long type) { // TODO why long?
-		MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
+		MessageAttributeType[] values = MessageAttributeType
 				.values();
 
-		for (MessageAttributeInterface.MessageAttributeType ma : values) {
+		for (MessageAttributeType ma : values) {
 			if (type == ma.getEncoding())
 				return ma;
 		}
@@ -77,10 +94,9 @@ public abstract class AbstractMessageAttribute implements MessageAttributeInterf
 
 	// TODO decide which one to keep
 	public static MessageAttributeType intToType(int type) {
-		MessageAttributeType[] values = MessageAttributeInterface.MessageAttributeType
-				.values();
+		MessageAttributeType[] values = MessageAttributeType.values();
 
-		for (MessageAttributeInterface.MessageAttributeType mat : values) {
+		for (MessageAttributeType mat : values) {
 			if (type == mat.getEncoding())
 				return mat;
 		}

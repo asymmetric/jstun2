@@ -29,7 +29,7 @@ import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.legacy.ChangeRequest;
 import de.javawi.jstun.attribute.legacy.ChangedAddress;
 import de.javawi.jstun.header.MessageHeader;
-import de.javawi.jstun.header.MessageHeaderParsingException;
+import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.util.UtilityException;
 
 public class DiscoveryTest {

@@ -27,15 +27,15 @@ import java.util.logging.SimpleFormatter;
 
 import de.javawi.jstun.attribute.MappedXORMapped;
 import de.javawi.jstun.attribute.UnknownAttribute;
-import de.javawi.jstun.attribute.MessageAttributeInterface.MessageAttributeType;
+import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface;
-import de.javawi.jstun.header.MessageHeaderParsingException;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderClass;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderVersion;
+import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.IPv4Address;
 import de.javawi.jstun.util.UtilityException;
