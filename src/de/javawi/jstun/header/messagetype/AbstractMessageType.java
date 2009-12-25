@@ -17,7 +17,7 @@ public abstract class AbstractMessageType {
 		return encoding;
 	}
 
-	/*
+	/**
 	 * Gets the encoding, leaving the first two bits as 0b00
 	 */
 	public int getShiftedEncoding() {
