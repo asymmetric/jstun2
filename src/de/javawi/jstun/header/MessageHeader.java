@@ -53,8 +53,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		new TreeMap<MessageAttributeType, AbstractMessageAttribute>();
 
 	public MessageHeader() throws UtilityException {
-		super();
-		generateMagicCookie();
+		generateMagicCookie(); // TODO are we sure?
 	}
 
 	// TODO magic cookie?
@@ -66,7 +65,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		this();
 		setType(parseType(data));
 		parseMagicCookie(data);
-		// TODO add a method which parses the magic cookie
+		equalMagicCookie();
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
@@ -289,6 +288,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
+	// TODO we shouldn't be using these constants
 	private static AbstractMessageType parseType(byte[] data) throws UtilityException,
 			MessageHeaderParsingException {
 
