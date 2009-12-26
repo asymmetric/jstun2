@@ -34,7 +34,8 @@ public abstract class AbstractMessageAttribute {
 
 	public enum MessageAttributeType {
 		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009),
-		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014), Nonce(0x0015);
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014),
+		Nonce(0x0015), Software(0x8022);
 
 		private final int e;
 
@@ -47,14 +48,13 @@ public abstract class AbstractMessageAttribute {
 		}
 	}
 
-	int COMMONHEADERSIZE = 4;
+
+	final static int COMMONHEADERSIZE = 4;
+	final static int ALIGNMENT = 4;
 
 	MessageAttributeType type;
 
 	// TODO add padding?
-
-	public AbstractMessageAttribute() {
-	}
 
 	/**
 	 * Sets the <b>type</b> instance field with the specified {@link MessageAttributeType}
@@ -82,8 +82,7 @@ public abstract class AbstractMessageAttribute {
 	}
 
 	public static MessageAttributeType longToType(long type) { // TODO why long?
-		MessageAttributeType[] values = MessageAttributeType
-				.values();
+		MessageAttributeType[] values = MessageAttributeType.values();
 
 		for (MessageAttributeType ma : values) {
 			if (type == ma.getEncoding())
@@ -129,6 +128,7 @@ public abstract class AbstractMessageAttribute {
 			AbstractMessageAttribute ma;
 			// MessageAttributeType mat = intToType(type);
 
+			// TODO make it reflective?
 			if (type == MessageAttributeType.MappedAddress.getEncoding())
 				ma = new MappedXORMapped(valueArray);
 			else if (type == MessageAttributeType.Username.getEncoding())

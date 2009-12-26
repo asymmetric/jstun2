@@ -38,6 +38,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address.Family family;
 	MessageAttributeType type;
 
+	final static int HEADER_LENGTH = 4;
+
 
 	/**
 	 * Default constructor.<br>
@@ -121,12 +123,13 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	// TODO it should differ, based on the IP protocol family
 	public byte[] getBytes() throws UtilityException {
 		// 4 common bytes header + 4B own header + 4B address
-		byte[] result = new byte[12]; // TODO this should be variable
+		final int IPv4LENGTH = 4;
+		byte[] result = new byte[COMMONHEADERSIZE + HEADER_LENGTH + IPv4LENGTH]; // TODO this should be variable
 		// message attribute header
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
-		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
+		System.arraycopy(Utility.integerToTwoBytes(HEADER_LENGTH + IPv4LENGTH), 0, result, 2, 2);
 
 		// mappedaddress header
 		// padding
