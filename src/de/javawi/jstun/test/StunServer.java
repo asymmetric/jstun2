@@ -9,7 +9,7 @@
  * included in this distribution.
  */
 
-package de.javawi.jstun.test.demo;
+package de.javawi.jstun.test;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
