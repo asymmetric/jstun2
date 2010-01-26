@@ -34,7 +34,6 @@ import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderClass;
-import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderVersion;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.IPv4Address;
@@ -104,24 +103,17 @@ public class StunServer {
 					
 					MessageHeader receiveMH = new MessageHeader(receive.getData());
 
-					MessageHeaderVersion v;
 					try {
+						boolean stun2;
 
 						/* TODO backwards compatibility checks
-						 * check magic cookie
 						 * check for unknown attributes
 						 */
-						v = receiveMH.getStunVersion();
-						if (receiveMH.checkMagicCookie()) {
-							// stun2
-							v = MessageHeaderVersion.STUN2;
-						} else {
-							/* TODO stun1:
-							 * SHOULD use Mapped instead of XOR-Mapped
+						stun2 = receiveMH.equalMagicCookie();
+							/* TODO if it's stun1 :
 							 * SHOULD not use multiplexing
 							 */
-							v = MessageHeaderVersion.STUN1;
-						}
+
 
 						// TODO check for unknown attributes
 						receiveMH.parseAttributes(receive.getData()); // TODO doesn't work
@@ -138,7 +130,7 @@ public class StunServer {
 
 							MappedXORMapped ma;
 							// (XOR)Mapped address attribute
-							if (v == MessageHeaderVersion.STUN2)
+							if (stun2)
 								ma = new MappedXORMapped();
 							else
 								ma = new MappedXORMapped(MessageAttributeType.MappedAddress);

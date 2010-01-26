@@ -80,18 +80,27 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			int familyInt = Utility.oneByteToInteger(data[1]);
 
 			if (familyInt == Family.IPv4.getEncoding()) {
+				
 				byte[] addressArray = new byte[4];
 				System.arraycopy(data, 4, addressArray, 0, 4);
+				
+				// store it in the local vars
 				this.address = new IPv4Address(addressArray);
 				this.family = Family.IPv4;
+				
 			} else if (familyInt == Family.IPv6.getEncoding()) {
 				; // TODO implement
 			} else
 				throw new MessageAttributeParsingException("Family " + familyInt
 						+ " is not supported");
+			
+			// Geth the port from the packet
 			byte[] portArray = new byte[2];
 			System.arraycopy(data, 2, portArray, 0, 2);
+			
+			// store it
 			this.port = Utility.twoBytesToInteger(portArray);
+			
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");
 		} catch (MessageAttributeException mae) {

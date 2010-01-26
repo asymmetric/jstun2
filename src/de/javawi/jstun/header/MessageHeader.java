@@ -46,15 +46,17 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private MessageHeaderVersion stunVersion; // TODO remove?
+	private int magicCookie; // mcookie as an int
+	private boolean stun2;
 
 	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
 		new TreeMap<MessageAttributeType, AbstractMessageAttribute>();
 
-	public MessageHeader() {
-		super();
+	public MessageHeader() throws UtilityException {
+		generateMagicCookie(); // TODO are we sure?
 	}
 
+	// TODO magic cookie?
 	public MessageHeader(AbstractMessageType type) {
 		this.type = type;
 	}
@@ -62,8 +64,8 @@ public class MessageHeader implements MessageHeaderInterface {
 	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException {
 		this();
 		setType(parseType(data));
-		setStunVersion(parseStunVersion(data));
-		// TODO add a method which parses the magic cookie
+		parseMagicCookie(data);
+		equalMagicCookie();
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
@@ -108,9 +110,14 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 
 	private void generateMagicCookie() throws UtilityException {
-		// TODO should it be put in the constructor?
 		System.arraycopy(Utility.integerToFourBytes(MAGICCOOKIE), 0, mcookie,
 				0, MAGICCOOKIESIZE);
+	}
+
+	private void parseMagicCookie(byte[] data) throws UtilityException {
+		System.arraycopy(data, 4, mcookie, 0, 4);
+		// Store it as an int too
+		magicCookie = Utility.fourBytesToInt(mcookie);
 	}
 
 	public byte[] getMagicCookie() { // TODO why so complicated?
@@ -127,8 +134,11 @@ public class MessageHeader implements MessageHeaderInterface {
 	 * @return
 	 * @throws UtilityException
 	 */
-	public boolean checkMagicCookie() throws UtilityException {
-		return MAGICCOOKIE == Utility.fourBytesToInt(getMagicCookie());
+	public boolean equalMagicCookie() {
+		if (!stun2) {
+			stun2 = (MAGICCOOKIE == magicCookie);
+		}
+		return stun2;
 		// TODO check network order
 	}
 
@@ -260,19 +270,25 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 	}
 
+	/**
+	 * @param data
+	 * @return
+	 * @throws MessageHeaderParsingException
+	 * @throws UtilityException
+	 */
 	public static MessageHeader parseHeader(byte[] data) throws MessageHeaderParsingException,
 			UtilityException {
 
 		MessageHeader mh = new MessageHeader();
 
 		mh.setType(parseType(data));
-		mh.setStunVersion(parseStunVersion(data));
+		mh.parseMagicCookie(data); // TODO re-add
 
 		return mh;
-		// TODO add a method which parses the magic cookie
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
+	// TODO we shouldn't be using these constants
 	private static AbstractMessageType parseType(byte[] data) throws UtilityException,
 			MessageHeaderParsingException {
 
@@ -313,22 +329,11 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 	}
 
-	private static MessageHeaderVersion parseStunVersion(byte[] data) throws UtilityException {
-
-		byte[] mC = new byte[4];
-		System.arraycopy(data, 4, mC, 0, 4);
-		int mCookie = Utility.fourBytesToInt(mC);
-		if (mCookie == MAGICCOOKIE)
+	// TODO remove?
+	private MessageHeaderVersion getStunVersion() {
+		if (equalMagicCookie())
 			return MessageHeaderVersion.STUN2;
 		else
 			return MessageHeaderVersion.STUN1;
-	}
-
-	public MessageHeaderVersion getStunVersion() {
-		return stunVersion;
-	}
-	
-	private void setStunVersion(MessageHeaderVersion v) {
-		stunVersion = v;
 	}
 }
