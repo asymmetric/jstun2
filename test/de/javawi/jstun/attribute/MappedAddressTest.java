@@ -13,52 +13,91 @@ package de.javawi.jstun.attribute;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
+import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
+import de.javawi.jstun.header.MessageHeaderInterface;
+import de.javawi.jstun.util.Utility;
+
 public class MappedAddressTest extends TestCase {
-	MappedAddress ma;
+	MappedXORMapped map;
+	MappedXORMapped xor;
+	
+	int port = 63584;
+	int address = 1413015884;
+	
 	byte[] data;
 	public MappedAddressTest(String mesg) {
 		super(mesg);
 	}
 	
 	public void setUp() throws Exception {
+		byte asd = -8;
+		byte omar = 96;
+		int asdomar = (asd << 8) | omar;
 		data = new byte[8];
-		data[0] = 0;
-		data[1] = 1;
-		data[2] = -8;
+		data[0] = 0; // padding
+		data[1] = 1; // IPv4
+		data[2] = -8; // port
 		data[3] = 96;
-		data[4] = 84;
+		data[4] = 84; // address
 		data[5] = 56;
 		data[6] = -23;
 		data[7] = 76;
-		ma = (MappedAddress) MappedAddress.parse(data);
+		map = new MappedXORMapped(MessageAttributeType.MappedAddress, data);
+		
+		xor = new MappedXORMapped(data);
 	}
 
 	/*
-	 * Test method for 'de.javawi.jstun.attribute.MappedAddress.MappedAddress()'
+	 * Test method for 'de.javawi.jstun.attribute.MappedXORMapped.MappedXORMapped()'
 	 */
+	@Test
 	public void testMappedAddress() {
-		new MappedAddress();
+		new MappedXORMapped();
 	}
 
 	/*
 	 * Test method for 'de.javawi.jstun.attribute.MappedResponseChangedSourceAddressReflectedFrom.getBytes()'
 	 */
+	@Test
 	public void testGetBytes() {
 		try {
-			byte[] result = ma.getBytes();
+			byte[] resultMap = map.getBytes();
 
-			assertTrue(result[0] == 0);
-			assertTrue(result[1] == 1);
-			assertTrue(result[2] == 0);
-			assertTrue(result[3] == 8);
-			assertTrue(result[4] == data[0]);
-			assertTrue(result[5] == data[1]);
-			assertTrue(result[6] == data[2]);
-			assertTrue(result[7] == data[3]);
-			assertTrue(result[8] == data[4]);
-			assertTrue(result[9] == data[5]);
-			assertTrue(result[10] == data[6]);
-			assertTrue(result[11] == data[7]);
+			assertTrue(resultMap[0] == 0); // type
+			assertTrue(resultMap[1] == 1);
+			assertTrue(resultMap[2] == 0); // length
+			assertTrue(resultMap[3] == 8);
+			assertTrue(resultMap[4] == data[0]); // attribute value
+			assertTrue(resultMap[5] == data[1]);
+			assertTrue(resultMap[6] == data[2]);
+			assertTrue(resultMap[7] == data[3]);
+			assertTrue(resultMap[8] == data[4]);
+			assertTrue(resultMap[9] == data[5]);
+			assertTrue(resultMap[10] == data[6]);
+			assertTrue(resultMap[11] == data[7]);
+			
+			byte[] resultXor = xor.getBytes();
+			
+			int xPort = port ^ MessageHeaderInterface.MAGICCOOKIE >>> 16;
+			int xAddr = address ^ MessageHeaderInterface.MAGICCOOKIE;
+			
+			byte[] portByte = Utility.integerToTwoBytes(xPort);
+			byte[] addressByte = Utility.integerToFourBytes(xAddr);
+			
+			assertTrue(resultXor[0] == 0); // type
+			assertTrue(resultXor[1] == 0x20); // XORMapped type = 0x20
+			assertTrue(resultXor[2] == 0); // length
+			assertTrue(resultXor[3] == 8);
+			assertTrue(resultXor[4] == data[0]);
+			assertTrue(resultXor[5] == data[1]);
+			assertTrue(resultXor[6] == portByte[0]); // X-Port
+			assertTrue(resultXor[7] == portByte[1]);
+			assertTrue(resultXor[8] == addressByte[0]);
+			assertTrue(resultXor[9] == addressByte[1]);
+			assertTrue(resultXor[10] == addressByte[2]);
+			assertTrue(resultXor[11] == addressByte[3]);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -68,7 +107,7 @@ public class MappedAddressTest extends TestCase {
 	 * Test method for 'de.javawi.jstun.attribute.MappedResponseChangedSourceAddressReflectedFrom.getPort()'
 	 */
 	public void testGetPort() {
-		assertTrue(ma.getPort() == 63584);
+		assertTrue(map.getPort() == 63584);
 	}
 
 	/*
@@ -76,8 +115,8 @@ public class MappedAddressTest extends TestCase {
 	 */
 	public void testGetAddress() {
 		try {
-			System.out.println(ma.getAddress().toString());
-			assertTrue(ma.getAddress().equals(new de.javawi.jstun.util.Address("84.56.233.76")));
+			System.out.println(map.getAddress().toString());
+			assertTrue(map.getAddress().equals(new de.javawi.jstun.util.IPv4Address("84.56.233.76")));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
