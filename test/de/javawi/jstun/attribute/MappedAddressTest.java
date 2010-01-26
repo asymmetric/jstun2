@@ -25,6 +25,7 @@ public class MappedAddressTest extends TestCase {
 	
 	int port = 63584;
 	int address = 1413015884;
+	String addressString = "84.56.233.76";
 	
 	byte[] data;
 	public MappedAddressTest(String mesg) {
@@ -106,18 +107,21 @@ public class MappedAddressTest extends TestCase {
 	/*
 	 * Test method for 'de.javawi.jstun.attribute.MappedResponseChangedSourceAddressReflectedFrom.getPort()'
 	 */
+	@Test
 	public void testGetPort() {
-		assertTrue(map.getPort() == 63584);
+		assertTrue(map.getPort() == port);
+		assertTrue(xor.getPort() == port);
 	}
 
 	/*
 	 * Test method for 'de.javawi.jstun.attribute.MappedResponseChangedSourceAddressReflectedFrom.getAddress()'
 	 */
+	@Test
 	public void testGetAddress() {
 		try {
 			System.out.println(map.getAddress().toString());
-			assertTrue(map.getAddress().equals(new de.javawi.jstun.util.IPv4Address("84.56.233.76")));
-			
+			assertTrue(map.getAddress().equals(new de.javawi.jstun.util.IPv4Address(addressString)));
+			assertTrue(xor.getAddress().equals(new de.javawi.jstun.util.IPv4Address(addressString)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
