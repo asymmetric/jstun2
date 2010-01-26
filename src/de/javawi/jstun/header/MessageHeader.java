@@ -46,7 +46,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private int magicCookie;
+	private int magicCookie; // mcookie as an int
 	private boolean stun2;
 
 	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
