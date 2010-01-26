@@ -84,12 +84,17 @@ public class Utility {
 			throw new UtilityException("Byte array too short!");
 		}
 		
+		int temp0, temp1, temp2, temp3;
+
 		// value[i] & 0xFF in order to convert to unsigned integer
-		return ((value[0] & 0xFF) << 24)  & ((value[1] & 0xFF) << 16)
-			  & ((value[2] & 0xFF) << 8) & (value[3] & 0xFF);
+		temp0 = (value[0] & 0xFF) << 24;
+		temp1 = (value[1] & 0xFF) << 16;
+		temp2 = (value[2] & 0xFF) << 8;
+		temp3 = (value[3] & 0xFF);
+		return temp0 | temp1 | temp2 | temp3;
 	}
 
-	// TODO find another use or remove
+	// TODO it's not so deprecated after all
 	/**
 	 * <p>
 	 * Returns 2 if the first 2 bits of typeArray are 0's, as it's a RFC5389

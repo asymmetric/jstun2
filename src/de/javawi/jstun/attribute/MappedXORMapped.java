@@ -61,6 +61,11 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		parseData(data);
 	}
 
+	public MappedXORMapped(MessageAttributeType type, byte[] data) throws MessageAttributeParsingException {
+		this(type);
+		parseData(data);
+	}
+
 	public MappedXORMapped(MessageAttributeType type, byte[] data,
 			Address address, int port) throws MessageAttributeParsingException {
 		super(type);
@@ -70,6 +75,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		parseData(data);
 	}
 
+	// TODO we should do XOR-decoding
 	private void parseData(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
@@ -128,6 +134,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	}
 
 	// TODO it should differ, based on the IP protocol family
+	/* Used to get the attribute as a byte[], in order to send it on the network */
 	public byte[] getBytes() throws UtilityException {
 		// 4 common bytes header + 4B own header + 4B address
 		byte[] result = new byte[12]; // TODO this should be variable
@@ -135,6 +142,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
+		// TODO should be variable
 		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
 
 		// mappedaddress header
@@ -154,11 +162,11 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
 			int xPort = port ^ shiftedMC;
 			
-			byte[] xPortByte = Utility.integerToFourBytes(xPort);
+			byte[] xPortByte = Utility.integerToTwoBytes(xPort);
 			System.arraycopy(xPortByte, 0, result, 6, 2);
 			
 			// calculate X-Address
-			int addressInt = Utility.fourBytesToInt(this.address.getBytes());
+			int addressInt = Utility.fourBytesToInt(address.getBytes());
 			int xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
 			
 			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
