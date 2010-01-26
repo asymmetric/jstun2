@@ -80,7 +80,7 @@ public class MappedAddressTest extends TestCase {
 			
 			byte[] resultXor = xor.getBytes();
 			
-			int xPort = port ^ MessageHeaderInterface.MAGICCOOKIE;
+			int xPort = port ^ MessageHeaderInterface.MAGICCOOKIE >>> 16;
 			int xAddr = address ^ MessageHeaderInterface.MAGICCOOKIE;
 			
 			byte[] portByte = Utility.integerToTwoBytes(xPort);
