@@ -14,7 +14,7 @@ package de.javawi.jstun.attribute;
 import junit.framework.TestCase;
 
 public class MappedAddressTest extends TestCase {
-	MappedAddress ma;
+	MappedXORMapped map;
 	byte[] data;
 	public MappedAddressTest(String mesg) {
 		super(mesg);
@@ -30,14 +30,14 @@ public class MappedAddressTest extends TestCase {
 		data[5] = 56;
 		data[6] = -23;
 		data[7] = 76;
-		ma = (MappedAddress) MappedAddress.parse(data);
+		map = new MappedXORMapped(data);
 	}
 
 	/*
-	 * Test method for 'de.javawi.jstun.attribute.MappedAddress.MappedAddress()'
+	 * Test method for 'de.javawi.jstun.attribute.MappedXORMapped.MappedXORMapped()'
 	 */
 	public void testMappedAddress() {
-		new MappedAddress();
+		new MappedXORMapped();
 	}
 
 	/*
@@ -45,7 +45,7 @@ public class MappedAddressTest extends TestCase {
 	 */
 	public void testGetBytes() {
 		try {
-			byte[] result = ma.getBytes();
+			byte[] result = map.getBytes();
 
 			assertTrue(result[0] == 0);
 			assertTrue(result[1] == 1);
@@ -68,7 +68,7 @@ public class MappedAddressTest extends TestCase {
 	 * Test method for 'de.javawi.jstun.attribute.MappedResponseChangedSourceAddressReflectedFrom.getPort()'
 	 */
 	public void testGetPort() {
-		assertTrue(ma.getPort() == 63584);
+		assertTrue(map.getPort() == 63584);
 	}
 
 	/*
@@ -76,8 +76,8 @@ public class MappedAddressTest extends TestCase {
 	 */
 	public void testGetAddress() {
 		try {
-			System.out.println(ma.getAddress().toString());
-			assertTrue(ma.getAddress().equals(new de.javawi.jstun.util.Address("84.56.233.76")));
+			System.out.println(map.getAddress().toString());
+			assertTrue(map.getAddress().equals(new de.javawi.jstun.util.IPv4Address("84.56.233.76")));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
