@@ -11,6 +11,7 @@
 
 package de.javawi.jstun.header;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -61,11 +62,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		this.type = type;
 	}
 	
-	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException {
+	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException, MessageAttributeException {
 		this();
 		setType(parseType(data));
 		parseMagicCookie(data);
 		equalMagicCookie();
+		parseAttributes(data);
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
@@ -147,7 +149,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		int start = 0;
 		int length = 2;
 
-		for (int i = 0; i < TRANSACTIONIDSIZE; i++, start += 2) {
+		for (int i = 0; i < TRANSACTIONIDSIZE / 2; i++, start += 2) {
 			System.arraycopy(Utility.integerToTwoBytes((int) (Math.random())),
 					0, id, start, length);
 		}
@@ -161,20 +163,22 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	public boolean equalTransactionID(MessageHeader header) {
 		byte[] idHeader = header.getTransactionID();
-		if (idHeader.length != 16)
-			return false;
-		if ((idHeader[0] == id[0]) && (idHeader[1] == id[1])
-				&& (idHeader[2] == id[2]) && (idHeader[3] == id[3])
-				&& (idHeader[4] == id[4]) && (idHeader[5] == id[5])
-				&& (idHeader[6] == id[6]) && (idHeader[7] == id[7])
-				&& (idHeader[8] == id[8]) && (idHeader[9] == id[9])
-				&& (idHeader[10] == id[10]) && (idHeader[11] == id[11])
-				&& (idHeader[12] == id[12]) && (idHeader[13] == id[13])
-				&& (idHeader[14] == id[14]) && (idHeader[15] == id[15])) {
-			return true;
-		} else {
-			return false;
-		}
+
+		return Arrays.equals(idHeader, id); // TODO must be tested
+//		if (idHeader.length != 16)
+//			return false;
+//		if ((idHeader[0] == id[0]) && (idHeader[1] == id[1])
+//				&& (idHeader[2] == id[2]) && (idHeader[3] == id[3])
+//				&& (idHeader[4] == id[4]) && (idHeader[5] == id[5])
+//				&& (idHeader[6] == id[6]) && (idHeader[7] == id[7])
+//				&& (idHeader[8] == id[8]) && (idHeader[9] == id[9])
+//				&& (idHeader[10] == id[10]) && (idHeader[11] == id[11])
+//				&& (idHeader[12] == id[12]) && (idHeader[13] == id[13])
+//				&& (idHeader[14] == id[14]) && (idHeader[15] == id[15])) {
+//			return true;
+//		} else {
+//			return false;
+//		}
 	}
 	/*
 	 * stun
