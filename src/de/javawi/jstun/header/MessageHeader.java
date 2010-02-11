@@ -149,7 +149,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		int start = 0;
 		int length = 2;
 
-		for (int i = 0; i < TRANSACTIONIDSIZE; i++, start += 2) {
+		for (int i = 0; i < TRANSACTIONIDSIZE / 2; i++, start += 2) {
 			System.arraycopy(Utility.integerToTwoBytes((int) (Math.random())),
 					0, id, start, length);
 		}
