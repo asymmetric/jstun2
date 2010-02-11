@@ -61,11 +61,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		this.type = type;
 	}
 	
-	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException {
+	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException, MessageAttributeException {
 		this();
 		setType(parseType(data));
 		parseMagicCookie(data);
 		equalMagicCookie();
+		parseAttributes(data);
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
