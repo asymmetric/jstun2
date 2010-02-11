@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.util.Enumeration;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -17,8 +18,7 @@ import de.javawi.jstun.test.BindingRequestTest;
 import de.javawi.jstun.util.UtilityException;
 
 public class BindingRequestDemo implements Runnable {
-	
-	static Logger logger;
+	private static final Logger logger = Logger.getLogger("de.javawi.jstun");
 	
 	InetAddress local;
 	String stunServer = "biascica.pipps.net";
@@ -35,25 +35,28 @@ public class BindingRequestDemo implements Runnable {
 			BindingRequestTest br = new BindingRequestTest(local, stunServer, port);
 			br.test();
 		} catch (SocketException e) {
-//			logger.severe(local + ": Socket Exception: "+e.getMessage()); // TODO or simply e?
+			logger.severe(local + ": Socket Exception: "+e.getMessage()); // TODO or simply e?
 		} catch (UnknownHostException e) {
-//			logger.severe(local+": Unknown host: "+e.getMessage());
+			logger.severe(local+": Unknown host: "+e.getMessage());
 		} catch (UtilityException e) {
-//			logger.severe(local+": Utility Exception: "+e.getMessage());
+			logger.severe(local+": Utility Exception: "+e.getMessage());
 		} catch (MessageHeaderParsingException e) {
-//			logger.severe(local+": MessageHeader Parsing Exception: "+e.getMessage());
+			logger.severe(local+": MessageHeader Parsing Exception: "+e.getMessage());
 		} catch (MessageAttributeException e) {
-//			logger.severe(local+": Attribute Parsing Exception: "+e.getMessage());
+			logger.severe(local+": Attribute Parsing Exception: "+e.getMessage());
 		} catch (IOException e) {
-//			logger.severe(local+": IO Exception: "+e.getMessage());
+			logger.severe(local+": IO Exception: "+e.getMessage());
 		}
 	}
 	
 	public static void main(String args[]) {
+		
 		try {
 			Handler fh = new FileHandler("bindingreq.log");
 			fh.setFormatter(new SimpleFormatter());
-			Logger.getLogger("de.javawi.jstun").addHandler(fh);
+			
+			logger.addHandler(fh);
+			logger.setLevel(Level.ALL);
 			
 			String stunserver = "biascica.pipps.net";
 			int port = 3478;
@@ -71,6 +74,7 @@ public class BindingRequestDemo implements Runnable {
 					}
 				}
 			}
+			logger.fine("Tests run"); // TODO remove
 		} catch (SecurityException e) {
 			logger.warning("Warning: no logging permissions");
 		} catch (IOException e) {
