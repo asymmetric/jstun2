@@ -13,6 +13,7 @@ package de.javawi.jstun.header;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -150,8 +151,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		int length = 2;
 
 		for (int i = 0; i < TRANSACTIONIDSIZE / 2; i++, start += 2) {
-			System.arraycopy(Utility.integerToTwoBytes((int) (Math.random())),
-					0, id, start, length);
+			Random r = new Random();
+			System.arraycopy(Utility.integerToTwoBytes(r.nextInt()), 0, id, start, length);
 		}
 	}
 
