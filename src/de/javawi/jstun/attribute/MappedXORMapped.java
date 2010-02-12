@@ -145,6 +145,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
+		// TODO should be variable
 		System.arraycopy(Utility.integerToTwoBytes(HEADER_LENGTH + IPv4LENGTH), 0, result, 2, 2);
 
 		// mappedaddress header
@@ -164,12 +165,12 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
 			int xPort = port ^ shiftedMC;
 
-			byte[] xPortByte = Utility.integerToTwoBytes(xPort);
+			byte[] xPortByte = Utility.integerToFourBytes(xPort);
 			System.arraycopy(xPortByte, 0, result, 6, 2);
 
 			// calculate X-Address
-			int addressInt = Utility.fourBytesToInt(address.getBytes());
-			int xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
+			long addressInt = Utility.fourBytesToLong(address.getBytes());
+			long xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
 
 			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
 			System.arraycopy(xAddressByte, 0, result, 8, 4);

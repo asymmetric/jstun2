@@ -17,18 +17,22 @@ import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
 public class ErrorCode extends AbstractMessageAttribute {
-   /*
-    *  0                   1                   2                   3
-    *  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    * |                   0                     |Class|     Number    |
-    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    * |      Reason Phrase (variable)                                ..
-    * +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-    */
+
+	/*
+    *	0                   1                   2                   3
+    *	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   	*	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   	*	|           Reserved, should be 0         |Class|     Number    |
+   	*	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   	*	|      Reason Phrase (variable)                                ..
+   	*	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   	*/
+
 
 	int responseCode;
 	String reason;
+	private int classHeader;
+	private int number;
 
 	public ErrorCode() {
 		super(MessageAttributeType.ErrorCode);
@@ -40,30 +44,34 @@ public class ErrorCode extends AbstractMessageAttribute {
 		if (data.length < 4) { // TODO unmagic all
 			throw new MessageAttributeParsingException("Data array too short");
 		}
+
 		byte classHeaderByte = data[3];
 		int classHeader = Utility.oneByteToInteger(classHeaderByte);
-		if ((classHeader < 1) || (classHeader > 6)) throw new MessageAttributeParsingException("Class parsing error");
+		if ((classHeader < 3) || (classHeader > 6))
+			throw new MessageAttributeParsingException("Class parsing error");
+
 		byte numberByte = data[4];
 		int number = Utility.oneByteToInteger(numberByte);
-		if ((number < 0) || (number > 99)) throw new MessageAttributeParsingException("Number parsing error");
-		int responseCode = (classHeader * 100) + number;
-		setResponseCode(responseCode);
+		if ((number < 0) || (number > 99))
+			throw new MessageAttributeParsingException("Number parsing error");
+
+		setResponseCode(classHeader, number);
 	}
 
-	public void setResponseCode(int responseCode) throws MessageAttributeException {
+	public void setResponseCode(int classHeader, int number) throws MessageAttributeException {
+		int responseCode = (classHeader * 100) + number;
 		switch (responseCode) {
-		case 400: reason = "Bad Request"; break;
-		case 401: reason = "Unauthorized"; break;
-		case 420: reason = "Unkown Attribute"; break;
-		case 430: reason = "Stale Credentials"; break;
-		case 431: reason = "Integrity Check Failure"; break;
-		case 432: reason = "Missing Username"; break;
-		case 433: reason = "Use TLS"; break;
-		case 500: reason = "Server Error"; break;
-		case 600: reason = "Global Failure"; break;
+			// TODO cfr rfc for additional requirements
+			case 300: reason = "Try Alternate"; break;
+			case 400: reason = "Bad Request"; break;
+			case 401: reason = "Unauthorized"; break;
+			case 420: reason = "Unkown Attribute"; break;
+			case 438: reason = "Stale Nonce"; break;
+			case 500: reason = "Server Error"; break;
 		default: throw new MessageAttributeException("Response Code is not valid");
 		}
 		this.responseCode = responseCode;
+		this.classHeader = classHeader;
 	}
 
 	public int getResponseCode() {
@@ -90,7 +98,6 @@ public class ErrorCode extends AbstractMessageAttribute {
 		System.arraycopy(Utility.integerToTwoBytes(length-4), 0, result, 2, 2);
 
 		// error code header
-		int classHeader = (int) Math.floor(((double)responseCode)/100);
 		result[6] = Utility.integerToOneByte(classHeader);
 		result[7] = Utility.integerToOneByte(responseCode%100);
 		byte[] reasonArray = reason.getBytes();
@@ -116,9 +123,8 @@ public class ErrorCode extends AbstractMessageAttribute {
 			byte numberByte = data[4];
 			int number = Utility.oneByteToInteger(numberByte);
 			if ((number < 0) || (number > 99)) throw new MessageAttributeParsingException("Number parsing error");
-			int responseCode = (classHeader * 100) + number;
 			ErrorCode result = new ErrorCode();
-			result.setResponseCode(responseCode);
+			result.setResponseCode(classHeader, number);
 			return result;
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");

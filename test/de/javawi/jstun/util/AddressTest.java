@@ -13,24 +13,31 @@ package de.javawi.jstun.util;
 
 import junit.framework.TestCase;
 
+import org.junit.Test;
+
 public class AddressTest extends TestCase {
-	Address address;
+	IPv4Address ipv4;
+	IPv6Address ipv6;
+	Address addr;
 	
 	public AddressTest(String mesg) {
 		super(mesg);
 	}
 
 	protected void setUp() throws Exception {
-		address = new Address("192.168.100.1");
+		ipv4 = new IPv4Address("192.168.100.1");
+		ipv6 = new IPv6Address("de:ad:be:af");
+		addr = new IPv4Address("192.168.1.1");
 	}
 
 	/*
-	 * Test method for 'de.javawi.jstun.util.Address.Address(int, int, int, int)'
+	 * Test method for 'de.javawi.jstun.util.IPv4Address.IPv4Address(int, int, int, int)'
 	 */
+	@Test
 	public void testAddressIntIntIntInt() {
 		try {
-			Address comp = new Address(192,168,100,1);
-			assertTrue(address.equals(comp));
+			Address comp = new IPv4Address(192,168,100,1);
+			assertTrue(ipv4.equals(comp));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		}
@@ -39,10 +46,14 @@ public class AddressTest extends TestCase {
 	/*
 	 * Test method for 'de.javawi.jstun.util.Address.Address(String)'
 	 */
+	@Test
 	public void testAddressString() {
 		try {
-			Address comp = new Address("192.168.100.1");
-			assertTrue(address.equals(comp));
+			Address comp = new IPv4Address("192.168.100.1");
+			assertTrue(ipv4.equals(comp));
+
+			comp = new IPv6Address("de:ad:be:af");
+			assertTrue(ipv6.equals(comp));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		}
@@ -51,11 +62,12 @@ public class AddressTest extends TestCase {
 	/*
 	 * Test method for 'de.javawi.jstun.util.Address.Address(byte[])'
 	 */
+	@Test
 	public void testAddressByteArray() {
 		try {
 			byte[] data = {(byte)192, (byte)168, (byte)100, (byte)1};
-			Address comp = new Address(data);
-			assertTrue(address.equals(comp));
+			Address comp = new IPv4Address(data);
+			assertTrue(ipv4.equals(comp));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		}
@@ -66,8 +78,8 @@ public class AddressTest extends TestCase {
 	 */
 	public void testToString() {
 		try {
-			Address comp = new Address("192.168.100.1");
-			assertTrue(address.equals(comp));
+			Address comp = new IPv4Address("192.168.100.1");
+			assertTrue(ipv4.equals(comp));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		}
@@ -78,7 +90,7 @@ public class AddressTest extends TestCase {
 	 */
 	public void testGetBytes() {
 		try {
-			byte[] data = address.getBytes();
+			byte[] data = ipv4.getBytes();
 			assertTrue(data[0] == (byte)192);
 			assertTrue(data[1] == (byte)168);
 			assertTrue(data[2] == (byte)100);
@@ -94,10 +106,10 @@ public class AddressTest extends TestCase {
 	 */
 	public void testGetInetAddress() {
 		try {
-			Address comp = new Address("192.168.100.1");
-			assertTrue(address.getInetAddress().equals(comp.getInetAddress()));
-			comp = new Address("192.168.100.2");
-			assertFalse(address.getInetAddress().equals(comp.getInetAddress()));
+			Address comp = new IPv4Address("192.168.100.1");
+			assertTrue(ipv4.getInetAddress().equals(comp.getInetAddress()));
+			comp = new IPv4Address("192.168.100.2");
+			assertFalse(ipv4.getInetAddress().equals(comp.getInetAddress()));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		} catch (java.net.UnknownHostException uhe) {
@@ -110,10 +122,10 @@ public class AddressTest extends TestCase {
 	 */
 	public void testEqualsObject() {
 		try {
-			Address comp = new Address("192.168.100.1");
-			assertTrue(address.equals(comp));
-			comp = new Address("192.168.100.2");
-			assertFalse(address.equals(comp));
+			Address comp = new IPv4Address("192.168.100.1");
+			assertTrue(ipv4.equals(comp));
+			comp = new IPv4Address("192.168.100.2");
+			assertFalse(ipv4.equals(comp));
 		} catch (UtilityException ue) {
 			ue.printStackTrace();
 		}

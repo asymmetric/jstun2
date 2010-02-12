@@ -11,7 +11,9 @@
 
 package de.javawi.jstun.header;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -46,7 +48,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private int magicCookie; // mcookie as an int
+	private long magicCookie; // mcookie as a long
 	private boolean stun2;
 
 	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
@@ -61,11 +63,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		this.type = type;
 	}
 	
-	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException {
+	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException, MessageAttributeException {
 		this();
 		setType(parseType(data));
 		parseMagicCookie(data);
 		equalMagicCookie();
+		parseAttributes(data);
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi
 	}
 
@@ -117,7 +120,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	private void parseMagicCookie(byte[] data) throws UtilityException {
 		System.arraycopy(data, 4, mcookie, 0, 4);
 		// Store it as an int too
-		magicCookie = Utility.fourBytesToInt(mcookie);
+		magicCookie = Utility.fourBytesToLong(mcookie);
 	}
 
 	public byte[] getMagicCookie() { // TODO why so complicated?
@@ -145,11 +148,12 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	private void generateTransactionID() throws UtilityException {
 		int start = 0;
-		int length = 2;
+		int length = 4;
 
-		for (int i = 0; i < TRANSACTIONIDSIZE; i++, start += 2) {
-			System.arraycopy(Utility.integerToTwoBytes((int) (Math.random())),
-					0, id, start, length);
+		for (int i = 0; i < TRANSACTIONIDSIZE / 4; i++, start += 4) {
+			Random r = new Random();
+			int val = r.nextInt();
+			System.arraycopy(Utility.integerToFourBytes(val), 0, id, start, length);
 		}
 	}
 
@@ -161,20 +165,22 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	public boolean equalTransactionID(MessageHeader header) {
 		byte[] idHeader = header.getTransactionID();
-		if (idHeader.length != 16)
-			return false;
-		if ((idHeader[0] == id[0]) && (idHeader[1] == id[1])
-				&& (idHeader[2] == id[2]) && (idHeader[3] == id[3])
-				&& (idHeader[4] == id[4]) && (idHeader[5] == id[5])
-				&& (idHeader[6] == id[6]) && (idHeader[7] == id[7])
-				&& (idHeader[8] == id[8]) && (idHeader[9] == id[9])
-				&& (idHeader[10] == id[10]) && (idHeader[11] == id[11])
-				&& (idHeader[12] == id[12]) && (idHeader[13] == id[13])
-				&& (idHeader[14] == id[14]) && (idHeader[15] == id[15])) {
-			return true;
-		} else {
-			return false;
-		}
+
+		return Arrays.equals(idHeader, id); // TODO must be tested
+//		if (idHeader.length != 16)
+//			return false;
+//		if ((idHeader[0] == id[0]) && (idHeader[1] == id[1])
+//				&& (idHeader[2] == id[2]) && (idHeader[3] == id[3])
+//				&& (idHeader[4] == id[4]) && (idHeader[5] == id[5])
+//				&& (idHeader[6] == id[6]) && (idHeader[7] == id[7])
+//				&& (idHeader[8] == id[8]) && (idHeader[9] == id[9])
+//				&& (idHeader[10] == id[10]) && (idHeader[11] == id[11])
+//				&& (idHeader[12] == id[12]) && (idHeader[13] == id[13])
+//				&& (idHeader[14] == id[14]) && (idHeader[15] == id[15])) {
+//			return true;
+//		} else {
+//			return false;
+//		}
 	}
 	/*
 	 * stun
@@ -223,14 +229,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		 * getBytes().length; }
 		 */
 		// copy first 32 bits of header in result, 2 bytes at a time
-		System.arraycopy(Utility.integerToTwoBytes(type.getShiftedEncoding()),
-				0, result, 0, 2);
-		System.arraycopy(Utility.integerToTwoBytes(length - 20), 0, result, 2,
+		byte[] typeByte = Utility.integerToTwoBytes(type.getEncoding());
+		System.arraycopy(typeByte, 0, result, 0, 2);
+		System.arraycopy(Utility.integerToTwoBytes(length - HEADERSIZE), 0, result, 2,
 				2);
-		// TODO network order?
 		System.arraycopy(mcookie, 0, result, 4, 4);
-		System.arraycopy(id, 0, result, 8,
-				MessageHeaderInterface.TRANSACTIONIDSIZE);
+		System.arraycopy(id, 0, result, 8, MessageHeaderInterface.TRANSACTIONIDSIZE);
 
 		// arraycopy of attributes
 		int offset = MessageHeaderInterface.HEADERSIZE;
