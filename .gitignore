@@ -4,3 +4,5 @@
 gen/
 bin/
 src/logging.txt*
+*.log*
+*.lck

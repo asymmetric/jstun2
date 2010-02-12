@@ -36,14 +36,13 @@ public class Utility {
 		return result;
 	}
 
-	// converts to Big-Endian
 	public static final byte[] integerToFourBytes(int value)
 			throws UtilityException {
 		byte[] result = new byte[4];
 		result[0] = (byte) ((value >>> 24) & 0xFF);
 		result[1] = (byte) ((value >>> 16) & 0xFF);
 		result[2] = (byte) ((value >>> 8) & 0xFF);
-		result[3] = (byte) ((value & 0xFF) & 0xFF);
+		result[3] = (byte) (value & 0xFF);
 		return result;
 	}
 
