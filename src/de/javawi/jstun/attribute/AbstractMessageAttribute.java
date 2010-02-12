@@ -52,9 +52,10 @@ public abstract class AbstractMessageAttribute {
 	final static int COMMONHEADERSIZE = 4;
 	final static int ALIGNMENT = 4;
 
-	MessageAttributeType type;
+	final static int TYPE_SIZE = 2;
+	final static int LENGTH_SIZE = 2;
 
-	// TODO add padding?
+	MessageAttributeType type;
 
 	/**
 	 * Sets the <b>type</b> instance field with the specified {@link MessageAttributeType}
