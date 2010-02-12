@@ -162,17 +162,19 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		}
 		else {
 			// calculate X-Port
-			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
+			// TODO should it be >>> or >> ?
+			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >> 16;
 			int xPort = port ^ shiftedMC;
 
-			byte[] xPortByte = Utility.integerToFourBytes(xPort);
+			byte[] xPortByte = Utility.integerToTwoBytes(xPort);
 			System.arraycopy(xPortByte, 0, result, 6, 2);
 
 			// calculate X-Address
 			long addressInt = Utility.fourBytesToLong(address.getBytes());
 			long xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
+			int xaddint = (int) xAddress;
 
-			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
+			byte[] xAddressByte = Utility.integerToFourBytes((int) xAddress);
 			System.arraycopy(xAddressByte, 0, result, 8, 4);
 		}
 		return result;
