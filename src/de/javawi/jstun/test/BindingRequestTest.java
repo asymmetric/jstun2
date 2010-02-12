@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.javawi.jstun.attribute.ErrorCode;
+import de.javawi.jstun.attribute.Software;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
@@ -43,6 +44,7 @@ public class BindingRequestTest {
 		
 		MessageHeader bindReq = new MessageHeader(new Binding(MessageHeaderClass.REQUEST));
 		bindReq.initHeader();
+		bindReq.addMessageAttribute(new Software());
 		data = bindReq.getBytes();
 		
 		DatagramPacket send = new DatagramPacket(data, data.length);
