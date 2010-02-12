@@ -13,7 +13,6 @@ package de.javawi.jstun.header;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -48,7 +47,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	AbstractMessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
-	private int magicCookie; // mcookie as an int
+	private long magicCookie; // mcookie as a long
 	private boolean stun2;
 
 	private final TreeMap<AbstractMessageAttribute.MessageAttributeType, AbstractMessageAttribute> ma =
@@ -120,7 +119,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	private void parseMagicCookie(byte[] data) throws UtilityException {
 		System.arraycopy(data, 4, mcookie, 0, 4);
 		// Store it as an int too
-		magicCookie = Utility.fourBytesToInt(mcookie);
+		magicCookie = Utility.fourBytesToLong(mcookie);
 	}
 
 	public byte[] getMagicCookie() { // TODO why so complicated?
@@ -148,11 +147,11 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	private void generateTransactionID() throws UtilityException {
 		int start = 0;
-		int length = 2;
+		int length = 4;
 
-		for (int i = 0; i < TRANSACTIONIDSIZE / 2; i++, start += 2) {
-			Random r = new Random();
-			System.arraycopy(Utility.integerToTwoBytes(r.nextInt()), 0, id, start, length);
+		for (int i = 0; i < TRANSACTIONIDSIZE / 4; i++, start += 4) {
+			int val = (int) Math.random() * 65536;
+			System.arraycopy(Utility.integerToFourBytes(val), 0, id, start, length);
 		}
 	}
 
