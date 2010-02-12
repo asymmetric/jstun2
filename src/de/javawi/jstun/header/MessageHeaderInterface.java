@@ -56,9 +56,6 @@ public interface MessageHeaderInterface {
 	int MAGICCOOKIESIZE = 4;
 	int TRANSACTIONIDSIZE = 12; // in bytes
 
-	int MESSAGETYPESHIFT = 14; // 14 bits of shift for a 32 bits
-	// int
-
 	// pre-defined class-method associations
 	int BINDINGREQUEST = 0x0001;
 	int BINDINGINDICATION = 0x0011; // STUN2 only

@@ -13,6 +13,7 @@ package de.javawi.jstun.header;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
@@ -150,7 +151,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		int length = 4;
 
 		for (int i = 0; i < TRANSACTIONIDSIZE / 4; i++, start += 4) {
-			int val = (int) Math.random() * 65536;
+			Random r = new Random();
+			int val = r.nextInt();
 			System.arraycopy(Utility.integerToFourBytes(val), 0, id, start, length);
 		}
 	}
@@ -227,14 +229,12 @@ public class MessageHeader implements MessageHeaderInterface {
 		 * getBytes().length; }
 		 */
 		// copy first 32 bits of header in result, 2 bytes at a time
-		System.arraycopy(Utility.integerToTwoBytes(type.getShiftedEncoding()),
-				0, result, 0, 2);
-		System.arraycopy(Utility.integerToTwoBytes(length - 20), 0, result, 2,
+		byte[] typeByte = Utility.integerToTwoBytes(type.getEncoding());
+		System.arraycopy(typeByte, 0, result, 0, 2);
+		System.arraycopy(Utility.integerToTwoBytes(length - HEADERSIZE), 0, result, 2,
 				2);
-		// TODO network order?
 		System.arraycopy(mcookie, 0, result, 4, 4);
-		System.arraycopy(id, 0, result, 8,
-				MessageHeaderInterface.TRANSACTIONIDSIZE);
+		System.arraycopy(id, 0, result, 8, MessageHeaderInterface.TRANSACTIONIDSIZE);
 
 		// arraycopy of attributes
 		int offset = MessageHeaderInterface.HEADERSIZE;
