@@ -38,6 +38,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	Address.Family family;
 	MessageAttributeType type;
 
+	final static int HEADER_LENGTH = 4;
+
 
 	/**
 	 * Default constructor.<br>
@@ -86,27 +88,27 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			int familyInt = Utility.oneByteToInteger(data[1]);
 
 			if (familyInt == Family.IPv4.getEncoding()) {
-				
+
 				byte[] addressArray = new byte[4];
 				System.arraycopy(data, 4, addressArray, 0, 4);
-				
+
 				// store it in the local vars
 				this.address = new IPv4Address(addressArray);
 				this.family = Family.IPv4;
-				
+
 			} else if (familyInt == Family.IPv6.getEncoding()) {
 				; // TODO implement
 			} else
 				throw new MessageAttributeParsingException("Family " + familyInt
 						+ " is not supported");
-			
+
 			// Geth the port from the packet
 			byte[] portArray = new byte[2];
 			System.arraycopy(data, 2, portArray, 0, 2);
-			
+
 			// store it
 			this.port = Utility.twoBytesToInteger(portArray);
-			
+
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");
 		} catch (MessageAttributeException mae) {
@@ -137,13 +139,14 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	/* Used to get the attribute as a byte[], in order to send it on the network */
 	public byte[] getBytes() throws UtilityException {
 		// 4 common bytes header + 4B own header + 4B address
-		byte[] result = new byte[12]; // TODO this should be variable
+		final int IPv4LENGTH = 4;
+		byte[] result = new byte[COMMONHEADERSIZE + HEADER_LENGTH + IPv4LENGTH]; // TODO this should be variable
 		// message attribute header
 		// type
 		System.arraycopy(Utility.integerToTwoBytes(typeToInteger(type)), 0, result, 0, 2);
 		// length
 		// TODO should be variable
-		System.arraycopy(Utility.integerToTwoBytes(8), 0, result, 2, 2);
+		System.arraycopy(Utility.integerToTwoBytes(HEADER_LENGTH + IPv4LENGTH), 0, result, 2, 2);
 
 		// mappedaddress header
 		// padding
@@ -161,14 +164,14 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			// calculate X-Port
 			int shiftedMC = MessageHeaderInterface.MAGICCOOKIE >>> 16;
 			int xPort = port ^ shiftedMC;
-			
-			byte[] xPortByte = Utility.integerToTwoBytes(xPort);
+
+			byte[] xPortByte = Utility.integerToFourBytes(xPort);
 			System.arraycopy(xPortByte, 0, result, 6, 2);
-			
+
 			// calculate X-Address
-			int addressInt = Utility.fourBytesToInt(address.getBytes());
-			int xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
-			
+			long addressInt = Utility.fourBytesToLong(address.getBytes());
+			long xAddress = addressInt ^ MessageHeaderInterface.MAGICCOOKIE;
+
 			byte[] xAddressByte = Utility.integerToFourBytes(xAddress);
 			System.arraycopy(xAddressByte, 0, result, 8, 4);
 		}
