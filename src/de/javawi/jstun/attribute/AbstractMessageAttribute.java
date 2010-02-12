@@ -134,8 +134,6 @@ public abstract class AbstractMessageAttribute {
 				ma = new MappedXORMapped(valueArray);
 			else if (type == MessageAttributeType.Username.getEncoding())
 				ma = new Username(valueArray);
-			else if (type == MessageAttributeType.MessageIntegrity.getEncoding())
-				ma = new MessageIntegrity(valueArray);
 			else if (type == MessageAttributeType.ErrorCode.getEncoding())
 				ma = new ErrorCode(valueArray);
 			else if (type == MessageAttributeType.UnknownAttribute.getEncoding())

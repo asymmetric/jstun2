@@ -12,7 +12,6 @@ public class Software extends AbstractMessageAttribute {
 		super(MessageAttributeType.Software);
 	}
 
-	// TODO test this out
 	@Override
 	public byte[] getBytes() throws UtilityException {
 		byte[] result = new byte[COMMONHEADERSIZE + software.length()];

@@ -39,6 +39,7 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 	}
 
 	public UnknownAttribute(byte[] data) throws MessageAttributeParsingException, UtilityException {
+		this();
 		int padding, length;
 
 		// TODO useless?
