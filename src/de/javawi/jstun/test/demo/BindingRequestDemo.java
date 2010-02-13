@@ -21,7 +21,7 @@ public class BindingRequestDemo implements Runnable {
 	private static final Logger logger = Logger.getLogger("de.javawi.jstun");
 	
 	InetAddress local;
-	String stunServer = "stun01.sipphone.com";
+	String stunServer = "biascica.pipps.net";
 	int port = 3478;
 	
 	public BindingRequestDemo(InetAddress localAddress, String stunServer, int port) {
