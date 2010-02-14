@@ -16,10 +16,10 @@ public class Utility {
 	// loses the 3 highest bytes
 	public static final byte integerToOneByte(int value)
 			throws UtilityException {
-		if ((value > Math.pow(2, 7)) || (value < 0)) {
-			throw new UtilityException("Integer value " + value
-					+ " is larger than 2^7 or smaller than 0");
-		}
+//		if ((value > Math.pow(2, 7)) || (value < 0)) {
+//			throw new UtilityException("Integer value " + value
+//					+ " is larger than 2^7 or smaller than 0");
+//		}
 		return (byte) (value & 0xFF); // TODO does it keep the sign?
 	}
 
@@ -28,11 +28,12 @@ public class Utility {
 	public static final byte[] integerToTwoBytes(int value)
 			throws UtilityException {
 		byte[] result = new byte[2];
-		if ((value > Math.pow(2, 15)) || (value < 0)) {
-			throw new UtilityException("Value "+value+" is either too large or too small");
-		}
+//		if ((value > Math.pow(2, 15)) || (value < 0)) {
+//			throw new UtilityException("Value "+value+" is either too large or too small");
+//		}
 		result[0] = (byte) ((value >>> 8) & 0xFF);
 		result[1] = (byte) value;
+
 		return result;
 	}
 

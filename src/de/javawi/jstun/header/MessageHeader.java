@@ -157,10 +157,22 @@ public class MessageHeader implements MessageHeaderInterface {
 		}
 	}
 
+	/** Returns the id variable
+	 *
+	 * @return the stored Transaction ID
+	 */
 	public byte[] getTransactionID() {
 		byte[] idCopy = new byte[TRANSACTIONIDSIZE];
 		System.arraycopy(id, 0, idCopy, 0, TRANSACTIONIDSIZE);
 		return idCopy;
+	}
+
+	/** Parses the transaction id from an incoming packet, and stores it in a variable
+	 *
+	 * @param data	the byte[] containing the packet
+	 */
+	public void parseTransactionID(byte[] data) {
+		System.arraycopy(data, 8, id, 0, TRANSACTIONIDSIZE);
 	}
 
 	public boolean equalTransactionID(MessageHeader header) {
@@ -204,7 +216,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		return ma.get(type);
 	}
 
-	public byte[] getBytes() throws UtilityException { // TODO should be ok
+	public byte[] getBytes() throws UtilityException {
 		int length = MessageHeaderInterface.HEADERSIZE;
 		Iterator<AbstractMessageAttribute.MessageAttributeType> it = ma.keySet().iterator();
 		while (it.hasNext()) {
@@ -256,15 +268,18 @@ public class MessageHeader implements MessageHeaderInterface {
 	public void parseAttributes(byte[] data) throws MessageAttributeException {
 		try {
 			byte[] lengthArray = new byte[2];
+			// copy packet's payload length (i.e. excluding the 20 byte header)
 			System.arraycopy(data, 2, lengthArray, 0, 2);
+			// convert it to int
 			int length = Utility.twoBytesToInteger(lengthArray);
-			System.arraycopy(data, 4, id, 0, 16);
-			byte[] cuttedData;
-			int offset = 20;
+
+			byte[] cutData;
+			int offset = HEADERSIZE;
 			while (length > 0) {
-				cuttedData = new byte[length];
-				System.arraycopy(data, offset, cuttedData, 0, length);
-				AbstractMessageAttribute ma = AbstractMessageAttribute.parseCommonHeader(cuttedData);
+				// TODO does it work if there's more than one attribute?
+				cutData = new byte[length];
+				System.arraycopy(data, offset, cutData, 0, length);
+				AbstractMessageAttribute ma = AbstractMessageAttribute.parseCommonHeader(cutData);
 				addMessageAttribute(ma);
 				length -= ma.getLength();
 				offset += ma.getLength();
@@ -287,6 +302,7 @@ public class MessageHeader implements MessageHeaderInterface {
 
 		mh.setType(parseType(data));
 		mh.parseMagicCookie(data); // TODO re-add
+		mh.parseTransactionID(data);
 
 		return mh;
 		// TODO maybe we should catch the utility exception, dal quinto byte in poi

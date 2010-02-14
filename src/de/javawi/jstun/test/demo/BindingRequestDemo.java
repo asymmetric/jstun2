@@ -14,6 +14,7 @@ import java.util.logging.SimpleFormatter;
 
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
+import de.javawi.jstun.header.exception.MessageTypeException;
 import de.javawi.jstun.test.BindingRequestTest;
 import de.javawi.jstun.util.UtilityException;
 
@@ -46,6 +47,8 @@ public class BindingRequestDemo implements Runnable {
 			logger.severe(local+": Attribute Parsing Exception: "+e.getMessage());
 		} catch (IOException e) {
 			logger.severe(local+": IO Exception: "+e.getMessage());
+		} catch (MessageTypeException e) {
+			logger.severe(local+": Message Type Exception" + e.getMessage());
 		}
 	}
 	
