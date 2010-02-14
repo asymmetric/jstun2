@@ -14,8 +14,9 @@ import de.javawi.jstun.attribute.Software;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
-import de.javawi.jstun.header.MessageHeaderInterface.MessageHeaderClass;
+import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
+import de.javawi.jstun.header.exception.MessageTypeException;
 import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.UtilityException;
 
@@ -36,13 +37,13 @@ public class BindingRequestTest {
 		this.stunServer = InetAddress.getByName(stunServer);
 	}
 	
-	public boolean test() throws UtilityException, MessageHeaderParsingException, MessageAttributeException, IOException {
+	public boolean test() throws UtilityException, MessageHeaderParsingException, MessageAttributeException, IOException, MessageTypeException {
 		s1 = new DatagramSocket();
 		
 		s1.connect(stunServer, port);
 		s1.setSoTimeout(500); // TODO configurable
 		
-		MessageHeader bindReq = new MessageHeader(new Binding(MessageHeaderClass.REQUEST));
+		MessageHeader bindReq = new MessageHeader(new Binding(MessageHeaderInterface.REQUEST));
 		bindReq.initHeader();
 		bindReq.addMessageAttribute(new Software());
 		data = bindReq.getBytes();

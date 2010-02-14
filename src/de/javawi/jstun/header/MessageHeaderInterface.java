@@ -46,24 +46,37 @@ public interface MessageHeaderInterface {
 		STUN1, STUN2;
 	}
 
-	int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
-	int HEADERSIZE = 20; // size in bytes
+	static final int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
+	static final int HEADERSIZE = 20; // size in bytes
 
 	/**
 	 * The Magic Cookie as per <a href="http://tools.ietf.org/html/rfc5389">RFC5389</a>
 	 */
-	int MAGICCOOKIE = 0x2112A442;
-	int MAGICCOOKIESIZE = 4;
-	int TRANSACTIONIDSIZE = 12; // in bytes
+	static final int MAGICCOOKIE = 0x2112A442;
+	static final int MAGICCOOKIESIZE = 4;
+	static final int TRANSACTIONIDSIZE = 12; // in bytes
+	
+	// static definitions of STUN2 classes
+	final static int REQUEST = 0x00;
+	final static int INDICATION = 0x10;
+	final static int SUCCESS_RESPONSE = 0x100;
+	final static int ERROR_RESPONSE = 0x110;
+	
+	/**
+	 * Convenience array containing the STUN2 classes, <br> i.e. 
+	 * REQUEST, INDICATION, SUCCESS_RESPONSE, ERROR_RESPONSE. <br><br>
+	 * <b>NOTE</b>: <u>Keep it sorted</u>! There are {@link java.util.Arrays#binarySearch(int[], int) Arrays.binarySearch()} calls that require it!
+	 */
+	final static int[] CLASS_ARRAY = { REQUEST, INDICATION, SUCCESS_RESPONSE, ERROR_RESPONSE };
 
 	// pre-defined class-method associations
-	int BINDINGREQUEST = 0x0001;
-	int BINDINGINDICATION = 0x0011; // STUN2 only
-	int BINDINGRESPONSE = 0x0101;
-	int BINDINGERRORRESPONSE = 0x0111;
+	static final int BINDINGREQUEST = 0x0001;
+	static final int BINDINGINDICATION = 0x0011; // STUN2 only
+	static final int BINDINGRESPONSE = 0x0101;
+	static final int BINDINGERRORRESPONSE = 0x0111;
 
 	// STUN1 only
-	int SHAREDSECRETREQUEST = 0x0002;
-	int SHAREDSECRETRESPONSE = 0x0102;
-	int SHAREDSECRETERRORRESPONSE = 0x0112;
+	static final int SHAREDSECRETREQUEST = 0x0002;
+	static final int SHAREDSECRETRESPONSE = 0x0102;
+	static final int SHAREDSECRETERRORRESPONSE = 0x0112;
 }
