@@ -87,7 +87,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			// Get the IP family directly from the packet
 			int familyInt = Utility.oneByteToInteger(data[1]);
 
-			if (familyInt == Family.IPv4.getEncoding()) {
+			if (familyInt == Address.IPv4) {
 
 				byte[] addressArray = new byte[4];
 				System.arraycopy(data, 4, addressArray, 0, 4);
@@ -96,7 +96,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 				this.address = new IPv4Address(addressArray);
 				this.family = Family.IPv4;
 
-			} else if (familyInt == Family.IPv6.getEncoding()) {
+			} else if (familyInt == Address.IPv6) {
 				; // TODO implement
 			} else
 				throw new MessageAttributeParsingException("Family " + familyInt

@@ -19,8 +19,6 @@ public interface Address {
 	/**
 	 * Enum representing the IP family
 	 * 
-	 * @author Lorenzo Manacorda (asymmetric)
-	 * 
 	 */
 	public static enum Family {
 		IPv4(0x01), IPv6(0x02);
@@ -35,6 +33,10 @@ public interface Address {
 			return encoding;
 		}
 	}
+
+	// convenience constant definitions
+	final static int IPv4 = 0x01;
+	final static int IPv6 = 0x02;
 
 	public byte[] getBytes() throws UtilityException;
 
