@@ -1,6 +1,7 @@
 package de.javawi.jstun.header.messagetype.method;
 
 import de.javawi.jstun.header.MessageHeaderInterface;
+import de.javawi.jstun.header.exception.MessageTypeException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 
 public class Binding extends AbstractMessageType {
@@ -9,6 +10,10 @@ public class Binding extends AbstractMessageType {
 
 	public Binding(MessageHeaderInterface.MessageHeaderClass c) {
 		super(c, methodEncoding);
+	}
+	
+	public Binding(int klass) throws MessageTypeException {
+		super(klass, methodEncoding);
 	}
 
 }
