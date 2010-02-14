@@ -46,15 +46,15 @@ public interface MessageHeaderInterface {
 		STUN1, STUN2;
 	}
 
-	static final int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
-	static final int HEADERSIZE = 20; // size in bytes
+	final static int FIRSTWORDMASK = 0x3FFFFFFF; // to be AND'ed with 14<<(class OR method)
+	final static int HEADERSIZE = 20; // size in bytes
 
 	/**
 	 * The Magic Cookie as per <a href="http://tools.ietf.org/html/rfc5389">RFC5389</a>
 	 */
-	static final int MAGICCOOKIE = 0x2112A442;
-	static final int MAGICCOOKIESIZE = 4;
-	static final int TRANSACTIONIDSIZE = 12; // in bytes
+	final static int MAGICCOOKIE = 0x2112A442;
+	final static int MAGICCOOKIESIZE = 4;
+	final static int TRANSACTIONIDSIZE = 12; // in bytes
 	
 	// static definitions of STUN2 classes
 	final static int REQUEST = 0x00;

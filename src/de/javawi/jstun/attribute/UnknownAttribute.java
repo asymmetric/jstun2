@@ -39,6 +39,8 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 	}
 
 	public UnknownAttribute(byte[] data) throws MessageAttributeParsingException, UtilityException {
+		this();
+
 		int padding, length;
 
 		// TODO useless?
@@ -100,8 +102,9 @@ public class UnknownAttribute extends AbstractMessageAttribute {
 	public static UnknownAttribute parse(byte[] data) throws MessageAttributeParsingException {
 		try {
 			UnknownAttribute result = new UnknownAttribute();
-			if (data.length % 4 != 0) throw new MessageAttributeParsingException("Data array too short");
-			for (int i = 0; i < data.length; i += 4) {
+			int l = data.length;
+			if (l % 4 != 0) throw new MessageAttributeParsingException("Data array too short");
+			for (int i = 0; i < l; i += 4) {
 				byte[] temp = new byte[4];
 				System.arraycopy(data, i, temp, 0, 4);
 				long attri = Utility.fourBytesToLong(temp);
