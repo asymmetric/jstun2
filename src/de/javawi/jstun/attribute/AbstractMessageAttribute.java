@@ -13,7 +13,6 @@ package de.javawi.jstun.attribute;
 
 import java.util.logging.Logger;
 
-import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.util.Utility;
@@ -88,7 +87,19 @@ public abstract class AbstractMessageAttribute {
 		return type.getEncoding();
 	}
 
+	@Deprecated
+	// TODO why long??
 	public final static MessageAttributeType longToType(long type) {
+		MessageAttributeType[] values = MessageAttributeType.values();
+
+		for (MessageAttributeType ma : values) {
+			if (type == ma.getEncoding())
+				return ma;
+		}
+		return null; // TODO should throw exception??
+	}
+
+	public final static MessageAttributeType intToType(int type) {
 		MessageAttributeType[] values = MessageAttributeType.values();
 
 		for (MessageAttributeType ma : values) {
@@ -107,7 +118,7 @@ public abstract class AbstractMessageAttribute {
 	}
 
 	public final static AbstractMessageAttribute parseCommonHeader(byte[] data)
-			throws MessageAttributeException {
+			throws MessageAttributeParsingException, UnknownMessageAttributeException {
 		try {
 
 			byte[] typeArray = new byte[2];
@@ -124,7 +135,7 @@ public abstract class AbstractMessageAttribute {
 			AbstractMessageAttribute ma;
 			// MessageAttributeType mat = intToType(type);
 
-			// TODO make it reflective?
+			// TODO document that you must add cases here if you extend the protocol
 			if (type == MessageAttributeType.MappedAddress.getEncoding())
 				ma = new MappedXORMapped(valueArray);
 			else if (type == MessageAttributeType.Username.getEncoding())
@@ -134,13 +145,16 @@ public abstract class AbstractMessageAttribute {
 			else if (type == MessageAttributeType.UnknownAttribute.getEncoding())
 				ma = new UnknownAttribute(valueArray);
 			else {
+//				ma = new Dummy(type);
 				if (type <= 0x7fff) {
-					throw new UnknownMessageAttributeException("Unknown mandatory message attribute", longToType(type));
+//					throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", ma);
+					throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", type);
 				} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
-					throw new UnknownMessageAttributeException("Unknown optional message attribute", longToType(type));
+//					throw new UnknownMessageAttributeException("Optional attribute "+type+" unknown", ma);
+					throw new UnknownMessageAttributeException("Optional attribute "+type+" unknown", type);
 				} else {
-					logger.finer("MessageAttribute with type " + type + " unkown.");
-					ma = Dummy.parse(valueArray);
+//					throw new UnknownMessageAttributeException("Attribute " + type + " unkown.", ma);
+					throw new UnknownMessageAttributeException("Attribute " + type + " unkown.", type);
 				}
 			}
 			

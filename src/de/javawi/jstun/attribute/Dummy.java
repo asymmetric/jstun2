@@ -15,9 +15,17 @@ import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
 public class Dummy extends AbstractMessageAttribute {
+
 	int lengthValue;
-	public Dummy() {
+	int unknownType;
+
+//	public Dummy() {
+//		super(MessageAttributeType.Dummy);
+//	}
+
+	public Dummy(int unknownType) {
 		super(MessageAttributeType.Dummy);
+		this.unknownType = unknownType;
 	}
 
 	public void setLengthValue(int length) {
@@ -34,9 +42,14 @@ public class Dummy extends AbstractMessageAttribute {
 		return result;
 	}
 
-	public static Dummy parse(byte[] data) {
-		Dummy dummy = new Dummy();
-		dummy.setLengthValue(data.length);
-		return dummy;
+	// TODO refactor not static
+//	public static Dummy parse(byte[] data) {
+//		Dummy dummy = new Dummy();
+//		dummy.setLengthValue(data.length);
+//		return dummy;
+//	}
+
+	public int getUnknownType() {
+		return unknownType;
 	}
 }

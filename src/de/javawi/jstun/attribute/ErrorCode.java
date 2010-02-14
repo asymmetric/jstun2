@@ -39,7 +39,7 @@ public class ErrorCode extends AbstractMessageAttribute {
 	}
 	
 	// TODO review
-	public ErrorCode(byte[] data) throws UtilityException, MessageAttributeException {
+	public ErrorCode(byte[] data) throws UtilityException, MessageAttributeParsingException {
 		this();
 		if (data.length < 4) { // TODO unmagic all
 			throw new MessageAttributeParsingException("Data array too short");
@@ -58,7 +58,7 @@ public class ErrorCode extends AbstractMessageAttribute {
 		setResponseCode(classHeader, number);
 	}
 
-	public void setResponseCode(int classHeader, int number) throws MessageAttributeException {
+	public void setResponseCode(int classHeader, int number) throws MessageAttributeParsingException {
 		int responseCode = (classHeader * 100) + number;
 		switch (responseCode) {
 			// TODO cfr rfc for additional requirements
@@ -68,7 +68,7 @@ public class ErrorCode extends AbstractMessageAttribute {
 			case UNKOWN_ATTRIBUTE: reason = "Unkown Attribute"; break;
 			case STALE_NONCE: reason = "Stale Nonce"; break;
 			case SERVER_ERROR: reason = "Server Error"; break;
-		default: throw new MessageAttributeException("Response Code unknown");
+		default: throw new MessageAttributeParsingException("Response Code unknown");
 		}
 		this.responseCode = responseCode;
 		this.classHeader = classHeader;

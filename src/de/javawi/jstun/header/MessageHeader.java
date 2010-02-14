@@ -21,6 +21,7 @@ import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
+import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.header.messagetype.AbstractMessageType;
 import de.javawi.jstun.header.messagetype.method.Binding;
@@ -265,7 +266,7 @@ public class MessageHeader implements MessageHeaderInterface {
 		return getBytes().length;
 	}
 
-	public void parseAttributes(byte[] data) throws MessageAttributeException {
+	public void parseAttributes(byte[] data) throws UnknownMessageAttributeException, MessageAttributeParsingException {
 		try {
 			byte[] lengthArray = new byte[2];
 			// copy packet's payload length (i.e. excluding the 20 byte header)

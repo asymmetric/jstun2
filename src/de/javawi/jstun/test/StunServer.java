@@ -154,6 +154,7 @@ public class StunServer {
 
 						// Unknown attributes
 						UnknownAttribute ua = new UnknownAttribute();
+						// TODO rework here, non e' normale che al primo unknown spedisce il pacchetto
 						ua.addAttribute(umae.getType());
 						sendMH.addMessageAttribute(ua);
 
