@@ -81,23 +81,12 @@ public abstract class AbstractMessageAttribute {
 		return type.getEncoding();
 	}
 
-	public static MessageAttributeType longToType(long type) { // TODO why long?
+	public final static MessageAttributeType longToType(long type) {
 		MessageAttributeType[] values = MessageAttributeType.values();
 
 		for (MessageAttributeType ma : values) {
 			if (type == ma.getEncoding())
 				return ma;
-		}
-		return null; // TODO should throw exception??
-	}
-
-	// TODO decide which one to keep
-	public static MessageAttributeType intToType(int type) {
-		MessageAttributeType[] values = MessageAttributeType.values();
-
-		for (MessageAttributeType mat : values) {
-			if (type == mat.getEncoding())
-				return mat;
 		}
 		return null; // TODO should throw exception??
 	}
@@ -110,7 +99,7 @@ public abstract class AbstractMessageAttribute {
 		return length;
 	}
 
-	public static AbstractMessageAttribute parseCommonHeader(byte[] data)
+	public final static AbstractMessageAttribute parseCommonHeader(byte[] data)
 			throws MessageAttributeException {
 		try {
 
