@@ -61,7 +61,7 @@ public abstract class AbstractMessageAttribute {
 	final static int TYPE_SIZE = 2;
 	final static int LENGTH_SIZE = 2;
 
-	MessageAttributeType type;
+	protected MessageAttributeType type;
 
 	/**
 	 * Sets the <b>type</b> instance field with the specified {@link MessageAttributeType}

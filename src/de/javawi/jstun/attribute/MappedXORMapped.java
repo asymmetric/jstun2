@@ -36,7 +36,6 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	int port;
 	Address address;
 	Address.Family family;
-	MessageAttributeType type;
 
 	final static int HEADER_LENGTH = 4;
 
