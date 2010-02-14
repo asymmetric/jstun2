@@ -1,6 +1,9 @@
 package de.javawi.jstun.header.messagetype;
 
+import java.util.Arrays;
+
 import de.javawi.jstun.header.MessageHeaderInterface;
+import de.javawi.jstun.header.exception.MessageTypeException;
 
 public abstract class AbstractMessageType {
 	
@@ -11,6 +14,20 @@ public abstract class AbstractMessageType {
 	public AbstractMessageType(MessageHeaderInterface.MessageHeaderClass klass,
 			int methodEncoding) {
 		encoding = klass.getEncoding() | methodEncoding;
+	}
+	
+	/**
+	 * Constructor for the AbstractMessageType type.
+	 * Called by its subclasses
+	 * 
+	 * @param klass	The STUN2 class encoding
+	 * @param methodEncoding The STUN2 method encoding 
+	 * @throws MessageTypeException If the specified class isn't one of those specified in {@link de.javawi.jstun.header.MessageHeaderInterface#CLASS_ARRAY CLASS_ARRAY}
+	 */
+	public AbstractMessageType(int klass, int methodEncoding) throws MessageTypeException {
+		if (Arrays.binarySearch(MessageHeaderInterface.CLASS_ARRAY, klass) < 0)
+			throw new MessageTypeException(klass);
+		encoding = klass | methodEncoding;
 	}
 
 	public final int getEncoding() {
