@@ -62,13 +62,13 @@ public class ErrorCode extends AbstractMessageAttribute {
 		int responseCode = (classHeader * 100) + number;
 		switch (responseCode) {
 			// TODO cfr rfc for additional requirements
-			case 300: reason = "Try Alternate"; break;
-			case 400: reason = "Bad Request"; break;
-			case 401: reason = "Unauthorized"; break;
-			case 420: reason = "Unkown Attribute"; break;
-			case 438: reason = "Stale Nonce"; break;
-			case 500: reason = "Server Error"; break;
-		default: throw new MessageAttributeException("Response Code is not valid");
+			case TRY_ALTERNATE: reason = "Try Alternate"; break;
+			case BAD_REQUEST: reason = "Bad Request"; break;
+			case UNAUTHORIZED: reason = "Unauthorized"; break;
+			case UNKOWN_ATTRIBUTE: reason = "Unkown Attribute"; break;
+			case STALE_NONCE: reason = "Stale Nonce"; break;
+			case SERVER_ERROR: reason = "Server Error"; break;
+		default: throw new MessageAttributeException("Response Code unknown");
 		}
 		this.responseCode = responseCode;
 		this.classHeader = classHeader;

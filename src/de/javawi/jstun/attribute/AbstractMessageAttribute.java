@@ -48,6 +48,12 @@ public abstract class AbstractMessageAttribute {
 		}
 	}
 
+	final static int TRY_ALTERNATE = 300;
+	final static int BAD_REQUEST = 400;
+	final static int UNAUTHORIZED = 401;
+	final static int UNKOWN_ATTRIBUTE = 420;
+	final static int STALE_NONCE = 438;
+	final static int SERVER_ERROR = 500;
 
 	final static int COMMONHEADERSIZE = 4;
 	final static int ALIGNMENT = 4;
