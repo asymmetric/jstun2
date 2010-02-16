@@ -14,6 +14,7 @@ package de.javawi.jstun.attribute;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.util.Utility;
@@ -130,7 +131,7 @@ public abstract class AbstractMessageAttribute {
 	}
 
 	public final static AbstractMessageAttribute parseCommonHeader(byte[] data)
-			throws MessageAttributeParsingException, UnknownMessageAttributeException {
+			throws MessageAttributeParsingException, UnknownMessageAttributeException, AttributeReflectionException {
 		try {
 
 			byte[] typeArray = new byte[2];
@@ -171,19 +172,19 @@ public abstract class AbstractMessageAttribute {
 			throw new MessageAttributeParsingException("Parsing error");
 		} catch (ClassNotFoundException e) {
 			// TODO it should be another exception!
-			throw new MessageAttributeParsingException("Class not found");
+			throw new AttributeReflectionException("Class not found");
 		} catch (InstantiationException e) {
-			throw new MessageAttributeParsingException("Class not instantiable");
+			throw new AttributeReflectionException("Class not instantiable");
 		} catch (IllegalAccessException e) {
-			throw new MessageAttributeParsingException("Class not accessible");
+			throw new AttributeReflectionException("Class not accessible");
 		} catch (IllegalArgumentException e) {
-			throw new MessageAttributeParsingException("Wrong constructor invocation");
+			throw new AttributeReflectionException("Wrong constructor invocation");
 		} catch (SecurityException e) {
-			throw new MessageAttributeParsingException("Security Manager denied access!");
+			throw new AttributeReflectionException("Security Manager denied access!");
 		} catch (InvocationTargetException e) {
-			throw new MessageAttributeParsingException("The underlying constructor threw an exception");
+			throw new AttributeReflectionException("The underlying constructor threw an exception");
 		} catch (NoSuchMethodException e) {
-			throw new MessageAttributeParsingException("Constructor not found");
+			throw new AttributeReflectionException("Constructor not found");
 		}
 	}
 }

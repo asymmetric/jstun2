@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import de.javawi.jstun.attribute.ErrorCode;
 import de.javawi.jstun.attribute.Software;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface;
@@ -37,7 +38,8 @@ public class BindingRequestTest {
 		this.stunServer = InetAddress.getByName(stunServer);
 	}
 	
-	public boolean test() throws UtilityException, MessageHeaderParsingException, MessageAttributeException, IOException, MessageTypeException {
+	public boolean test() throws UtilityException, MessageHeaderParsingException,
+	MessageAttributeException, IOException, MessageTypeException, AttributeReflectionException {
 		s1 = new DatagramSocket();
 		
 		s1.connect(stunServer, port);

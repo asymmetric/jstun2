@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
@@ -64,7 +65,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		this.type = type;
 	}
 	
-	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException, MessageAttributeException {
+	public MessageHeader(byte[] data) throws MessageHeaderParsingException, UtilityException,
+	MessageAttributeException, AttributeReflectionException {
 		this();
 		setType(parseType(data));
 		parseMagicCookie(data);
@@ -266,7 +268,8 @@ public class MessageHeader implements MessageHeaderInterface {
 		return getBytes().length;
 	}
 
-	public void parseAttributes(byte[] data) throws UnknownMessageAttributeException, MessageAttributeParsingException {
+	public void parseAttributes(byte[] data) throws UnknownMessageAttributeException,
+	MessageAttributeParsingException, AttributeReflectionException {
 		try {
 			byte[] lengthArray = new byte[2];
 			// copy packet's payload length (i.e. excluding the 20 byte header)

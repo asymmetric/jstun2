@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.header.exception.MessageTypeException;
@@ -49,6 +50,8 @@ public class BindingRequestDemo implements Runnable {
 			logger.severe(local+": IO Exception: "+e.getMessage());
 		} catch (MessageTypeException e) {
 			logger.severe(local+": Message Type Exception" + e.getMessage());
+		} catch (AttributeReflectionException e) {
+			logger.severe(local+": Reflection related Exception : " +e.getMessage());
 		}
 	}
 	

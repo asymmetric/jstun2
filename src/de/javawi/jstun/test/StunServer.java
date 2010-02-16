@@ -25,9 +25,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import de.javawi.jstun.attribute.AbstractMappedAddress;
+import de.javawi.jstun.attribute.MappedAddress;
 import de.javawi.jstun.attribute.UnknownAttribute;
 import de.javawi.jstun.attribute.XORMappedAddress;
-import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
@@ -128,12 +130,12 @@ public class StunServer {
 							MessageHeader sendMH = new MessageHeader(new Binding(MessageHeaderClass.SUCCESSRESPONSE));
 							sendMH.setTransactionID(receiveMH.getTransactionID());
 
-							XORMappedAddress ma;
+							AbstractMappedAddress ma;
 							// (XOR)Mapped address attribute
 							if (stun2)
 								ma = new XORMappedAddress();
 							else
-								ma = new XORMappedAddress(MessageAttributeType.MappedAddress);
+								ma = new MappedAddress();
 
 							// TODO make it work independently of the IP version
 							ma.setAddress(new IPv4Address((Inet4Address) receive.getAddress()));
@@ -180,6 +182,8 @@ public class StunServer {
 					ue.printStackTrace();
 				} catch (ArrayIndexOutOfBoundsException aioobe) {
 					aioobe.printStackTrace();
+				} catch (AttributeReflectionException e) {
+					e.printStackTrace();
 				}
 			}
 		}
