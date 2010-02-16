@@ -20,8 +20,8 @@ import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.util.Utility;
 
 public class MappedAddressTest extends TestCase {
-	MappedXORMapped map;
-	MappedXORMapped xor;
+	XORMappedAddress map;
+	XORMappedAddress xor;
 	
 	int port = 63584;
 	int address = 1413015884;
@@ -45,9 +45,9 @@ public class MappedAddressTest extends TestCase {
 		data[5] = 56;
 		data[6] = -23;
 		data[7] = 76;
-		map = new MappedXORMapped(MessageAttributeType.MappedAddress, data);
+		map = new XORMappedAddress(MessageAttributeType.MappedAddress, data);
 		
-		xor = new MappedXORMapped(data);
+		xor = new XORMappedAddress(data);
 	}
 
 	/*
@@ -55,7 +55,7 @@ public class MappedAddressTest extends TestCase {
 	 */
 	@Test
 	public void testMappedAddress() {
-		new MappedXORMapped();
+		new XORMappedAddress();
 	}
 
 	/*

@@ -11,6 +11,7 @@
 
 package de.javawi.jstun.attribute;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
@@ -32,9 +33,8 @@ public abstract class AbstractMessageAttribute {
 	*/
 
 	public enum MessageAttributeType {
-		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009),
-		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014),
-		Nonce(0x0015), Software(0x8022);
+		MappedAddress(0x0001), Username(0x0006), ErrorCode(0x0009),
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Software(0x8022);
 
 		private final int e;
 
@@ -46,6 +46,18 @@ public abstract class AbstractMessageAttribute {
 			return e;
 		}
 	}
+
+	// TODO useless?
+	final static int DUMMY = 0x0;
+	final static int MAPPED_ADDRESS = 0x0001;
+	final static int USERNAME = 0x0006; // TODO do we support this?
+	final static int ERROR_CODE = 0x0009;
+	final static int UNKNOWN_ATTRIBUTE = 0x000A;
+	final static int XOR_MAPPED_ADDRESS = 0x0020;
+	final static int SOFTWARE = 0x8022;
+
+	final static int[] ATTRIBUTES = { DUMMY, MAPPED_ADDRESS, USERNAME, ERROR_CODE,
+		UNKNOWN_ATTRIBUTE, XOR_MAPPED_ADDRESS, SOFTWARE };
 
 	final static int TRY_ALTERNATE = 300;
 	final static int BAD_REQUEST = 400;
@@ -132,35 +144,46 @@ public abstract class AbstractMessageAttribute {
 			byte[] valueArray = new byte[lengthValue];
 			System.arraycopy(data, 4, valueArray, 0, lengthValue);
 
-			AbstractMessageAttribute ma;
-			// MessageAttributeType mat = intToType(type);
+			AbstractMessageAttribute ma = null;
 
-			// TODO document that you must add cases here if you extend the protocol
-			if (type == MessageAttributeType.MappedAddress.getEncoding())
-				ma = new MappedXORMapped(valueArray);
-			else if (type == MessageAttributeType.Username.getEncoding())
-				ma = new Username(valueArray);
-			else if (type == MessageAttributeType.ErrorCode.getEncoding())
-				ma = new ErrorCode(valueArray);
-			else if (type == MessageAttributeType.UnknownAttribute.getEncoding())
-				ma = new UnknownAttribute(valueArray);
-			else {
-//				ma = new Dummy(type);
-				if (type <= 0x7fff) {
-//					throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", ma);
-					throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", type);
-				} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
-//					throw new UnknownMessageAttributeException("Optional attribute "+type+" unknown", ma);
-					throw new UnknownMessageAttributeException("Optional attribute "+type+" unknown", type);
-				} else {
-//					throw new UnknownMessageAttributeException("Attribute " + type + " unkown.", ma);
-					throw new UnknownMessageAttributeException("Attribute " + type + " unkown.", type);
+			for (MessageAttributeType mat : MessageAttributeType.values()) {
+				if (type == mat.getEncoding()) {
+					String fullName = "de.javawi.jstun.attribute." + mat.toString();
+					Class<?> cl = Class.forName(fullName);
+
+					ma = (AbstractMessageAttribute) cl.getConstructor(byte[].class).newInstance(valueArray);
+					break;
 				}
 			}
-			
+			if (ma == null) {
+				if (type <= 0x7fff) {
+									throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", type);
+								} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
+									throw new UnknownMessageAttributeException("Optional attribute "+type+" unknown", type);
+								} else {
+									throw new UnknownMessageAttributeException("Attribute " + type + " unkown.", type);
+								}
+			}
+
 			return ma;
+
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");
+		} catch (ClassNotFoundException e) {
+			// TODO it should be another exception!
+			throw new MessageAttributeParsingException("Class not found");
+		} catch (InstantiationException e) {
+			throw new MessageAttributeParsingException("Class not instantiable");
+		} catch (IllegalAccessException e) {
+			throw new MessageAttributeParsingException("Class not accessible");
+		} catch (IllegalArgumentException e) {
+			throw new MessageAttributeParsingException("Wrong constructor invocation");
+		} catch (SecurityException e) {
+			throw new MessageAttributeParsingException("Security Manager denied access!");
+		} catch (InvocationTargetException e) {
+			throw new MessageAttributeParsingException("The underlying constructor threw an exception");
+		} catch (NoSuchMethodException e) {
+			throw new MessageAttributeParsingException("Constructor not found");
 		}
 	}
 }

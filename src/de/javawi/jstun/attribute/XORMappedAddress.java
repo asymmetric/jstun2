@@ -20,7 +20,7 @@ import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 import de.javawi.jstun.util.Address.Family;
 
-public class MappedXORMapped extends AbstractMessageAttribute {
+public class XORMappedAddress extends AbstractMappedAddress {
 
 	/*	 0                   1                   2                   3
 		 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -33,51 +33,38 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	 */
 
-	int port;
-	Address address;
-	Address.Family family;
-
-	final static int HEADER_LENGTH = 4;
-
 
 	/**
 	 * Default constructor.<br>
 	 * Implicit parameters: <br> {@link MessageAttributeType} = {@link XORMappedAddress}<br>
 	 */
-	public MappedXORMapped() {
+	public XORMappedAddress() {
 		super(MessageAttributeType.XORMappedAddress);
-		type = MessageAttributeType.XORMappedAddress;
 	}
 
-	// TODO we should check it's an appropriate type
-	public MappedXORMapped(MessageAttributeType type) {
-//		if (type != MessageAttributeType.MappedAddress && type != MessageAttributeType.XORMappedAddress)
-//			throw new MessageAttributeException("Wrong MessageAttributeType");
-		super(type);
-		this.type = type;
-	}
+//	// TODO we should check it's an appropriate type
+//	public XORMappedAddress(MessageAttributeType type) {
+////		if (type != MessageAttributeType.MappedAddress && type != MessageAttributeType.XORMappedAddress)
+////			throw new MessageAttributeException("Wrong MessageAttributeType");
+//		super(type);
+//		this.type = type;
+//	}
 
-	public MappedXORMapped(byte[] data) throws MessageAttributeParsingException {
+	public XORMappedAddress(byte[] data) throws MessageAttributeParsingException {
 		this();
 		parseData(data);
 	}
 
-	public MappedXORMapped(MessageAttributeType type, byte[] data) throws MessageAttributeParsingException {
-		this(type);
-		parseData(data);
-	}
+//	public XORMappedAddress(MessageAttributeType type, byte[] data) throws MessageAttributeParsingException {
+//		this(type);
+//		parseData(data);
+//	}
 
-	public MappedXORMapped(MessageAttributeType type, byte[] data,
-			Address address, int port) throws MessageAttributeParsingException {
-		super(type);
-		this.address = address;
-		this.port = port;
 
-		parseData(data);
-	}
 
 	// TODO we should do XOR-decoding
-	private void parseData(byte[] data) throws MessageAttributeParsingException {
+	@Override
+	protected void parseData(byte[] data) throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
 				throw new MessageAttributeParsingException("Data array too short");
@@ -96,7 +83,8 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 				this.family = Family.IPv4;
 
 			} else if (familyInt == Address.IPv6) {
-				; // TODO implement
+				// TODO implement
+				throw new MessageAttributeParsingException("IPv6 is currently unsupported");
 			} else
 				throw new MessageAttributeParsingException("Family " + familyInt
 						+ " is not supported");
@@ -115,27 +103,9 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		}
 	}
 
-	public int getPort() {
-		return port;
-	}
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setPort(int port) throws MessageAttributeException {
-		if ((port > 65536) || (port < 0)) {
-			throw new MessageAttributeException("Port value " + port + " out of range.");
-		}
-		this.port = port;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
 	// TODO it should differ, based on the IP protocol family
 	/* Used to get the attribute as a byte[], in order to send it on the network */
+	@Override
 	public byte[] getBytes() throws UtilityException {
 		// 4 common bytes header + 4B own header + 4B address
 		final int IPv4LENGTH = 4;
@@ -183,13 +153,13 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	 * @deprecated Use the <b>MappedXORMapped(type, data, address, port)</b> constructor
 	 *             instead
 	 * @param ma
-	 *            The {@link MappedXORMapped} object to put the parsed data in.
+	 *            The {@link XORMappedAddress} object to put the parsed data in.
 	 * @param data
 	 *            The byte[] containing the data to parse.
-	 * @return A {@link MappedXORMapped} object containing the mapped data.
+	 * @return A {@link XORMappedAddress} object containing the mapped data.
 	 * @throws MessageAttributeParsingException
 	 */
-	protected static MappedXORMapped parse(MappedXORMapped ma, byte[] data)
+	protected static XORMappedAddress parse(XORMappedAddress ma, byte[] data)
 	throws MessageAttributeParsingException {
 		try {
 			if (data.length < 8) { // TODO why 8?
@@ -214,9 +184,5 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 		} catch (MessageAttributeException mae) {
 			throw new MessageAttributeParsingException("Port parsing error");
 		}
-	}
-
-	public String toString() {
-		return "Address " + address.toString() + ", Port " + port;
 	}
 }

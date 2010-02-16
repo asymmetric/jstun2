@@ -25,8 +25,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import de.javawi.jstun.attribute.MappedXORMapped;
 import de.javawi.jstun.attribute.UnknownAttribute;
+import de.javawi.jstun.attribute.XORMappedAddress;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
@@ -128,12 +128,12 @@ public class StunServer {
 							MessageHeader sendMH = new MessageHeader(new Binding(MessageHeaderClass.SUCCESSRESPONSE));
 							sendMH.setTransactionID(receiveMH.getTransactionID());
 
-							MappedXORMapped ma;
+							XORMappedAddress ma;
 							// (XOR)Mapped address attribute
 							if (stun2)
-								ma = new MappedXORMapped();
+								ma = new XORMappedAddress();
 							else
-								ma = new MappedXORMapped(MessageAttributeType.MappedAddress);
+								ma = new XORMappedAddress(MessageAttributeType.MappedAddress);
 
 							// TODO make it work independently of the IP version
 							ma.setAddress(new IPv4Address((Inet4Address) receive.getAddress()));
