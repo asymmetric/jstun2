@@ -32,7 +32,7 @@ public abstract class AbstractMessageType {
 
 	public final int getEncoding() {
 		// to make sure the first 2 bits are 0
-		return encoding & 0x3FF;
+		return encoding & 0x3FF; // TODO check here!
 	}
 
 	// TODO implement
