@@ -56,6 +56,8 @@ public interface MessageHeaderInterface {
 	final static int MAGICCOOKIESIZE = 4;
 	final static int TRANSACTIONIDSIZE = 12; // in bytes
 	
+	final static int BINDING = 0x01;
+	
 	// static definitions of STUN2 classes
 	final static int REQUEST = 0x00;
 	final static int INDICATION = 0x10;

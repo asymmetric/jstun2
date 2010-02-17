@@ -15,9 +15,9 @@ import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.header.MessageHeader;
 import de.javawi.jstun.header.MessageHeaderInterface;
+import de.javawi.jstun.header.MessageType;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
 import de.javawi.jstun.header.exception.MessageTypeException;
-import de.javawi.jstun.header.messagetype.method.Binding;
 import de.javawi.jstun.util.UtilityException;
 
 public class BindingRequestTest {
@@ -43,7 +43,7 @@ public class BindingRequestTest {
 		s1.connect(stunServer, port);
 		s1.setSoTimeout(500); // TODO configurable
 		
-		MessageHeader bindReq = new MessageHeader(new Binding(MessageHeaderInterface.REQUEST));
+		MessageHeader bindReq = new MessageHeader(new MessageType(MessageHeaderInterface.BINDING, MessageHeaderInterface.REQUEST));
 		bindReq.initHeader();
 		bindReq.addMessageAttribute(new Software());
 		data = bindReq.getBytes();

@@ -20,17 +20,17 @@ import de.javawi.jstun.util.UtilityException;
 
 public class BindingRequestDemo implements Runnable {
 	private static final Logger logger = Logger.getLogger("de.javawi.jstun");
-	
+
 	InetAddress local;
 	String stunServer; //= "numb.viagenie.ca";
 	int port = 3478;
-	
+
 	public BindingRequestDemo(InetAddress localAddress, String stunServer, int port) {
 		this.local = localAddress;
 		this.stunServer = stunServer;
 		this.port = port;
 	}
-	
+
 	public void run() {
 		try {
 			BindingRequestTest br = new BindingRequestTest(local, stunServer, port);
@@ -51,21 +51,21 @@ public class BindingRequestDemo implements Runnable {
 			logger.severe(local+": Message Type Exception" + e.getMessage());
 		}
 	}
-	
+
 	public static void main(String args[]) {
-		
+
 		try {
 			Handler fh = new FileHandler("bindingreq.log");
 			fh.setFormatter(new SimpleFormatter());
-			
+
 			logger.addHandler(fh);
 			logger.setLevel(Level.ALL);
-			
+
 			String stunserver = "numb.viagenie.ca";
 			int port = 3478;
-			
+
 			Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
-			
+
 			while( ifaces.hasMoreElements() ) {
 				NetworkInterface iface = ifaces.nextElement();
 				Enumeration<InetAddress> iadds = iface.getInetAddresses();
@@ -84,7 +84,7 @@ public class BindingRequestDemo implements Runnable {
 			logger.warning("Warning: IO error prevented logger from starting");
 		}
 	}
-	
-	
+
+
 
 }

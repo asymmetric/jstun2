@@ -1,30 +1,28 @@
-package de.javawi.jstun.header.messagetype;
+package de.javawi.jstun.header;
 
 import java.util.Arrays;
 
-import de.javawi.jstun.header.MessageHeaderInterface;
 import de.javawi.jstun.header.exception.MessageTypeException;
 
-public abstract class AbstractMessageType {
+public class MessageType {
 	
 	// TODO find a design pattern for this situation
 
 	protected int encoding;
 
-	public AbstractMessageType(MessageHeaderInterface.MessageHeaderClass klass,
-			int methodEncoding) {
+	public MessageType(int methodEncoding, MessageHeaderInterface.MessageHeaderClass klass) {
 		encoding = klass.getEncoding() | methodEncoding;
 	}
 	
 	/**
-	 * Constructor for the AbstractMessageType type.
-	 * Called by its subclasses
+	 * Constructor for the MessageType type, with int constants instead of Enums.
+	 * It should be faster
 	 * 
 	 * @param klass	The STUN2 class encoding
 	 * @param methodEncoding The STUN2 method encoding 
 	 * @throws MessageTypeException If the specified class isn't one of those specified in {@link de.javawi.jstun.header.MessageHeaderInterface#CLASS_ARRAY CLASS_ARRAY}
 	 */
-	public AbstractMessageType(int klass, int methodEncoding) throws MessageTypeException {
+	public MessageType(int methodEncoding, int klass) throws MessageTypeException {
 		if (Arrays.binarySearch(MessageHeaderInterface.CLASS_ARRAY, klass) < 0)
 			throw new MessageTypeException(klass);
 		encoding = klass | methodEncoding;

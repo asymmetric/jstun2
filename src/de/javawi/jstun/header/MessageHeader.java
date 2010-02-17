@@ -22,9 +22,6 @@ import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.MessageAttributeException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.header.exception.MessageHeaderParsingException;
-import de.javawi.jstun.header.messagetype.AbstractMessageType;
-import de.javawi.jstun.header.messagetype.method.Binding;
-import de.javawi.jstun.header.messagetype.method.SharedSecret;
 import de.javawi.jstun.util.Utility;
 import de.javawi.jstun.util.UtilityException;
 
@@ -45,7 +42,7 @@ public class MessageHeader implements MessageHeaderInterface {
 
 	private static Logger logger = Logger.getLogger("de.javawi.jstun.header.MessageHeader");
 	//
-	AbstractMessageType type;
+	MessageType type;
 	private final byte[] id = new byte[TRANSACTIONIDSIZE];
 	private final byte[] mcookie = new byte[MAGICCOOKIESIZE];
 	private long magicCookie; // mcookie as a long
@@ -59,7 +56,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 
 	// TODO magic cookie?
-	public MessageHeader(AbstractMessageType type) {
+	public MessageHeader(MessageType type) {
 		this.type = type;
 	}
 	
@@ -80,11 +77,11 @@ public class MessageHeader implements MessageHeaderInterface {
 		return this;
 	}
 
-	public void setType(AbstractMessageType type) {
+	public void setType(MessageType type) {
 		this.type = type;
 	}
 
-	public AbstractMessageType getType() {
+	public MessageType getType() {
 		return type;
 	}
 
@@ -309,7 +306,7 @@ public class MessageHeader implements MessageHeaderInterface {
 	}
 
 	// TODO we shouldn't be using these constants
-	private static AbstractMessageType parseType(byte[] data) throws UtilityException,
+	private static MessageType parseType(byte[] data) throws UtilityException,
 			MessageHeaderParsingException {
 
 		byte[] typeArray = new byte[2];
@@ -319,26 +316,26 @@ public class MessageHeader implements MessageHeaderInterface {
 		switch (type) {
 			case BINDINGREQUEST :
 				logger.finer("Binding Request received.");
-				return new Binding(MessageHeaderClass.REQUEST);
+				return new MessageType(BINDING, MessageHeaderClass.REQUEST);
 			case BINDINGRESPONSE :
 				logger.finer("Binding Response received.");
-				return new Binding(MessageHeaderClass.SUCCESSRESPONSE);
+				return new MessageType(BINDING, MessageHeaderClass.SUCCESSRESPONSE);
 			case BINDINGERRORRESPONSE :
 				logger.finer("Binding Error Response received.");
-				return new Binding(MessageHeaderClass.ERRORRESPONSE);
+				return new MessageType(BINDING, MessageHeaderClass.ERRORRESPONSE);
 			case BINDINGINDICATION :
 				logger.finer("Binding Indication received.");
-				return new Binding(MessageHeaderClass.INDICATION);
-				// STUN1 ONLY
-			case SHAREDSECRETREQUEST :
-				logger.finer("Shared Secret Request received.");
-				return new SharedSecret(MessageHeaderClass.REQUEST);
-			case SHAREDSECRETRESPONSE :
-				logger.finer("Shared Secret Response received.");
-				return new SharedSecret(MessageHeaderClass.SUCCESSRESPONSE);
-			case SHAREDSECRETERRORRESPONSE :
-				logger.finer("Shared Secret Error Response received.");
-				return new SharedSecret(MessageHeaderClass.ERRORRESPONSE);
+				return new MessageType(BINDING, MessageHeaderClass.INDICATION);
+//				// STUN1 ONLY
+//			case SHAREDSECRETREQUEST :
+//				logger.finer("Shared Secret Request received.");
+//				return new SharedSecret(MessageHeaderClass.REQUEST);
+//			case SHAREDSECRETRESPONSE :
+//				logger.finer("Shared Secret Response received.");
+//				return new SharedSecret(MessageHeaderClass.SUCCESSRESPONSE);
+//			case SHAREDSECRETERRORRESPONSE :
+//				logger.finer("Shared Secret Error Response received.");
+//				return new SharedSecret(MessageHeaderClass.ERRORRESPONSE);
 				/*
 				 * TODO this should change in future versions, supporting the
 				 * definition of new methods
