@@ -127,6 +127,8 @@ public abstract class AbstractMessageAttribute {
 			// TODO make it reflective?
 			if (type == MessageAttributeType.MappedAddress.getEncoding())
 				ma = new MappedXORMapped(valueArray);
+			else if (type == MessageAttributeType.XORMappedAddress.getEncoding())
+				ma = new MappedXORMapped(valueArray);
 			else if (type == MessageAttributeType.Username.getEncoding())
 				ma = new Username(valueArray);
 			else if (type == MessageAttributeType.ErrorCode.getEncoding())
@@ -137,9 +139,11 @@ public abstract class AbstractMessageAttribute {
 				if (type <= 0x7fff) {
 					throw new UnknownMessageAttributeException("Unknown mandatory message attribute", longToType(type));
 				} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
-					throw new UnknownMessageAttributeException("Unknown optional message attribute", longToType(type));
+//					throw new UnknownMessageAttributeException("Unknown optional message attribute", longToType(type));
+					logger.info("Unknown optional message attribute " + type);
+					ma = Dummy.parse(valueArray);
 				} else {
-					logger.finer("MessageAttribute with type " + type + " unkown.");
+					logger.info("MessageAttribute with type " + type + " unkown.");
 					ma = Dummy.parse(valueArray);
 				}
 			}

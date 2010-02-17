@@ -278,8 +278,9 @@ public class MessageHeader implements MessageHeaderInterface {
 				System.arraycopy(data, offset, cutData, 0, length);
 				AbstractMessageAttribute ma = AbstractMessageAttribute.parseCommonHeader(cutData);
 				addMessageAttribute(ma);
-				length -= ma.getLength();
-				offset += ma.getLength();
+				int ma_length = ma.getLength();
+				length -= ma_length;
+				offset += ma_length;
 			}
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");

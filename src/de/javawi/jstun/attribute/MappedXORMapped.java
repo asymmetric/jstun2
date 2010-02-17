@@ -137,7 +137,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 	// TODO it should differ, based on the IP protocol family
 	/* Used to get the attribute as a byte[], in order to send it on the network */
 	public byte[] getBytes() throws UtilityException {
-		// 4 common bytes header + 4B own header + 4B address
+		// 4 bytes common header + 4B own header + 4B address
 		final int IPv4LENGTH = 4;
 		byte[] result = new byte[COMMONHEADERSIZE + HEADER_LENGTH + IPv4LENGTH]; // TODO this should be variable
 		// message attribute header
@@ -157,7 +157,7 @@ public class MappedXORMapped extends AbstractMessageAttribute {
 			// port
 			System.arraycopy(Utility.integerToTwoBytes(port), 0, result, 6, 2);
 			// address
-			System.arraycopy(address.getBytes(), 0, result, 8, 4);
+			System.arraycopy(address.getBytes(), 0, result, 8, IPv4LENGTH);
 		}
 		else {
 			// calculate X-Port
