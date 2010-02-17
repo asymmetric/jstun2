@@ -5,10 +5,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.logging.Logger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.javawi.jstun.attribute.AbstractMappedAddress;
 import de.javawi.jstun.attribute.ErrorCode;
 import de.javawi.jstun.attribute.Software;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
@@ -23,7 +22,8 @@ import de.javawi.jstun.util.UtilityException;
 
 public class BindingRequestTest {
 	
-	final Logger logger = LoggerFactory.getLogger(BindingRequestTest.class);
+//	final Logger logger = LoggerFactory.getLogger(BindingRequestTest.class);
+	private static final Logger logger = Logger.getLogger("de.javawi.jstun");
 	
 	InetAddress stunServer;
 	InetAddress address;
@@ -52,7 +52,7 @@ public class BindingRequestTest {
 		
 		DatagramPacket send = new DatagramPacket(data, data.length);
 		s1.send(send);
-		logger.debug("Binding Request sent");
+//		logger.debug("Binding Request sent");
 		
 		MessageHeader bindResp = new MessageHeader();
 		
@@ -64,13 +64,17 @@ public class BindingRequestTest {
 			bindResp = MessageHeader.parseHeader(recvData);
 			bindResp.parseAttributes(recvData);
 		}
-		logger.debug("Binding Response received");
+//		logger.debug("Binding Response received");
 		
 		ErrorCode errorCode =  (ErrorCode) bindResp.getMessageAttribute(MessageAttributeType.ErrorCode);
 		
 		if (errorCode != null) {
-			logger.warn("Error! Code: {}, Reason: {}", errorCode.getResponseCode(), errorCode.getReason());
+//			logger.warn("Error! Code: {}, Reason: {}", errorCode.getResponseCode(), errorCode.getReason());
+			logger.warning("Error! Code: "+errorCode.getResponseCode()+" Reason: " + errorCode.getReason());
 			return false;
+		} else {
+			AbstractMappedAddress amattr = bindResp.getMappedAddress();
+			logger.info("Your public transport address is " + amattr.getAddress().toString()+":"+amattr.getPort());
 		}
 		
 		return true;

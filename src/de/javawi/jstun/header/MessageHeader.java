@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
+import de.javawi.jstun.attribute.AbstractMappedAddress;
 import de.javawi.jstun.attribute.AbstractMessageAttribute;
 import de.javawi.jstun.attribute.AbstractMessageAttribute.MessageAttributeType;
 import de.javawi.jstun.attribute.exception.AttributeReflectionException;
@@ -214,6 +215,15 @@ public class MessageHeader implements MessageHeaderInterface {
 	public AbstractMessageAttribute getMessageAttribute(
 			AbstractMessageAttribute.MessageAttributeType type) {
 		return ma.get(type);
+	}
+
+	public AbstractMappedAddress getMappedAddress() {
+		// more generic casts -> less coupling
+		AbstractMappedAddress xor = (AbstractMappedAddress) ma.get(MessageAttributeType.XORMappedAddress);
+		if (xor == null)
+			return (AbstractMappedAddress) ma.get(MessageAttributeType.MappedAddress);
+		else
+			return xor;
 	}
 
 	public byte[] getBytes() throws UtilityException {

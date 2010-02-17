@@ -80,7 +80,8 @@ public class BindingRequestDemo implements Runnable {
 					}
 				}
 			}
-			logger.fine("Tests run"); // TODO remove
+//			logger.fine("Tests run"); // TODO remove
+			logger.info(null);
 		} catch (SecurityException e) {
 			logger.warning("Warning: no logging permissions");
 		} catch (IOException e) {
