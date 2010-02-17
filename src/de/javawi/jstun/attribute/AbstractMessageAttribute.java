@@ -1,9 +1,9 @@
 /*
  * This file is part of JSTUN.
- * 
+ *
  * Copyright (c) 2005 Thomas King <king@t-king.de> - All rights
  * reserved.
- * 
+ *
  * This software is licensed under either the GNU Public License (GPL),
  * or the Apache 2.0 license. Copies of both license agreements are
  * included in this distribution.
@@ -11,9 +11,10 @@
 
 package de.javawi.jstun.attribute;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
-import de.javawi.jstun.attribute.exception.MessageAttributeException;
+import de.javawi.jstun.attribute.exception.AttributeReflectionException;
 import de.javawi.jstun.attribute.exception.MessageAttributeParsingException;
 import de.javawi.jstun.attribute.exception.UnknownMessageAttributeException;
 import de.javawi.jstun.util.Utility;
@@ -33,9 +34,8 @@ public abstract class AbstractMessageAttribute {
 	*/
 
 	public enum MessageAttributeType {
-		MappedAddress(0x0001), Username(0x0006), MessageIntegrity(0x0008), ErrorCode(0x0009),
-		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Realm(0x0014),
-		Nonce(0x0015), Software(0x8022);
+		MappedAddress(0x0001), Username(0x0006), ErrorCode(0x0009),
+		UnknownAttribute(0x000A), XORMappedAddress(0x0020), Dummy(0x0000), Software(0x8022);
 
 		private final int e;
 
@@ -47,6 +47,18 @@ public abstract class AbstractMessageAttribute {
 			return e;
 		}
 	}
+
+	// TODO useless?
+	final static int DUMMY = 0x0;
+	final static int MAPPED_ADDRESS = 0x0001;
+	final static int USERNAME = 0x0006; // TODO do we support this?
+	final static int ERROR_CODE = 0x0009;
+	final static int UNKNOWN_ATTRIBUTE = 0x000A;
+	final static int XOR_MAPPED_ADDRESS = 0x0020;
+	final static int SOFTWARE = 0x8022;
+
+	final static int[] ATTRIBUTES = { DUMMY, MAPPED_ADDRESS, USERNAME, ERROR_CODE,
+		UNKNOWN_ATTRIBUTE, XOR_MAPPED_ADDRESS, SOFTWARE };
 
 	final static int TRY_ALTERNATE = 300;
 	final static int BAD_REQUEST = 400;
@@ -73,7 +85,7 @@ public abstract class AbstractMessageAttribute {
 
 	/**
 	 * Sets the {@link MessageAttributeType}
-	 * 
+	 *
 	 * @param type
 	 */
 	private void setType(MessageAttributeType type) {
@@ -88,7 +100,19 @@ public abstract class AbstractMessageAttribute {
 		return type.getEncoding();
 	}
 
+	@Deprecated
+	// TODO why long??
 	public final static MessageAttributeType longToType(long type) {
+		MessageAttributeType[] values = MessageAttributeType.values();
+
+		for (MessageAttributeType ma : values) {
+			if (type == ma.getEncoding())
+				return ma;
+		}
+		return null; // TODO should throw exception??
+	}
+
+	public final static MessageAttributeType intToType(int type) {
 		MessageAttributeType[] values = MessageAttributeType.values();
 
 		for (MessageAttributeType ma : values) {
@@ -107,7 +131,7 @@ public abstract class AbstractMessageAttribute {
 	}
 
 	public final static AbstractMessageAttribute parseCommonHeader(byte[] data)
-			throws MessageAttributeException {
+			throws MessageAttributeParsingException, UnknownMessageAttributeException, AttributeReflectionException {
 		try {
 
 			byte[] typeArray = new byte[2];
@@ -121,25 +145,21 @@ public abstract class AbstractMessageAttribute {
 			byte[] valueArray = new byte[lengthValue];
 			System.arraycopy(data, 4, valueArray, 0, lengthValue);
 
-			AbstractMessageAttribute ma;
-			// MessageAttributeType mat = intToType(type);
+			AbstractMessageAttribute ma = null;
 
-			// TODO make it reflective?
-			if (type == MessageAttributeType.MappedAddress.getEncoding())
-				ma = new MappedXORMapped(valueArray);
-			else if (type == MessageAttributeType.XORMappedAddress.getEncoding())
-				ma = new MappedXORMapped(valueArray);
-			else if (type == MessageAttributeType.Username.getEncoding())
-				ma = new Username(valueArray);
-			else if (type == MessageAttributeType.ErrorCode.getEncoding())
-				ma = new ErrorCode(valueArray);
-			else if (type == MessageAttributeType.UnknownAttribute.getEncoding())
-				ma = new UnknownAttribute(valueArray);
-			else {
+			for (MessageAttributeType mat : MessageAttributeType.values()) {
+				if (type == mat.getEncoding()) {
+					String fullName = "de.javawi.jstun.attribute." + mat.toString();
+					Class<?> cl = Class.forName(fullName);
+
+					ma = (AbstractMessageAttribute) cl.getConstructor(byte[].class).newInstance(valueArray);
+					break;
+				}
+			}
+			if (ma == null) {
 				if (type <= 0x7fff) {
-					throw new UnknownMessageAttributeException("Unknown mandatory message attribute", longToType(type));
+					throw new UnknownMessageAttributeException("Mandatory attribute "+type+" unknown", type);
 				} else if ( (type > 0x8000 && type < 0xFFFF) || type == 0x8000 || type == 0xFFFF ){ // TODO unmagic
-//					throw new UnknownMessageAttributeException("Unknown optional message attribute", longToType(type));
 					logger.info("Unknown optional message attribute " + type);
 					ma = Dummy.parse(valueArray);
 				} else {
@@ -147,10 +167,26 @@ public abstract class AbstractMessageAttribute {
 					ma = Dummy.parse(valueArray);
 				}
 			}
-			
+
 			return ma;
+
 		} catch (UtilityException ue) {
 			throw new MessageAttributeParsingException("Parsing error");
+		} catch (ClassNotFoundException e) {
+			// TODO it should be another exception!
+			throw new AttributeReflectionException("Class not found");
+		} catch (InstantiationException e) {
+			throw new AttributeReflectionException("Class not instantiable");
+		} catch (IllegalAccessException e) {
+			throw new AttributeReflectionException("Class not accessible");
+		} catch (IllegalArgumentException e) {
+			throw new AttributeReflectionException("Wrong constructor invocation");
+		} catch (SecurityException e) {
+			throw new AttributeReflectionException("Security Manager denied access!");
+		} catch (InvocationTargetException e) {
+			throw new AttributeReflectionException("The underlying constructor threw an exception");
+		} catch (NoSuchMethodException e) {
+			throw new AttributeReflectionException("Constructor not found");
 		}
 	}
 }
